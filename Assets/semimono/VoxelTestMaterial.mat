@@ -19,7 +19,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -78,6 +78,48 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexWallDif
+        second:
+          m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexFlrDif
+        second:
+          m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexCeilDif
+        second:
+          m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexWallNorm
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexFlrNorm
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexCeilNorm
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -102,7 +144,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: .5
+        second: .76700002
       data:
         first:
           name: _BumpScale
@@ -126,7 +168,15 @@ Material:
       data:
         first:
           name: _Metallic
-        second: 1
+        second: .649999976
+      data:
+        first:
+          name: _Sigma
+        second: .375
+      data:
+        first:
+          name: _Blend
+        second: 4
     m_Colors:
       data:
         first:
@@ -135,4 +185,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 1, g: .360294104, b: .360294104, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}

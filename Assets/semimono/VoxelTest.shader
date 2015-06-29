@@ -6,6 +6,9 @@ Shader "Voxel/PhysicalTest" {
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
 		_TexFlrDif ("Diffuse Floor Texture", 2D) = "surface" {}
 		_TexCeilDif ("Diffuse Ceiling Texture", 2D) = "surface" {}
+		_TexWallNorm ("Normal Wall Texture", 2D) = "surface" {}
+		_TexFlrNorm ("Normal Floor Texture", 2D) = "surface" {}
+		_TexCeilNorm ("Normal Ceiling Texture", 2D) = "surface" {}
 		_Sigma ("Blend Tightness", Range(0, 0.57)) = 0.5
 		_Blend ("Blend Sharpness", Float) = 4
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
@@ -26,6 +29,9 @@ Shader "Voxel/PhysicalTest" {
 		sampler2D _TexWallDif;
 		sampler2D _TexFlrDif;
 		sampler2D _TexCeilDif;
+		sampler2D _TexWallNorm;
+		sampler2D _TexFlrNorm;
+		sampler2D _TexCeilNorm;
 		float _Sigma;
 		float _Blend;
 		half _Glossiness;
@@ -34,13 +40,13 @@ Shader "Voxel/PhysicalTest" {
 		
 		struct Input {
 			float2 uv_MainTex;
-			float3 localPos;
+			float3 worldPos;
 			float3 worldNormal;
 		};
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			
-			float2 uv = float2(IN.localPos.x, IN.localPos.y);
+			float2 uv = float2(IN.worldPos.x, IN.worldPos.y);
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 			o.Albedo = c.rgb;
 			o.Metallic = _Metallic;
@@ -57,12 +63,19 @@ Shader "Voxel/PhysicalTest" {
 			
 			float bmag = bx +bz +abs(by);
 			fixed4 col = fixed4((
-				bx *tex2D(_TexWallDif, IN.localPos.zy) +
-				bz *tex2D(_TexWallDif, IN.localPos.xy) +
-				((by > 0)?by *tex2D(_TexFlrDif, IN.localPos.xz):
-				-by *tex2D(_TexCeilDif, IN.localPos.zx))
+				bx *tex2D(_TexWallDif, IN.worldPos.zy) +
+				bz *tex2D(_TexWallDif, IN.worldPos.xy) +
+				((by > 0)?by *tex2D(_TexFlrDif, IN.worldPos.xz):
+				-by *tex2D(_TexCeilDif, IN.worldPos.zx))
 				) /bmag);
+			//fixed3 norm = 
 			o.Albedo = col.rgb;
+			//o.Normal = UnpackNormal((
+			//	bx *((tex2D(_TexWallNorm, IN.worldPos.zy))) +
+			//	bz *((tex2D(_TexWallNorm, IN.worldPos.xy))) +
+			//	((by > 0)?by *((tex2D(_TexFlrNorm, IN.worldPos.xz))):
+			//	-by *((tex2D(_TexCeilNorm, IN.worldPos.zx))))
+			//	) /bmag);
 		}
 		ENDCG
 	} 
