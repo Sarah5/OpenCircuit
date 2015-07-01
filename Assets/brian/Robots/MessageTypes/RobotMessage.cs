@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class RobotMessage {
+﻿public class RobotMessage {
 
 	string source;
 	string type;
