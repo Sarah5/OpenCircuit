@@ -22,9 +22,13 @@ public class MentalModel {
 	public void removeSighting(RobotInterest target) {
 		if (targetSightings.ContainsKey (target)) {
 			targetSightings [target]--;
-			if (targetSightings[target] < 1) {
-				notifyListenersTargetLost(target);
+			if (targetSightings [target] < 1) {
+				notifyListenersTargetLost (target);
 			}
+		} else {
+			targetSightings[target] = 0;
+			notifyListenersTargetLost (target);
+
 		}
 	}
 
@@ -45,6 +49,6 @@ public class MentalModel {
 	}
 
 	public void addUpdateListener(MentalModelUpdateListener listener) {
-		listeners.Add (listener); 
+		listeners.Add (listener);
 	}
 }

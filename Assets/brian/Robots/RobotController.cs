@@ -4,10 +4,24 @@ using System.Collections.Generic;
 
 public class RobotController : MonoBehaviour {
 
+	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
+
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
+	HoverJet jet = null;
+
+	private Material original;
+
 
 	Queue<RobotMessage> messageQueue = new Queue<RobotMessage>();
+
+
+	void Start() {
+		jet = GetComponentInChildren<HoverJet>();
+		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
+		original = gameObjectRenderer.material;
+
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -17,24 +31,48 @@ public class RobotController : MonoBehaviour {
 			if (message.Type.Equals("target sighted")) {
 				sightingFound(message.Target);
 				if (message.Target.Type.Equals("player")) {
-					turnGreen();
+					lightUp();
+					trackedTargets.Add(message.Target);
+
+					/*if (jet != null) {
+						jet.setTarget(message.Target);
+					}*/
 				}
 
 			}
-			else if (message.Type.Equals("target lost") && message.Target.Type.Equals("player")) {
+			else if (message.Type.Equals("target lost")) {
 				sightingLost(message.Target);
 				if (message.Target.Type.Equals("player")) {
-					turnRed();
+					resetMaterial();
+					trackedTargets.Remove(message.Target);
+					/*if (jet != null) {
+						jet.setTarget(null);
+					}*/
 				}
+			}
+		}
+
+		for (int i = 0; i < trackedTargets.Count; i++) {
+			if (trackedTargets[i].Type.Equals("player")) {
+				if (jet != null) {
+					jet.setTarget(trackedTargets[i]);
+				}
+			}
+		}
+		if (trackedTargets.Count == 0) {
+			if (jet != null) {
+				jet.setTarget(null);
 			}
 		}
 	}
 
 	public void notify (EventMessage message){
 		if (message.Type.Equals ("target found") && message.Target.Type.Equals ("player")) {
-			turnGreen ();
+			trackedTargets.Add(message.Target);
+
 		} else if (message.Type.Equals ("target lost") && message.Target.Type.Equals ("player")) {
-			turnRed();
+			trackedTargets.Remove(message.Target);
+
 		}
 	}
 
@@ -72,25 +110,19 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 	
-	private void turnRed() {
-		Color whateverColor = new Color(255,0,0,1);
-		
-		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
-		
-		Material newMaterial = new Material(Shader.Find("Transparent/Diffuse"));
-		
-		newMaterial.color = Color.red;
-		gameObjectRenderer.material = newMaterial ;
-	}
-
-	private void turnGreen() {
-		Color whateverColor = new Color(255,0,0,1);
-		
-		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
+	private void lightUp() {
+		/*MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		
 		Material newMaterial = new Material(Shader.Find("Transparent/Diffuse"));
 		
 		newMaterial.color = Color.green;
-		gameObjectRenderer.material = newMaterial ;
+		gameObjectRenderer.material = newMaterial ;*/
+	}
+
+	private void resetMaterial() {
+
+		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
+
+		gameObjectRenderer.material = original ;
 	}
 }
