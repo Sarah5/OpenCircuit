@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: VoxelTestMaterial
+  m_Name: VoxelBase
   m_Shader: {fileID: 4800000, guid: 7f79771678d1c9b4d8202740c6c4f2fc, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 0
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
