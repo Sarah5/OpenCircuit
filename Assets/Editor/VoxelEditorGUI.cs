@@ -145,4 +145,37 @@ public class VoxelEditorGUI : Editor {
 		ob.ApplyModifiedProperties();
 	}
 
+	public void OnSceneGUI() {
+		int controlId = GUIUtility.GetControlID(FocusType.Passive);
+		switch(Event.current.GetTypeForControl(controlId)) {
+		case EventType.MouseDown:
+			GUIUtility.hotControl = controlId;
+//			Debug.Log("mouse DOWN!");
+			addSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+			Event.current.Use();
+			break;
+
+		case EventType.MouseUp:
+			GUIUtility.hotControl = 0;
+//			Debug.Log("mouse UP!");
+			Event.current.Use();
+			break;
+		}
+	}
+
+	private void addSphere(Ray mouseLocation) {
+		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+
+		double dist = double.PositiveInfinity;
+		Vector3 point = Vector3.zero;
+		foreach(RaycastHit hit in Physics.RaycastAll(mouseLocation)) {
+			if (hit.distance < dist) {
+				dist = hit.distance;
+				point = hit.point;
+			}
+		}
+
+		Vox.SphereModifier modder = new Vox.SphereModifier(editor, point, 1, new Vox.Voxel(0, byte.MaxValue), true);
+	}
+
 }
