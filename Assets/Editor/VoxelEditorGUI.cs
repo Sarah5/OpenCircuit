@@ -26,6 +26,8 @@ public class VoxelEditorGUI : Editor {
 	private SerializedObject ob;
 	//private bool materialsFoldout = false;
 	//private List<Vox.VoxelMaterial> voxelMaterials;
+	protected int selectedMode = 0;
+	protected String[] modes = new String[] {"Manage", "Sculpt"};
 
 	public void OnEnable() {
 		ob = new SerializedObject(target);
@@ -34,6 +36,11 @@ public class VoxelEditorGUI : Editor {
 	public override void OnInspectorGUI() {
 		//Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		ob.Update();
+		
+		selectedMode = drawTabs(modes, selectedMode);
+
+		if (selectedMode != 0)
+			return;
 		
 		// world detail
 		SerializedProperty maxDetail = ob.FindProperty("maxDetail");
@@ -146,36 +153,100 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public void OnSceneGUI() {
+		if (selectedMode != 1)
+			return;
 		int controlId = GUIUtility.GetControlID(FocusType.Passive);
 		switch(Event.current.GetTypeForControl(controlId)) {
 		case EventType.MouseDown:
-			GUIUtility.hotControl = controlId;
-//			Debug.Log("mouse DOWN!");
-			addSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
-			Event.current.Use();
+			if (Event.current.button == 0) {
+				GUIUtility.hotControl = controlId;
+				if (Event.current.shift) {
+					subtractSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+				} else {
+					addSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+				}
+				Event.current.Use();
+			}
 			break;
 
 		case EventType.MouseUp:
-			GUIUtility.hotControl = 0;
-//			Debug.Log("mouse UP!");
-			Event.current.Use();
+			if (Event.current.button == 0) {
+				GUIUtility.hotControl = 0;
+				Event.current.Use();
+			}
 			break;
 		}
 	}
 
-	private void addSphere(Ray mouseLocation) {
+	protected void addSphere(Ray mouseLocation) {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 
-		double dist = double.PositiveInfinity;
-		Vector3 point = Vector3.zero;
-		foreach(RaycastHit hit in Physics.RaycastAll(mouseLocation)) {
-			if (hit.distance < dist) {
-				dist = hit.distance;
-				point = hit.point;
+		Vector3 point = getRayCollision(mouseLocation).point;
+
+		new Vox.SphereModifier(editor, point, 1, new Vox.Voxel(0, byte.MaxValue), true);
+	}
+	
+	protected void subtractSphere(Ray mouseLocation) {
+		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+		
+		Vector3 point = getRayCollision(mouseLocation).point;
+		
+		new Vox.SphereDestroyer(editor, point, 1, new Vox.Voxel(0, byte.MinValue), 1, true, true);
+	}
+
+	protected static RaycastHit getRayCollision(Ray ray) {
+		RaycastHit firstHit = new RaycastHit();
+		firstHit.distance = float.PositiveInfinity;
+		foreach(RaycastHit hit in Physics.RaycastAll(ray)) {
+			if (hit.distance < firstHit.distance) {
+				firstHit = hit;
 			}
 		}
-
-		Vox.SphereModifier modder = new Vox.SphereModifier(editor, point, 1, new Vox.Voxel(0, byte.MaxValue), true);
+		return firstHit;
 	}
+
+	/// <summary>
+	/// Creates tabs from buttons, with their bottom edge removed by the magic of Haxx
+	/// </summary>
+	/// <remarks>
+	/// The line will be misplaced if other elements is drawn before this
+	/// </remarks>
+	/// <returns>Selected tab</returns>
+	protected static int drawTabs(string[] options, int selected)
+	{
+		const float DarkGray = 0.4f;
+		const float LightGray = 0.9f;
+		const float StartSpace = 10;
+		
+		GUILayout.Space(StartSpace);
+		Color storeColor = GUI.backgroundColor;
+		Color highlightCol = new Color(LightGray, LightGray, LightGray);
+		Color bgCol = new Color(DarkGray, DarkGray, DarkGray);
+		
+		GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+		buttonStyle.padding.bottom = 8;
+		
+		GUILayout.BeginHorizontal();
+		{   //Create a row of buttons
+			for (int i = 0; i < options.Length; ++i)
+			{
+				GUI.backgroundColor = i == selected ? highlightCol : bgCol;
+				if (GUILayout.Button(options[i], buttonStyle))
+				{
+					selected = i; //Tab click
+				}
+			}
+		} GUILayout.EndHorizontal();
+		//Restore color
+		GUI.backgroundColor = storeColor;
+		//Draw a line over the bottom part of the buttons (ugly haxx)
+		var texture = new Texture2D(1, 1);
+		texture.SetPixel(0, 0, highlightCol);
+		texture.Apply();
+		GUI.DrawTexture(new Rect(0, buttonStyle.lineHeight + buttonStyle.border.top + buttonStyle.margin.top + StartSpace,  Screen.width, 4),texture);
+		
+		return selected;
+	}
+
 
 }

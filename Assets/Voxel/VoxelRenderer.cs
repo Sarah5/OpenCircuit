@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -188,7 +189,9 @@ namespace Vox {
 					t.parent = control.transform;
 					t.localPosition = Vector3.zero;
 					t.hideFlags |= HideFlags.HideInHierarchy;
-					obs[i].AddComponent<MeshRenderer>().enabled = false;
+					MeshRenderer rend = obs[i].AddComponent<MeshRenderer>();
+					rend.enabled = false;
+					EditorUtility.SetSelectedWireframeHidden(rend, true);
 					obs[i].AddComponent<MeshFilter>().sharedMesh = new Mesh();
 				}
 			}
