@@ -14,7 +14,7 @@ namespace Vox {
 		public byte maxDetail = 6;
 		public byte isoLevel = 127;
 		public float lodDetail = 1;
-		public bool useLod = true;
+		public bool useLod = false;
 		public GameObject trees;
 		public float treeDensity = 0.02f;
 		public float treeSlopeTolerance = 5;
@@ -24,6 +24,7 @@ namespace Vox {
 		public VoxelMaterial[] voxelMaterials;
 		public float maxChange;
 		public bool createColliders = true;
+		public bool useStaticMeshes = false;
 
 		// performance stats
 		private int treeCount = 0;
@@ -190,7 +191,7 @@ namespace Vox {
 			byte[,] matMap = new byte[dimension, dimension];
 			for (int x = 0; x < dimension; ++x) {
 				for (int z = 0; z < dimension; ++z) {
-					matMap[x, z] = (byte)UnityEngine.Random.Range(0, voxelMaterials.Length);
+					matMap[x, z] = (byte)UnityEngine.Random.Range(0.5f, voxelMaterials.Length -0.5f);
 
 					// calculate the height
 					if (x != 0) {

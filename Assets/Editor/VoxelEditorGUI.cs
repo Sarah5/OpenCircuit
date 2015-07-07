@@ -20,28 +20,35 @@ using System.Collections.Generic;
 [CustomEditor(typeof(Vox.VoxelEditor))]
 public class VoxelEditorGUI : Editor {
 
-	private const string numForm = "##,0.000";
-	private const string numFormInt = "##,#";
+	protected const string numForm = "##,0.000";
+	protected const string numFormInt = "##,#";
+	protected readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt")};
 
 	private SerializedObject ob;
 	//private bool materialsFoldout = false;
 	//private List<Vox.VoxelMaterial> voxelMaterials;
-	protected int selectedMode = 0;
-	protected String[] modes = new String[] {"Manage", "Sculpt"};
-
-	protected float brushSize = 1;
-
+	//	public Vector2 scrollPos = new Vector2(0, 0);
+	
+	[MenuItem("GameObject/3D Object/Voxel Object")]
+	public static void createVoxelObject() {
+		GameObject ob = new GameObject();
+		ob.name = "Voxel Object";
+		ob.AddComponent<Vox.VoxelEditor>();
+	}
+	
 	public void OnEnable() {
 		ob = new SerializedObject(target);
 	}
 
 	public override void OnInspectorGUI() {
-		//Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		ob.Update ();
-		
-		selectedMode = drawTabs (modes, selectedMode);
+		ob.Update();
+		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 
-		switch (selectedMode) {
+		editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, GUILayout.MinHeight(20));
+
+//		scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MinHeight(400));
+
+		switch (editor.selectedMode) {
 		case 0:
 			doGeneralGUI ();
 			break;
@@ -49,14 +56,19 @@ public class VoxelEditorGUI : Editor {
 			doSculptGUI();
 			break;
 		}
+
+//		GUILayout.EndScrollView();
 	}
 
 	protected void doSculptGUI() {
-		//EditorGUILayout.FloatField(brushSize, "Voxel Power");
-		//if (maxDetail.intValue > byte.MaxValue)
-		//	maxDetail.intValue = byte.MaxValue;
-		//else if (maxDetail.intValue < 4)
-		//	maxDetail.intValue = 4;
+		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Brush Radius", GUILayout.ExpandWidth(false));
+		editor.brushSize = GUILayout.HorizontalSlider(editor.brushSize, 0, 100);
+		editor.brushSize = EditorGUILayout.FloatField(editor.brushSize, GUILayout.MaxWidth(64));
+		if (editor.brushSize < 0)
+			editor.brushSize = 0;
+		GUILayout.EndHorizontal();
 	}
 
 	protected void doGeneralGUI() {
@@ -145,6 +157,9 @@ public class VoxelEditorGUI : Editor {
 		EditorGUILayout.PropertyField(createColliders, new GUIContent("Generate Colliders"));
 		EditorGUILayout.Separator();
 
+		// static meshes
+		SerializedProperty useStaticMeshes = ob.FindProperty("useStaticMeshes");
+		EditorGUILayout.PropertyField(useStaticMeshes, new GUIContent("Use Static Meshes"));
 
 
 		// generation
@@ -172,7 +187,9 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public void OnSceneGUI() {
-		if (selectedMode != 1)
+		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+		editor.Update();
+		if (editor.selectedMode != 1)
 			return;
 		int controlId = GUIUtility.GetControlID(FocusType.Passive);
 		switch(Event.current.GetTypeForControl(controlId)) {
@@ -202,7 +219,7 @@ public class VoxelEditorGUI : Editor {
 
 		Vector3 point = getRayCollision(mouseLocation).point;
 
-		new Vox.SphereModifier(editor, point, 1, new Vox.Voxel(0, byte.MaxValue), true);
+		new Vox.SphereModifier(editor, point, editor.brushSize, new Vox.Voxel(0, byte.MaxValue), true);
 	}
 	
 	protected void subtractSphere(Ray mouseLocation) {
@@ -210,7 +227,7 @@ public class VoxelEditorGUI : Editor {
 		
 		Vector3 point = getRayCollision(mouseLocation).point;
 		
-		new Vox.SphereDestroyer(editor, point, 1, new Vox.Voxel(0, byte.MinValue), 1, true, true);
+		new Vox.SphereDestroyer(editor, point, editor.brushSize, new Vox.Voxel(0, byte.MinValue), 1, true, true);
 	}
 
 	protected static RaycastHit getRayCollision(Ray ray) {
@@ -223,49 +240,5 @@ public class VoxelEditorGUI : Editor {
 		}
 		return firstHit;
 	}
-
-	/// <summary>
-	/// Creates tabs from buttons, with their bottom edge removed by the magic of Haxx
-	/// </summary>
-	/// <remarks>
-	/// The line will be misplaced if other elements is drawn before this
-	/// </remarks>
-	/// <returns>Selected tab</returns>
-	protected static int drawTabs(string[] options, int selected)
-	{
-		const float DarkGray = 0.4f;
-		const float LightGray = 0.9f;
-		const float StartSpace = 10;
-		
-		GUILayout.Space(StartSpace);
-		Color storeColor = GUI.backgroundColor;
-		Color highlightCol = new Color(LightGray, LightGray, LightGray);
-		Color bgCol = new Color(DarkGray, DarkGray, DarkGray);
-		
-		GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
-		buttonStyle.padding.bottom = 8;
-		
-		GUILayout.BeginHorizontal();
-		{   //Create a row of buttons
-			for (int i = 0; i < options.Length; ++i)
-			{
-				GUI.backgroundColor = i == selected ? highlightCol : bgCol;
-				if (GUILayout.Button(options[i], buttonStyle))
-				{
-					selected = i; //Tab click
-				}
-			}
-		} GUILayout.EndHorizontal();
-		//Restore color
-		GUI.backgroundColor = storeColor;
-		//Draw a line over the bottom part of the buttons (ugly haxx)
-		var texture = new Texture2D(1, 1);
-		texture.SetPixel(0, 0, highlightCol);
-		texture.Apply();
-		GUI.DrawTexture(new Rect(0, buttonStyle.lineHeight + buttonStyle.border.top + buttonStyle.margin.top + StartSpace,  Screen.width, 4),texture);
-		
-		return selected;
-	}
-
 
 }

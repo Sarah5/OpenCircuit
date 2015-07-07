@@ -178,13 +178,14 @@ namespace Vox {
 			if (oldObs != null && oldObs.Length > obs.Length) {
 				Array.Copy(oldObs, obs, obs.Length);
 				for (int i = obs.Length; i < oldObs.Length; ++i) {
-					GameObject.Destroy(oldObs[i]);
+					GameObject.DestroyImmediate(oldObs[i]);
 				}
 			} else {
 				if (oldObs != null)
 					Array.Copy(oldObs, obs, oldObs.Length);
 				for(int i=(oldObs==null)?0:oldObs.Length; i<obs.Length; ++i) {
 					obs[i] = new GameObject("Voxel Section");
+					obs[i].isStatic = control.useStaticMeshes;
 					Transform t = obs[i].transform;
 					t.parent = control.transform;
 					t.localPosition = Vector3.zero;

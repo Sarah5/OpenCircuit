@@ -18,6 +18,11 @@ namespace Vox {
 		public Texture2D heightmap;
 		public Texture2D materialMap;
 
+		// editor data
+		public int selectedMode = 0;
+		public float brushSize = 1;
+
+
 		public void Awake() {
 			if (Application.isPlaying) {
 				init();
