@@ -29,18 +29,37 @@ public class VoxelEditorGUI : Editor {
 	protected int selectedMode = 0;
 	protected String[] modes = new String[] {"Manage", "Sculpt"};
 
+	protected float brushSize = 1;
+
 	public void OnEnable() {
 		ob = new SerializedObject(target);
 	}
 
 	public override void OnInspectorGUI() {
 		//Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		ob.Update();
+		ob.Update ();
 		
-		selectedMode = drawTabs(modes, selectedMode);
+		selectedMode = drawTabs (modes, selectedMode);
 
-		if (selectedMode != 0)
-			return;
+		switch (selectedMode) {
+		case 0:
+			doGeneralGUI ();
+			break;
+		case 1:
+			doSculptGUI();
+			break;
+		}
+	}
+
+	protected void doSculptGUI() {
+		//EditorGUILayout.FloatField(brushSize, "Voxel Power");
+		//if (maxDetail.intValue > byte.MaxValue)
+		//	maxDetail.intValue = byte.MaxValue;
+		//else if (maxDetail.intValue < 4)
+		//	maxDetail.intValue = 4;
+	}
+
+	protected void doGeneralGUI() {
 		
 		// world detail
 		SerializedProperty maxDetail = ob.FindProperty("maxDetail");
