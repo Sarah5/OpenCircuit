@@ -23,7 +23,6 @@ public class RobotArms : AbstractRobotComponent {
 		if (target != null) {
 			Rigidbody rigidbody = obj.GetComponent<Rigidbody> ();
 			if (rigidbody != null) {
-				//rigidbody.useGravity = false;
 				rigidbody.isKinematic = true;
 				
 			}

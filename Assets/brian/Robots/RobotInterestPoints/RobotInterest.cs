@@ -7,9 +7,17 @@ public class RobotInterest : MonoBehaviour {
 	public static List<RobotInterest> interestPoints = new List<RobotInterest>();
 
 	public string Type = "";
-
+	
 	// Use this for initialization
 	void Start () {
-		interestPoints.Add (this);
+		//print ("called start on: " + this.GetType());
+		if (isVisible()) {
+
+			interestPoints.Add (this);
+		}
+	}
+
+	virtual protected bool isVisible() {
+		return true;
 	}
 }

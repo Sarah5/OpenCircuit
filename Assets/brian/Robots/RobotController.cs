@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class RobotController : MonoBehaviour {
 
+	//private Dictionary<string, AbstractRobotComponent> abilities
 	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
 
 	MentalModel mentalModel = new MentalModel ();
@@ -31,14 +32,13 @@ public class RobotController : MonoBehaviour {
 			if (message.Type.Equals("target sighted")) {
 				sightingFound(message.Target);
 				if (message.Target.Type.Equals("player")) {
-					lightUp();
+					//lightUp();
 					trackedTargets.Add(message.Target);
 
 					/*if (jet != null) {
 						jet.setTarget(message.Target);
 					}*/
 				}
-
 			}
 			else if (message.Type.Equals("target lost")) {
 				sightingLost(message.Target);
@@ -50,12 +50,30 @@ public class RobotController : MonoBehaviour {
 					}*/
 				}
 			}
+
+			else if (message.Type.Equals("target reached")) {
+				if (jet != null) {
+					jet.setTarget(null);
+					if (message.Target.Type.Equals("routePoint")) {
+						print ("target reached received and jet != null: " + message.Target.Type);
+
+						jet.setTarget(((RoutePoint)message.Target).Next);
+					}
+				}
+			}
+
 		}
 
 		for (int i = 0; i < trackedTargets.Count; i++) {
 			if (trackedTargets[i].Type.Equals("player")) {
 				if (jet != null) {
 					jet.setTarget(trackedTargets[i]);
+				}
+				break;
+			}
+			else if (trackedTargets[i].Type.Equals("patrolRoute")) {
+				if (jet != null) {
+					jet.setTarget(((PatrolRoute)trackedTargets[i]).getNearest(transform.position));
 				}
 			}
 		}
@@ -67,8 +85,12 @@ public class RobotController : MonoBehaviour {
 	}
 
 	public void notify (EventMessage message){
+		print ("notify target: " + message.Target.Type);
 		if (message.Type.Equals ("target found") && message.Target.Type.Equals ("player")) {
 			trackedTargets.Add(message.Target);
+		} else if(message.Type.Equals ("target found") && message.Target.Type.Equals ("patrolRoute")) {
+			trackedTargets.Add(message.Target);
+			print ("route added");
 
 		} else if (message.Type.Equals ("target lost") && message.Target.Type.Equals ("player")) {
 			trackedTargets.Remove(message.Target);
@@ -110,14 +132,14 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 	
-	private void lightUp() {
+//	private void lightUp() {
 		/*MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		
 		Material newMaterial = new Material(Shader.Find("Transparent/Diffuse"));
 		
 		newMaterial.color = Color.green;
 		gameObjectRenderer.material = newMaterial ;*/
-	}
+	//}
 
 	private void resetMaterial() {
 
