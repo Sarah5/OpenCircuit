@@ -14,6 +14,10 @@ public class HoverJet : AbstractRobotComponent {
 		this.target = target;
 	}
 
+	public bool hasTarget() {
+		return target != null;
+	}
+
 	void Start() {
 		nav = GetComponentInParent<NavMeshAgent> ();
 	}

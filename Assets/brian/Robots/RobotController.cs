@@ -45,9 +45,9 @@ public class RobotController : MonoBehaviour {
 				if (message.Target.Type.Equals("player")) {
 					resetMaterial();
 					trackedTargets.Remove(message.Target);
-					/*if (jet != null) {
+					if (jet != null) {
 						jet.setTarget(null);
-					}*/
+					}
 				}
 			}
 
@@ -72,7 +72,7 @@ public class RobotController : MonoBehaviour {
 				break;
 			}
 			else if (trackedTargets[i].Type.Equals("patrolRoute")) {
-				if (jet != null) {
+				if (jet != null && !jet.hasTarget()) {
 					jet.setTarget(((PatrolRoute)trackedTargets[i]).getNearest(transform.position));
 				}
 			}
@@ -85,13 +85,10 @@ public class RobotController : MonoBehaviour {
 	}
 
 	public void notify (EventMessage message){
-		print ("notify target: " + message.Target.Type);
 		if (message.Type.Equals ("target found") && message.Target.Type.Equals ("player")) {
 			trackedTargets.Add(message.Target);
 		} else if(message.Type.Equals ("target found") && message.Target.Type.Equals ("patrolRoute")) {
 			trackedTargets.Add(message.Target);
-			print ("route added");
-
 		} else if (message.Type.Equals ("target lost") && message.Target.Type.Equals ("player")) {
 			trackedTargets.Remove(message.Target);
 
