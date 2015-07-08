@@ -1,8 +1,8 @@
 ﻿
 Shader "Voxel/PhysicalTest" {
 	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Albedo (RGB)", 2D) = "white" {}
+//		_Color ("Color", Color) = (1,1,1,1)
+//		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
 		_TexFlrDif ("Diffuse Floor Texture", 2D) = "surface" {}
 		_TexCeilDif ("Diffuse Ceiling Texture", 2D) = "surface" {}
@@ -16,6 +16,8 @@ Shader "Voxel/PhysicalTest" {
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
+		Blend SrcAlpha OneMinusSrcAlpha
+//		Blend One One // additive blending 
 		LOD 200
 		
 		CGPROGRAM
@@ -43,6 +45,7 @@ Shader "Voxel/PhysicalTest" {
 			float2 uv_MainTex;
 			float4 pos;
 			float3 b;
+			float alpha;
 			INTERNAL_DATA
 		};
 		
@@ -71,7 +74,10 @@ Shader "Voxel/PhysicalTest" {
 			o.b.x = pow(max(0, abs(v.normal.x) -_Sigma), _Blend);
 			o.b.z = pow(max(0, abs(v.normal.z) -_Sigma), _Blend);
 			o.b.y = pow(max(0, abs(v.normal.y) -_Sigma), _Blend);
+			
 			if (v.normal.y < 0) o.b.y = -o.b.y;
+			
+			o.alpha = v.texcoord.y;
         }
 
 		void surfaceFunc(Input IN, inout SurfaceOutputStandard o) {
@@ -83,6 +89,7 @@ Shader "Voxel/PhysicalTest" {
 			o.Normal = UnpackNormal(height);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
+			o.Alpha = IN.alpha;
 		}
 		ENDCG
 	} 

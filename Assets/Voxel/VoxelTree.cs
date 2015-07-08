@@ -191,7 +191,7 @@ namespace Vox {
 			byte[,] matMap = new byte[dimension, dimension];
 			for (int x = 0; x < dimension; ++x) {
 				for (int z = 0; z < dimension; ++z) {
-					matMap[x, z] = (byte)UnityEngine.Random.Range(0.5f, voxelMaterials.Length -0.5f);
+					matMap[x, z] = 0;
 
 					// calculate the height
 					if (x != 0) {

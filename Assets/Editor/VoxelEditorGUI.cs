@@ -62,6 +62,8 @@ public class VoxelEditorGUI : Editor {
 
 	protected void doSculptGUI() {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+
+		// brush size
 		GUILayout.BeginHorizontal();
 		GUILayout.Label("Brush Radius", GUILayout.ExpandWidth(false));
 		editor.brushSize = GUILayout.HorizontalSlider(editor.brushSize, 0, 100);
@@ -69,6 +71,12 @@ public class VoxelEditorGUI : Editor {
 		if (editor.brushSize < 0)
 			editor.brushSize = 0;
 		GUILayout.EndHorizontal();
+
+		// brush material type
+		string[] materials = new string[editor.voxelMaterials.Length];
+		for(int i=0; i<materials.Length; ++i)
+			materials[i] = editor.voxelMaterials[i].name;
+		editor.selectedBrushMaterial = (byte)GUILayout.SelectionGrid(editor.selectedBrushMaterial, materials, 1);
 	}
 
 	protected void doGeneralGUI() {
@@ -219,7 +227,7 @@ public class VoxelEditorGUI : Editor {
 
 		Vector3 point = getRayCollision(mouseLocation).point;
 
-		new Vox.SphereModifier(editor, point, editor.brushSize, new Vox.Voxel(0, byte.MaxValue), true);
+		new Vox.SphereModifier(editor, point, editor.brushSize, new Vox.Voxel(editor.selectedBrushMaterial, byte.MaxValue), true);
 	}
 	
 	protected void subtractSphere(Ray mouseLocation) {

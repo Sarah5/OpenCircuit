@@ -21,6 +21,7 @@ namespace Vox {
 		// editor data
 		public int selectedMode = 0;
 		public float brushSize = 1;
+		public byte selectedBrushMaterial = 0;
 
 
 		public void Awake() {

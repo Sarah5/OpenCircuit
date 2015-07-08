@@ -192,6 +192,7 @@ namespace Vox {
 					t.hideFlags |= HideFlags.HideInHierarchy;
 					MeshRenderer rend = obs[i].AddComponent<MeshRenderer>();
 					rend.enabled = false;
+					rend.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.BlendProbesAndSkybox;
 					EditorUtility.SetSelectedWireframeHidden(rend, true);
 					obs[i].AddComponent<MeshFilter>().sharedMesh = new Mesh();
 				}
