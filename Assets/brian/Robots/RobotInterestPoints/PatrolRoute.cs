@@ -10,11 +10,9 @@ public class PatrolRoute : RobotInterest {
 		points = GetComponentsInChildren<RoutePoint> ();
 		for (int i = 0; i < points.Length; i++) {
 			if (i < points.Length - 1) {
-				print("setting point");
 				points[i].Next = points[i+1];
 			}
 			else {
-				print("setting point");
 				points[i].Next = points[0];
 			}
 		}

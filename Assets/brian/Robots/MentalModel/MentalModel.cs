@@ -37,7 +37,6 @@ public class MentalModel {
 	}
 
 	public void notifyListenersTargetFound(RobotInterest target) {
-		Debug.Log ("Notify target found: " + target.Type);
 		for (int i = 0; i < listeners.Count; i++) {
 			listeners[i].notifySighting(target);
 		}
