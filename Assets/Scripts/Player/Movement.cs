@@ -11,7 +11,7 @@ public class Movement : MonoBehaviour {
 	private float rightSpeed = 0;
 	private bool grounded;
 	private bool sprinting = false;
-	//private bool crouching = false;
+	private bool crouching = false;
 	private GameObject floor = null;
 	private CapsuleCollider col;
 	private AudioSource footstepEmitter;
@@ -33,6 +33,7 @@ public class Movement : MonoBehaviour {
 	public float walkSpeedl = 4f;
 	public float acceleration = 0.2f;
 	public float climbRate = 0.1f;
+	public float crouchSpeedMultiplier = 0.5f;
 	public float minCrouchHeight = 1;
 	public float crouchHeight = 1.25f;
 	public float jumpSpeed = 5;
@@ -56,21 +57,19 @@ public class Movement : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		//float desiredHeight = crouching? crouchHeight: normHeight;
-		//if (col.height < desiredHeight) {
-		//	if (freeFallDelay == 0)
-		//		setColliderHeight(col.height + climbRate /5);
-		//	else
-		//		setColliderHeight(col.height + climbRate);
-		//	if (col.height > desiredHeight)
-		//		setColliderHeight(desiredHeight);
-		//} else if (col.height > desiredHeight) {
-		//	setColliderHeight(col.height - climbRate);
-		//	if (col.height < desiredHeight)
-		//		setColliderHeight(desiredHeight);
-		//}
-		//else if (col.height != normHeight)
-		//	setColliderHeight(normHeight);
+		float desiredHeight = crouching? crouchHeight: normHeight;
+		if (col.height < desiredHeight) {
+			if (freeFallDelay == 0)
+				setColliderHeight(col.height + climbRate /5);
+			else
+				setColliderHeight(col.height + climbRate);
+			if (col.height > desiredHeight)
+				setColliderHeight(desiredHeight);
+		} else if (col.height > desiredHeight) {
+			setColliderHeight(col.height - climbRate);
+			if (col.height < desiredHeight)
+				setColliderHeight(desiredHeight);
+		}
 
 		// move the player
 		if (freeFallDelay < 0) {
@@ -93,7 +92,7 @@ public class Movement : MonoBehaviour {
 			forwardSpeed = 0;
 		}
 		desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
-		float speed = desiredVel.magnitude * (sprinting ? sprintMult : 1);
+		float speed = desiredVel.magnitude * (sprinting ? sprintMult : 1) *(crouching? crouchSpeedMultiplier: 1);
 		float maxAccel = acceleration;
 		desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
 		desiredVel.y = 0;
@@ -140,6 +139,8 @@ public class Movement : MonoBehaviour {
 			if (myPlayer.oxygen < oxygenStopSprint) {
 				sprinting = false;
 				recovering = true;
+			} else if (crouching) {
+				sprinting = false;
 			} else if (sprinting) {
 				myPlayer.oxygen -= oxygenSprintUsage * Time.deltaTime;
 			}
@@ -275,9 +276,9 @@ public class Movement : MonoBehaviour {
 		sprinting = sprint;
 	}
 
-	//public void setCrouching(bool crouch) {
-	//	crouching = crouch;
-	//}
+	public void setCrouching(bool crouch) {
+		crouching = crouch;
+	}
 
 	public void jump() {
 		if (!canMove) return;
@@ -291,9 +292,9 @@ public class Movement : MonoBehaviour {
 	}
 
 	private void setColliderHeight(float h) {
-		//if (h < col.radius * 2) h = col.radius * 2;
-		//col.center = col.center + new Vector3(0, (col.height - h) / 2, 0);
-		//col.height = h;
+		if (h < col.radius * 2) h = col.radius * 2;
+		col.center = col.center + new Vector3(0, (col.height - h) / 2, 0);
+		col.height = h;
 	}
 	
 	public bool isGrounded() {

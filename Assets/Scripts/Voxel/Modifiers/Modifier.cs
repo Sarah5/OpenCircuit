@@ -35,8 +35,31 @@ namespace Vox {
 
 			VoxelBlock block = (VoxelBlock)info.blocks[1, 1, 1];
 
+			int scale = VoxelBlock.CHILD_DIMENSION << (VoxelBlock.CHILD_COUNT_POWER *(detailLevel));
+//			MonoBehaviour.print (scale);
+//			MonoBehaviour.print (detailLevel);
+
+			uint minY = uint.MinValue;
+			uint maxY = uint.MaxValue;
+			foreach(VoxelMask mask in control.masks) {
+				if (mask.active) {
+					if (mask.maskAbove) {
+						if (maxY > mask.yPosition)
+							maxY = mask.yPosition;
+					} else if (minY < mask.yPosition) {
+						minY = mask.yPosition;
+					}
+				}
+			}
+
 			for (byte xi = xiMin; xi <= xiMax; ++xi) {
 				for (byte yi = yiMin; yi <= yiMax; ++yi) {
+
+					if ((info.y +yi +1) *scale <= minY ||
+					    (info.y +yi) *scale >= maxY) {
+						continue;
+					}
+
 					for (byte zi = ziMin; zi <= ziMax; ++zi) {
 						if (detailLevel <= VoxelBlock.CHILD_COUNT_POWER) {
 							block.children[xi, yi, zi] = modifyVoxel(block.children[xi, yi, zi], info.x * VoxelBlock.CHILD_DIMENSION + xi, info.y * VoxelBlock.CHILD_DIMENSION + yi, info.z * VoxelBlock.CHILD_DIMENSION + zi);

@@ -29,11 +29,13 @@ public class Controls : MonoBehaviour {
 
 		myPlayer.mover.setRight(Input.GetAxis("Horizontal"));
 
-		//if (Input.GetButtonDown("Jump")) {
-		//	myPlayer.mover.jump();
-		//}
+		if (Input.GetButtonDown("Jump")) {
+			myPlayer.mover.jump();
+		}
 
 		myPlayer.mover.setSprinting(Input.GetButton("Sprint"));
+
+		myPlayer.mover.setCrouching(Input.GetButton("Crouch"));
 
 
 		if (!inGUI()) {
@@ -48,6 +50,45 @@ public class Controls : MonoBehaviour {
 		if (Input.GetButtonDown("Fire1")/* && !Input.GetButton("Fire2")*/) {
 			//For now, do nothing!
 		}
+
+//		if (Input.GetButtonDown ("Interact")) {
+//			if (inGUI()) {
+//			} else {
+//				//print("calling interact method");
+//				myPlayer.interactor.interact();
+//			}
+//		}
+//		if (Input.GetButtonDown ("Alt_Interact")) {
+//			if (inGUI()) {
+//			} else {
+//				myPlayer.interactor.altInteract();
+//			}
+//		}
+//		if (Input.GetButtonDown("Fire1") && !Input.GetButton("Fire2")) {
+//			if (inGUI ()) {
+//			}
+//			else {
+//				myPlayer.attacker.attack();
+//			}
+//		}
+//		if (Input.GetButton ("Fire2")) {
+//			if (inGUI()) {
+//				myPlayer.focus.unfocus ();
+//			} else {
+//				myPlayer.focus.focus ();
+//				if (Input.GetButtonDown("Fire1")) {
+//					//myPlayer.attacher.attach ();
+//                    myPlayer.focus.invoke();
+//				}
+//			}
+//		}
+//		else {
+//			myPlayer.focus.unfocus();
+//		}
+//		if (Input.GetAxis ("Rotate") > 0)
+//			myPlayer.grabber.increment();
+//		else if (Input.GetAxis ("Rotate") < 0)
+//			myPlayer.grabber.decrement();
 	}
 
 	bool inGUI() {

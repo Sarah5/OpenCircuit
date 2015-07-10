@@ -4,11 +4,11 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 
-	public Texture2D coldTex;
-	public float coldStart;
-	public float coldExtra;
-	public Color coldColor;
-	public float freezeTemp;
+//	public Texture2D coldTex;
+//	public float coldStart;
+//	public float coldExtra;
+//	public Color coldColor;
+//	public float freezeTemp;
 	public bool drawReticle;
 	public Texture2D reticle;
 	public float maxOxygen = 60;
@@ -76,10 +76,10 @@ public class Player : MonoBehaviour {
 		mapViewer = GetComponent<MapViewer>();*/
 		controls = GetComponent<Controls>();
 		
-		coldStart = 80;
-		coldExtra = 0.1f;
-		coldColor = new Color(0.25f, 0.5f, 1);
-		freezeTemp = -20;
+//		coldStart = 80;
+//		coldExtra = 0.1f;
+//		coldColor = new Color(0.25f, 0.5f, 1);
+//		freezeTemp = -20;
 		whiteOutTime = 0;
 		breathingSource = gameObject.AddComponent<AudioSource>();
 		breathingSource.clip = heavyBreathingSound;

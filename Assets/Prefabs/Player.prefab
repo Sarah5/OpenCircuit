@@ -64,7 +64,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106829}
-  m_LocalPosition: {x: 12.896204, y: 6.13109016, z: -.299785137}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -110,14 +110,14 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_Materials:
   - {fileID: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
-  m_ReflectionProbeUsage: 1
+  m_ReflectionProbeUsage: 0
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
@@ -141,9 +141,9 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   serializedVersion: 2
-  m_Mass: .100000001
+  m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -358,17 +358,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3631b5e8b39fc534a89aa41b69aa24dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coldTex: {fileID: 0}
-  coldStart: 0
-  coldExtra: 0
-  coldColor: {r: 0, g: 0, b: 0, a: 0}
-  freezeTemp: 0
   drawReticle: 0
   reticle: {fileID: 0}
   maxOxygen: 60
   oxygenRecoveryRate: 2
   oxygen: 60
-  heavyBreathingSound: {fileID: 0}
+  heavyBreathingSound: {fileID: 8300000, guid: 93cc1f44eb856894187e8d711f429b62, type: 3}
   teleportSound: {fileID: 0}
   whiteOutDuration: 0
   blackOutDuration: 0
@@ -390,6 +385,7 @@ MonoBehaviour:
   walkSpeedl: 4
   acceleration: .200000003
   climbRate: .100000001
+  crouchSpeedMultiplier: .5
   minCrouchHeight: 1
   crouchHeight: 1.25
   jumpSpeed: 5
@@ -398,8 +394,8 @@ MonoBehaviour:
   oxygenSprintUsage: 30
   footsteps:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
-  minimumFoostepOccurence: 0
-  foostepSpeedScale: 0
+  minimumFoostepOccurence: 1
+  foostepSpeedScale: .100000001
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1
@@ -431,6 +427,18 @@ Prefab:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100002}

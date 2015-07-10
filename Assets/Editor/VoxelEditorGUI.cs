@@ -22,7 +22,7 @@ public class VoxelEditorGUI : Editor {
 
 	protected const string numForm = "##,0.000";
 	protected const string numFormInt = "##,#";
-	protected readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt")};
+	protected readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Masks")};
 
 	private SerializedObject ob;
 	//private bool materialsFoldout = false;
@@ -55,9 +55,21 @@ public class VoxelEditorGUI : Editor {
 		case 1:
 			doSculptGUI();
 			break;
+		case 2:
+			doMaskGUI();
+			break;
 		}
 
 //		GUILayout.EndScrollView();
+		
+		// finally, apply the changes
+		ob.ApplyModifiedProperties();
+	}
+
+	protected void doMaskGUI() {
+		// mask list
+		SerializedProperty voxelMasks = ob.FindProperty("masks");
+		EditorGUILayout.PropertyField(voxelMasks, new GUIContent("Sculpting Masks"), true);
 	}
 
 	protected void doSculptGUI() {
@@ -173,25 +185,24 @@ public class VoxelEditorGUI : Editor {
 		// generation
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		editor.Update();
-		if (GUILayout.Button("Generate")) {
-			editor.wipe();
-			editor.init();
-			if (!EditorUtility.DisplayDialog("Voxel Generation Complete", "Voxel generation completed successfully.  Do you wish to clear the new generation?", "No", "Yes")) {
+		string generateButtonName = editor.hasGeneratedData()? "Regenerate": "Generate";
+		if (GUILayout.Button(generateButtonName)) {
+			if (editor.voxelMaterials.Length < 1) {
+				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel material defined to generate the voxel object.", "OK");
+			} else if (EditorUtility.DisplayDialog(generateButtonName +" Voxels?", "Are you sure you want to generate the voxel terain from scratch?", "Yes", "No")) {
 				editor.wipe();
+				editor.init();
 			}
 		}
-		if (editor.getHead() != null || editor.chunks.Count > 0) {
+		if (editor.hasGeneratedData()) {
 			if (GUILayout.Button("Clear")) {
-				editor.wipe();
+				if (EditorUtility.DisplayDialog("Clear Voxels?", "Are you sure you want to clear all voxel data?", "Yes", "No")) {
+					editor.wipe();
+				}
 			}
 		}
 		EditorGUILayout.LabelField("Chunk Count: " + editor.chunks.Count);
 		EditorGUILayout.Separator();
-
-
-
-		// finally, apply the changes
-		ob.ApplyModifiedProperties();
 	}
 
 	public void OnSceneGUI() {

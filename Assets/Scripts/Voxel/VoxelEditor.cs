@@ -79,5 +79,9 @@ namespace Vox {
 			b.Serialize(f, heightmap);
 			f.Close();
 		}
+
+		public bool hasGeneratedData() {
+			return getHead() != null || chunks.Count > 0;
+		}
 	}
 }

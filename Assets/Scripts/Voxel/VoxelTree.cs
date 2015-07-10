@@ -22,9 +22,11 @@ namespace Vox {
 		public Camera cam;
 		public float curLodDetail = 10f;
 		public VoxelMaterial[] voxelMaterials;
+		public VoxelMask[] masks;
 		public float maxChange;
 		public bool createColliders = true;
 		public bool useStaticMeshes = false;
+
 
 		// performance stats
 		private int treeCount = 0;
