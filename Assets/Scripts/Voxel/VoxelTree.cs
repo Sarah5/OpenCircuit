@@ -5,9 +5,14 @@ using System;
 
 namespace Vox {
 
+	[ExecuteInEditMode]
+	[System.Serializable]
+	public class RendererDict : SerializableDictionary<VoxelIndex, VoxelRenderer> { }
+
 	[AddComponentMenu("Scripts/Voxel/Tree")]
 	[ExecuteInEditMode]
-	public class VoxelTree : MonoBehaviour {
+	public class VoxelTree : MonoBehaviour, ISerializationCallbackReceiver {
+
 
 		// basic stats
 		public float BaseSize = 16;
@@ -37,7 +42,8 @@ namespace Vox {
 		[HideInInspector]
 		public float[] sizes;
 		//[HideInInspector]
-		public List<VoxelRenderer> chunks = new List<VoxelRenderer>();
+//		public List<VoxelRenderer> chunks = new List<VoxelRenderer>();
+		public RendererDict renderers = new RendererDict();
 		//private Queue<VoxelJob> updateCheckQueue = new Queue<VoxelJob>(200);
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
 		//private Queue<VoxelUpdateJob> updateQueue = new Queue<VoxelUpdateJob>(100);
@@ -236,31 +242,33 @@ namespace Vox {
 		}
 
 		public void applyRenderers() {
-			foreach (VoxelRenderer rend in chunks) {
-
-				rend.control = this;
-				if (rend.obs == null || rend.obs.Length < 1) continue;
-				int fraction = (int)(BaseSize / rend.size);
-				byte detailLevel;
-				for (detailLevel = 0; fraction > 1; ++detailLevel)
-					fraction >>= 1;
-				if (detailLevel >= maxDetail) continue;
-
-				VoxelHolder holder = head.get(detailLevel, (int)(rend.position.x / rend.size), (int)(rend.position.y / rend.size), (int)(rend.position.z / rend.size));
-				if (holder.GetType() == typeof(VoxelBlock)) {
-					rend.parent = (VoxelBlock) holder;
-					rend.parent.renderer = rend;
-				}
-			}
+//			foreach (VoxelRenderer rend in renderers.Values) {
+//
+//				rend.control = this;
+//				if (rend.obs == null || rend.obs.Length < 1) continue;
+//				int fraction = (int)(BaseSize / rend.size);
+//				byte detailLevel;
+//				for (detailLevel = 0; fraction > 1; ++detailLevel)
+//					fraction >>= 1;
+//				if (detailLevel >= maxDetail) continue;
+//
+//				VoxelHolder holder = head.get(detailLevel, (int)(rend.position.x / rend.size), (int)(rend.position.y / rend.size), (int)(rend.position.z / rend.size));
+//				if (holder.GetType() == typeof(VoxelBlock)) {
+//					rend.parent = (VoxelBlock) holder;
+//					rend.parent.renderer = rend;
+//				}
+//			}
 		}
 
 		public void wipe() {
-			for (int i = chunks.Count - 1; i >= 0; --i)
-				chunks[i].clear();
-			chunks.Clear();
+			while(renderers.Count > 0) {
+				Dictionary<VoxelIndex, VoxelRenderer>.ValueCollection.Enumerator e = renderers.Values.GetEnumerator();
+				e.MoveNext();
+				e.Current.clear();
+			}
 
 			if (head != null) {
-				head.clearSubRenderers(this);
+//				head.clearSubRenderers(this);
 				head = null;
 			}
 		}
@@ -270,6 +278,17 @@ namespace Vox {
 		//	GUI.Label(new Rect(0, 220, 200, 20), "Voxel Vertex Count: " + VoxelRenderer.vertexCount);
 		//	GUI.Label(new Rect(0, 240, 200, 20), "Voxel Duplicate Triangle Count: " + VoxelRenderer.duplicateTriangleCount);
 		//}
+		
+		public void OnBeforeSerialize() {
+
+		}
+
+		public void OnAfterDeserialize() {
+			foreach (VoxelRenderer rend in renderers.Values) {
+				rend.control = this;
+//				((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
+			}
+		}
 
 		internal void enqueueMeshApply(VoxelJob job) {
 			jobQueue.Enqueue(job);

@@ -84,7 +84,7 @@ namespace Vox {
 		}
 
 		public bool hasGeneratedData() {
-			return getHead() != null || chunks.Count > 0;
+			return getHead() != null || renderers.Count > 0;
 		}
 	}
 }

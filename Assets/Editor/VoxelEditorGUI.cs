@@ -218,7 +218,7 @@ public class VoxelEditorGUI : Editor {
 				}
 			}
 		}
-		EditorGUILayout.LabelField("Chunk Count: " + editor.chunks.Count);
+		EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
 		EditorGUILayout.Separator();
 	}
 

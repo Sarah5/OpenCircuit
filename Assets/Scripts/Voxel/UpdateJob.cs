@@ -56,7 +56,7 @@ namespace Vox {
 		public override void execute() {
 			//MonoBehaviour.print("APPLYING!");
 			Vector3 pos = rend.position / rend.size;
-			if (rend.parent.isRenderLod(pos.x, pos.y, pos.z, rend.size, rend.control) || rend.parent.isRenderSize(rend.size, rend.control))
+			if (VoxelBlock.isRenderLod(pos.x, pos.y, pos.z, rend.size, rend.control) || VoxelBlock.isRenderSize(rend.size, rend.control))
 				rend.applyMesh(detailLevel, x, y, z);
 		}
 	}

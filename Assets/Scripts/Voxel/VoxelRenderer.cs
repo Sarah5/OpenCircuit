@@ -22,8 +22,8 @@ namespace Vox {
 
 		public Dictionary<int, object> vertices;
 		public Dictionary<int, byte> vertexMaterials;
-		[System.NonSerialized]
-		public VoxelBlock parent;
+//		[System.NonSerialized]
+//		public VoxelBlock parent;
 		[System.NonSerialized]
 		public VoxelTree control;
 		public MeshCollider collider;
@@ -37,12 +37,13 @@ namespace Vox {
 		public int[] TRIS;
 		public bool applied = false;
 		public bool old = false;
+		public VoxelIndex index;
 
 
 		public void clear() {
 			lock (this) {
 				if (control != null)
-					control.chunks.Remove(this);
+					control.renderers.Remove(index);
 				removePolyCount();
 				if (obs != null)
 					foreach (GameObject ob in obs) {
@@ -50,15 +51,12 @@ namespace Vox {
 					}
 				if (collider != null)
 					GameObject.DestroyImmediate(collider);
-				if (parent != null) {
-					parent.renderer = null;
-					parent = null;
-				}
 			}
 		}
 
-		public VoxelRenderer(VoxelBlock parent, VoxelTree control, Vector3 localPosition) {
-			this.parent = parent;
+		public VoxelRenderer(VoxelIndex index, VoxelTree control, Vector3 localPosition) {
+//			this.parent = parent;
+			this.index = index;
 			this.position = localPosition;
 			this.control = control;
 			size = 0;
@@ -66,12 +64,12 @@ namespace Vox {
 			VERTS = new Vector3[0];
 			NORMS = new Vector3[0];
 			TRIS = new int[0];
-			control.chunks.Add(this);
+			control.renderers[index] = this;
 		}
 
-		public VoxelBlock getBlock() {
-			return parent;
-		}
+//		public VoxelBlock getBlock() {
+//			return parent;
+//		}
 
 		public void genMesh(VoxelUpdateInfo info) {
 			size = info.size;
@@ -263,10 +261,10 @@ namespace Vox {
 			//obs[0].GetComponent<MeshRenderer>().enabled = true;
 			if (control.createColliders) {
 				collider.enabled = false;
-				if (parent.isRenderSize(size, control))
+				if (VoxelBlock.isRenderSize(size, control))
 					collider.enabled = true;
 			}
-			parent.clearSubRenderers(false, control);
+			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
 			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
 
@@ -782,19 +780,23 @@ namespace Vox {
 		}
 
 		private void removePolyCount() {
-			if (obs != null) {
-				foreach (GameObject ob in obs) {
-					triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-					vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+			lock(this) {
+				if (obs != null) {
+					foreach (GameObject ob in obs) {
+						triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+						vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+					}
 				}
 			}
 		}
 
 		private void addPolyCount() {
-			if (obs != null) {
-				foreach (GameObject ob in obs) {
-					triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-					vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+			lock(this) {
+				if (obs != null) {
+					foreach (GameObject ob in obs) {
+						triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+						vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+					}
 				}
 			}
 		}
