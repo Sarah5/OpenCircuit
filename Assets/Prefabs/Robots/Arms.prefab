@@ -836,11 +836,11 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 139970}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: .600000024, y: .100000001, z: .100000001}
-  m_Center: {x: 0, y: -.129999995, z: .379999995}
+  m_Center: {x: 0, y: -.129999995, z: .400000006}
 --- !u!114 &11423752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -852,7 +852,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 234243685ac823549a5a80e8d2b6aea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  footsteps: {fileID: 8300000, guid: 2bdff90b90901024abd17cb55589c24d, type: 3}
+  pickUp: {fileID: 8300000, guid: 2bdff90b90901024abd17cb55589c24d, type: 3}
+  drop: {fileID: 8300000, guid: b130ee49dcdf2224fae649258e8ec3d9, type: 3}
 --- !u!135 &13503410
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -1011,7 +1012,23 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Center.z
+      value: .400000006
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pickUp
+      value: 
+      objectReference: {fileID: 8300000, guid: 2bdff90b90901024abd17cb55589c24d, type: 3}
+    - target: {fileID: 0}
+      propertyPath: drop
+      value: 
+      objectReference: {fileID: 8300000, guid: b130ee49dcdf2224fae649258e8ec3d9, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 139970}

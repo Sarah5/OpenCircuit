@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class RoboEyes : AbstractRobotComponent {
 
+	public float fieldOfViewAngle = 140f;           // Number of degrees, centered on forward, for the enemy sight.
 	public float sightDistance = 30.0f;
 
 	private Dictionary<RobotInterest, bool> targetMap = new Dictionary<RobotInterest, bool>();
@@ -18,9 +19,16 @@ public class RoboEyes : AbstractRobotComponent {
 		bool result = false;
 		if (Vector3.Distance (objPos, transform.position) < sightDistance) {
 			RaycastHit hit;
-			Physics.Raycast (transform.position, objPos - transform.position, out hit, sightDistance);
-			if (hit.transform == obj ) {//&& Vector3.Dot (transform.forward.normalized, (objPos - transform.position).normalized) > 0) {
-				result = true;
+			Vector3 dir = objPos - transform.position;
+			dir.Normalize();
+			float angle = Vector3.Angle(dir, transform.forward);
+			print (roboController.gameObject.name);
+			print (angle);
+			if(angle < fieldOfViewAngle * 0.5f) {
+				Physics.Raycast (transform.position, dir, out hit, sightDistance);
+				if (hit.transform == obj ) {//&& Vector3.Dot (transform.forward.normalized, (objPos - transform.position).normalized) > 0) {
+					result = true;
+				}
 			}
 		}
 		return result;
