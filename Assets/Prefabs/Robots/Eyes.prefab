@@ -25,9 +25,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 194710}
-  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106709}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: .00499999989, y: .175999999, z: .43900001}
-  m_LocalScale: {x: .200000003, y: .200000003, z: .400000006}
+  m_LocalScale: {x: .400000006, y: .200000003, z: .200000003}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -85,14 +85,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1093586eddc167a42b2bb5865c780cc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sightDistance: 30
+  fieldOfViewAngle: 140
+  sightDistance: 15
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: sightDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fieldOfViewAngle
+      value: 140
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 194710}

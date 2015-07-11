@@ -2,7 +2,8 @@
 using System.Collections;
 
 namespace Vox {
-
+	
+//	[System.Serializable]
 	public abstract class VoxelHolder {
 
 		public static int blockCount = 0;
@@ -16,6 +17,8 @@ namespace Vox {
 
 		// relative to me.  detail level 1 means go one further, no matter what. index also relative to me
 		public abstract VoxelHolder get(byte detailLevel, int x, int y, int z);
+
+		public abstract VoxelHolder get(VoxelIndex i);
 
 		public abstract VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z);
 
@@ -31,6 +34,12 @@ namespace Vox {
 
 		public static bool operator !=(VoxelHolder v1, VoxelHolder v2) {
 			return !(v1 == v2);
+		}
+		
+		public override bool Equals(object ob) {
+			if (ob == null || GetType () != ob.GetType())
+				return false;
+			return this == (VoxelHolder)ob;
 		}
 
 	}

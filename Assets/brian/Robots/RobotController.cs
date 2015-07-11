@@ -10,6 +10,8 @@ public class RobotController : MonoBehaviour {
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
 	HoverJet jet = null;
+	RobotArms arms = null;
+	NavMeshAgent agent = null;
 
 	private Material original;
 
@@ -19,6 +21,10 @@ public class RobotController : MonoBehaviour {
 
 	void Start() {
 		jet = GetComponentInChildren<HoverJet>();
+		arms = GetComponentInChildren<RobotArms>();
+		agent = GetComponentInChildren<NavMeshAgent>();
+
+
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		original = gameObjectRenderer.material;
 
@@ -55,18 +61,39 @@ public class RobotController : MonoBehaviour {
 				if (jet != null) {
 					jet.setTarget(null);
 					if (message.Target.Type.Equals("routePoint")) {
-						print ("target reached received and jet != null: " + message.Target.Type);
+						//print ("target reached received and jet != null: " + message.Target.Type);
 
 						jet.setTarget(((RoutePoint)message.Target).Next);
 					}
+					else if (message.Target.Type.Equals("dropPoint")) {
+						arms.dropTarget();
+					}
 				}
 			}
-
+			else if (message.Type.Equals("target grabbed")) {
+				if (jet != null) {
+					for (int i = 0; i < trackedTargets.Count; i++) {
+						if (trackedTargets[i].Type.Equals("dropPoint")) {
+							agent.speed = 10;
+							jet.setTarget(trackedTargets[i]);
+							break;
+						}
+					}
+				}
+				sightingFound(message.Target);
+			}
+			else if (message.Type.Equals("target dropped")) {
+				agent.speed = 3;
+				sightingLost(message.Target);
+				if (jet != null) {
+					jet.setTarget(null);
+				}
+			}
 		}
 
 		for (int i = 0; i < trackedTargets.Count; i++) {
 			if (trackedTargets[i].Type.Equals("player")) {
-				if (jet != null) {
+				if (jet != null && !jet.getTargetType().Equals("dropPoint")) {
 					jet.setTarget(trackedTargets[i]);
 				}
 				break;
@@ -89,10 +116,17 @@ public class RobotController : MonoBehaviour {
 			trackedTargets.Add(message.Target);
 		} else if(message.Type.Equals ("target found") && message.Target.Type.Equals ("patrolRoute")) {
 			trackedTargets.Add(message.Target);
+		} else if(message.Type.Equals ("target found") && message.Target.Type.Equals ("dropPoint")) {
+			trackedTargets.Add(message.Target);
 		} else if (message.Type.Equals ("target lost") && message.Target.Type.Equals ("player")) {
 			trackedTargets.Remove(message.Target);
+				if (jet != null) {
+					if (jet.getTargetType().Equals("player")) {
 
-		}
+						jet.setTarget(null);
+					}
+				}
+			}
 	}
 
 	public void attachMentalModel(MentalModel model) {

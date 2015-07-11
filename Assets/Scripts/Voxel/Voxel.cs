@@ -36,6 +36,10 @@ namespace Vox {
 		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
 			return this;
 		}
+		
+		public override VoxelHolder get(VoxelIndex i) {
+			return this;
+		}
 
 		public override VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z) {
 			return null;

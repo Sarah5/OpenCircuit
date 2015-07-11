@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 namespace Vox {
 
 	[ExecuteInEditMode]
+//	[System.Serializable]
 	public class VoxelBlock : VoxelHolder {
 
 		public static int totalConsolidations = 0;
@@ -14,6 +15,7 @@ namespace Vox {
 		public const int CHILD_DIMENSION = 1 << (CHILD_COUNT_POWER);
 
 		public VoxelHolder[, ,] children;
+		[System.NonSerialized]
 		public VoxelRenderer renderer;
 
 		public VoxelBlock(Voxel fillValue) {
@@ -48,6 +50,10 @@ namespace Vox {
 				}
 			} else
 				set(value);
+		}
+		
+		public override VoxelHolder get(VoxelIndex i) {
+			return get(i.depth, i.x, i.y, i.z);
 		}
 
 		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
@@ -279,7 +285,7 @@ namespace Vox {
 			// check if we already have a mesh
 			if (renderer == null) {
 				//clearSubRenderers();
-				renderer = new VoxelRenderer(this, control, new Vector3(x * control.sizes[detailLevel], y * control.sizes[detailLevel], z * control.sizes[detailLevel]));
+				renderer = new VoxelRenderer(new VoxelIndex(x, y, z, detailLevel), control, new Vector3(x * control.sizes[detailLevel], y * control.sizes[detailLevel], z * control.sizes[detailLevel]));
 				//info.renderers[1, 1, 1] = renderer;
 			} else {
 				renderer.old = false;
@@ -287,7 +293,7 @@ namespace Vox {
 			}
 
 			// We should generate a mesh
-			GenMeshJob updateJob = new GenMeshJob(renderer.getBlock(), control, detailLevel);
+			GenMeshJob updateJob = new GenMeshJob(this, control, detailLevel);
 			updateJob.setOffset(x, y, z);
 			control.enqueueUpdate(updateJob);
 		}
@@ -325,11 +331,11 @@ namespace Vox {
 			return children[xi, yi, zi].getRenderer((byte)(detailLevel - CHILD_COUNT_POWER), x - xi * factor, y - yi * factor, z - zi * factor);
 		}
 
-		public bool isRenderSize(float size, VoxelTree control) {
+		public static bool isRenderSize(float size, VoxelTree control) {
 			return control.sizes[control.maxDetail - VoxelRenderer.VOXEL_COUNT_POWER] == size;
 		}
 
-		public bool isRenderLod(float x, float y, float z, float size, VoxelTree control) {
+		public static bool isRenderLod(float x, float y, float z, float size, VoxelTree control) {
 			if (!control.useLod)
 				return size == control.sizes[control.maxDetail];
 			return getDistSquare(control.getLocalCamPosition(), new Vector3(x + 0.5f, y + 0.5f, z + 0.5f), size) >= size * size * control.getLodDetail();
@@ -368,7 +374,7 @@ namespace Vox {
 			return true;
 		}
 
-		private float getDistSquare(Vector3 otherPos, Vector3 myPos, float size) {
+		private static float getDistSquare(Vector3 otherPos, Vector3 myPos, float size) {
 			return (otherPos - myPos * size).sqrMagnitude;
 			//return Mathf.Max(Mathf.Max(Mathf.Abs(dif.x) - size * 0.5f, Mathf.Abs(dif.y) - size * 0.5f), Mathf.Abs(dif.z) - size * 0.5f);
 		}

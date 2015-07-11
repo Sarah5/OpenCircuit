@@ -20,8 +20,11 @@ namespace Vox {
 
 		// editor data
 		public int selectedMode = 0;
-		public float brushSize = 1;
-		public byte selectedBrushMaterial = 0;
+		public int selectedBrush = 0;
+		public float sphereBrushSize = 1;
+		public byte sphereBrushMaterial = 0;
+		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
+		public byte cubeBrushMaterial = 0;
 
 
 		public void Awake() {
@@ -81,7 +84,7 @@ namespace Vox {
 		}
 
 		public bool hasGeneratedData() {
-			return getHead() != null || chunks.Count > 0;
+			return getHead() != null || renderers.Count > 0;
 		}
 	}
 }
