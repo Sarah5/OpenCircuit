@@ -23,6 +23,7 @@ public class VoxelEditorGUI : Editor {
 	protected const string numForm = "##,0.000";
 	protected const string numFormInt = "##,#";
 	protected readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Masks")};
+	protected readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
 
 	private SerializedObject ob;
 	//private bool materialsFoldout = false;
@@ -75,20 +76,36 @@ public class VoxelEditorGUI : Editor {
 	protected void doSculptGUI() {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 
-		// brush size
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Brush Radius", GUILayout.ExpandWidth(false));
-		editor.brushSize = GUILayout.HorizontalSlider(editor.brushSize, 0, 100);
-		editor.brushSize = EditorGUILayout.FloatField(editor.brushSize, GUILayout.MaxWidth(64));
-		if (editor.brushSize < 0)
-			editor.brushSize = 0;
-		GUILayout.EndHorizontal();
-
+		// brush list
+		editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
+		
 		// brush material type
 		string[] materials = new string[editor.voxelMaterials.Length];
 		for(int i=0; i<materials.Length; ++i)
 			materials[i] = editor.voxelMaterials[i].name;
-		editor.selectedBrushMaterial = (byte)GUILayout.SelectionGrid(editor.selectedBrushMaterial, materials, 1);
+		
+		// brush size
+		switch(editor.selectedBrush) {
+		case 0:
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Sphere Radius", GUILayout.ExpandWidth(false));
+			editor.sphereBrushSize = GUILayout.HorizontalSlider(editor.sphereBrushSize, 0, 100);
+			editor.sphereBrushSize = EditorGUILayout.FloatField(editor.sphereBrushSize, GUILayout.MaxWidth(64));
+			if (editor.sphereBrushSize < 0)
+				editor.sphereBrushSize = 0;
+			GUILayout.EndHorizontal();
+
+			editor.sphereBrushMaterial = (byte)GUILayout.SelectionGrid(editor.sphereBrushMaterial, materials, 1);
+			break;
+
+		case 1:
+			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
+			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
+
+			editor.cubeBrushMaterial = (byte)GUILayout.SelectionGrid(editor.cubeBrushMaterial, materials, 1);
+			break;
+		}
+
 	}
 
 	protected void doGeneralGUI() {
@@ -216,9 +233,9 @@ public class VoxelEditorGUI : Editor {
 			if (Event.current.button == 0) {
 				GUIUtility.hotControl = controlId;
 				if (Event.current.shift) {
-					subtractSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+					subtractBrush(editor, HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
 				} else {
-					addSphere(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+					addBrush(editor, HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
 				}
 				Event.current.Use();
 			}
@@ -233,20 +250,28 @@ public class VoxelEditorGUI : Editor {
 		}
 	}
 
-	protected void addSphere(Ray mouseLocation) {
-		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-
+	protected static void addBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
 		Vector3 point = getRayCollision(mouseLocation).point;
-
-		new Vox.SphereModifier(editor, point, editor.brushSize, new Vox.Voxel(editor.selectedBrushMaterial, byte.MaxValue), true);
+		switch(editor.selectedBrush) {
+		case 0:
+			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushMaterial, byte.MaxValue), true);
+			break;
+		case 1:
+			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushMaterial, byte.MaxValue), true);
+			break;
+		}
 	}
 	
-	protected void subtractSphere(Ray mouseLocation) {
-		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		
+	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
 		Vector3 point = getRayCollision(mouseLocation).point;
-		
-		new Vox.SphereDestroyer(editor, point, editor.brushSize, new Vox.Voxel(0, byte.MinValue), 1, true, true);
+		switch(editor.selectedBrush) {
+		case 0:
+			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
+			break;
+		case 1:
+			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
+			break;
+		}
 	}
 
 	protected static RaycastHit getRayCollision(Ray ray) {
