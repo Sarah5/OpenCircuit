@@ -101,8 +101,14 @@ public class VoxelEditorGUI : Editor {
 			break;
 
 		case 1:
-			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
-			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Dimensions");
+			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
+			editor.cubeBrushDimensions.y = EditorGUILayout.FloatField(editor.cubeBrushDimensions.y);
+			editor.cubeBrushDimensions.z = EditorGUILayout.FloatField(editor.cubeBrushDimensions.z);
+//			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
+//			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
+			GUILayout.EndHorizontal();
 
 			editor.cubeBrushMaterial = (byte)GUILayout.SelectionGrid(editor.cubeBrushMaterial, materials, 1);
 			break;

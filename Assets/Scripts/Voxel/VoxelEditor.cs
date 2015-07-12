@@ -19,11 +19,17 @@ namespace Vox {
 		public Texture2D materialMap;
 
 		// editor data
+		[System.NonSerialized]
 		public int selectedMode = 0;
+		[System.NonSerialized]
 		public int selectedBrush = 0;
+		[System.NonSerialized]
 		public float sphereBrushSize = 1;
+		[System.NonSerialized]
 		public byte sphereBrushMaterial = 0;
+		[System.NonSerialized]
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
+		[System.NonSerialized]
 		public byte cubeBrushMaterial = 0;
 
 

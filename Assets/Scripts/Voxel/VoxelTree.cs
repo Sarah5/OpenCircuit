@@ -44,7 +44,6 @@ namespace Vox {
 		public float[] sizes;
 		public RendererDict renderers = new RendererDict();
 		public byte[] voxelData = new byte[0];
-		[System.NonSerialized]
 		public bool dirty = true;
 		[System.NonSerialized]
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
