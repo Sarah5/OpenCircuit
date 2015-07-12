@@ -34,10 +34,14 @@ namespace Vox {
 		}
 
 		public void init() {
-			if (useHeightmap)
-				initializeHeightmap();
-			else
-				initialize();
+			initialize();
+			if (useHeightmap) {
+//				initializeHeightmap();
+				loadData();
+			} else {
+//				initialize();
+				genData(0);
+			}
 		}
 
 		public void loadData() {
@@ -55,26 +59,24 @@ namespace Vox {
 			}
 		}
 		
-		public void initializeHeightmap() {
-			
-			head = new VoxelBlock();
-			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
-			
-			sizes = new float[maxDetail + 1];
-			float s = BaseSize;
-			for (int i = 0; i <= maxDetail; ++i) {
-				sizes[i] = s;
-				s /= 2;
-			}
-			cam = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Camera>();
-			loadData();
-			
-			applyRenderers();
-			
-			updateLocalCamPosition();
-			
-			enqueueCheck(new UpdateCheckJob(head, this, 0));
-		}
+//		public void initializeHeightmap() {
+//			
+//			head = new VoxelBlock();
+//			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
+//			
+//			sizes = new float[maxDetail + 1];
+//			float s = BaseSize;
+//			for (int i = 0; i <= maxDetail; ++i) {
+//				sizes[i] = s;
+//				s /= 2;
+//			}
+//			cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<Camera>();
+////			loadData();
+//			
+////			updateLocalCamPosition();
+//			
+////			enqueueCheck(new UpdateCheckJob(head, this, 0));
+//		}
 		
 		public void saveData() {
 			BinaryFormatter b = new BinaryFormatter();
@@ -83,8 +85,14 @@ namespace Vox {
 			f.Close();
 		}
 
-		public bool hasGeneratedData() {
-			return getHead() != null || renderers.Count > 0;
+		public bool hasVoxelData() {
+			return getHead() != null;
+		}
+
+		public bool hasRenderers() {
+			lock(renderers) {
+				return renderers.Count > 0;
+			}
 		}
 	}
 }

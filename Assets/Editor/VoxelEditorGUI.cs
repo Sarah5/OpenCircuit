@@ -42,7 +42,7 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public override void OnInspectorGUI() {
-		ob.Update();
+//		ob.Update();
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 
 		editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, GUILayout.MinHeight(20));
@@ -202,23 +202,29 @@ public class VoxelEditorGUI : Editor {
 		// generation
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		editor.Update();
-		string generateButtonName = editor.hasGeneratedData()? "Regenerate": "Generate";
+		string generateButtonName = editor.hasVoxelData()? "Regenerate": "Generate";
 		if (GUILayout.Button(generateButtonName)) {
 			if (editor.voxelMaterials.Length < 1) {
 				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel material defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog(generateButtonName +" Voxels?", "Are you sure you want to generate the voxel terain from scratch?", "Yes", "No")) {
 				editor.wipe();
 				editor.init();
+				editor.generateRenderers();
 			}
-		}
-		if (editor.hasGeneratedData()) {
+		} else if (editor.hasVoxelData()) {
 			if (GUILayout.Button("Clear")) {
 				if (EditorUtility.DisplayDialog("Clear Voxels?", "Are you sure you want to clear all voxel data?", "Yes", "No")) {
 					editor.wipe();
 				}
+			} else if (GUILayout.Button("Reskin")) {
+				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Yes", "No")) {
+					editor.generateRenderers();
+				}
 			}
 		}
-		EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
+		lock(editor.renderers) {
+			EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
+		}
 		EditorGUILayout.Separator();
 	}
 
