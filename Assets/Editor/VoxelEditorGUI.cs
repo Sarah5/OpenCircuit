@@ -65,6 +65,8 @@ public class VoxelEditorGUI : Editor {
 		
 		// finally, apply the changes
 		ob.ApplyModifiedProperties();
+
+		editor.Update();
 	}
 
 	protected void doMaskGUI() {
@@ -201,7 +203,6 @@ public class VoxelEditorGUI : Editor {
 
 		// generation
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		editor.Update();
 		string generateButtonName = editor.hasVoxelData()? "Regenerate": "Generate";
 		if (GUILayout.Button(generateButtonName)) {
 			if (editor.voxelMaterials.Length < 1) {

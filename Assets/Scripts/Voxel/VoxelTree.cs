@@ -44,8 +44,12 @@ namespace Vox {
 		public float[] sizes;
 		public RendererDict renderers = new RendererDict();
 		public byte[] voxelData = new byte[0];
+		[System.NonSerialized]
+		public bool dirty = true;
+		[System.NonSerialized]
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
 		private Vector3 localCamPosition;
+		[System.NonSerialized]
 		private int updateCheckJobs;
 
 
@@ -260,13 +264,16 @@ namespace Vox {
 		//}
 		
 		public void OnBeforeSerialize() {
-			voxelData = new byte[0];
-			if (getHead() != null) {
-				MemoryStream stream = new MemoryStream();
-				BinaryWriter writer = new BinaryWriter(stream);
-				getHead().serialize(writer);
-				voxelData = stream.ToArray();
-				stream.Close();
+			if (voxelData.Length < 1 || dirty) {
+				dirty = false;
+				voxelData = new byte[0];
+				if (getHead() != null) {
+					MemoryStream stream = new MemoryStream();
+					BinaryWriter writer = new BinaryWriter(stream);
+					getHead().serialize(writer);
+					voxelData = stream.ToArray();
+					stream.Close();
+				}
 			}
 		}
 
@@ -275,7 +282,6 @@ namespace Vox {
 				MemoryStream stream = new MemoryStream(voxelData);
 				BinaryReader reader = new BinaryReader(stream);
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
-				voxelData = new byte[0];
 				stream.Close();
 			}
 			lock(renderers) {

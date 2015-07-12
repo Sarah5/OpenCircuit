@@ -64,7 +64,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106829}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 44.7099991, y: 17.4799995, z: 62.4700012}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -361,7 +361,7 @@ MonoBehaviour:
   drawReticle: 0
   reticle: {fileID: 0}
   maxOxygen: 60
-  oxygenRecoveryRate: 2
+  oxygenRecoveryRate: 10
   oxygen: 60
   heavyBreathingSound: {fileID: 8300000, guid: 93cc1f44eb856894187e8d711f429b62, type: 3}
   teleportSound: {fileID: 0}
@@ -379,12 +379,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprintMult: 2
-  walkSpeedf: 6
-  walkSpeedb: 4
-  walkSpeedr: 4
-  walkSpeedl: 4
-  acceleration: .200000003
-  climbRate: .100000001
+  walkSpeedf: 4
+  walkSpeedb: 3
+  walkSpeedr: 3
+  walkSpeedl: 3
+  acceleration: .5
+  climbRate: .200000003
   crouchSpeedMultiplier: .5
   minCrouchHeight: 1
   crouchHeight: 1.25
@@ -395,7 +395,7 @@ MonoBehaviour:
   footsteps:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
   minimumFoostepOccurence: 1
-  foostepSpeedScale: .100000001
+  foostepSpeedScale: .0799999982
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1
@@ -409,13 +409,13 @@ CapsuleCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7a52c51ef221de4419c3302e22795d5e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: .400000006
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 1.1920929e-07, y: 0, z: -1.78813934e-07}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

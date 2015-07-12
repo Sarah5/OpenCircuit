@@ -28,7 +28,7 @@ namespace Vox {
 
 
 		public void Awake() {
-			if (Application.isPlaying) {
+			if (Application.isPlaying && !hasRenderers()) {
 				init();
 			}
 		}

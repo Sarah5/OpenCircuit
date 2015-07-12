@@ -3,6 +3,7 @@ Shader "Voxel/PhysicalTest" {
 	Properties {
 //		_Color ("Color", Color) = (1,1,1,1)
 //		_MainTex ("Albedo (RGB)", 2D) = "white" {}
+		_Scale("Texture Scale", Float) = 1
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
 		_TexFlrDif ("Diffuse Floor Texture", 2D) = "surface" {}
 		_TexCeilDif ("Diffuse Ceiling Texture", 2D) = "surface" {}
@@ -37,6 +38,7 @@ Shader "Voxel/PhysicalTest" {
 		sampler2D _TexCeilNorm;
 		float _Sigma;
 		float _Blend;
+		float _Scale;
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
@@ -51,19 +53,19 @@ Shader "Voxel/PhysicalTest" {
 		
 		fixed4 computeDiffuse(Input i, float blendMag) {
 			return (
-				i.b.x *tex2D(_TexWallDif, i.pos.zy) +
-				i.b.z *tex2D(_TexWallDif, i.pos.xy) +
-				((i.b.y > 0)?i.b.y *tex2D(_TexFlrDif, i.pos.xz):
-				-i.b.y *tex2D(_TexCeilDif, i.pos.zx))
+				i.b.x *tex2D(_TexWallDif, i.pos.zy *_Scale) +
+				i.b.z *tex2D(_TexWallDif, i.pos.xy *_Scale) +
+				((i.b.y > 0)?i.b.y *tex2D(_TexFlrDif, i.pos.xz *_Scale):
+				-i.b.y *tex2D(_TexCeilDif, i.pos.zx *_Scale))
 				) /blendMag;
 		}
 		
 		fixed4 computeHeight(Input i, float blendMag) {
 			return (
-				i.b.x *tex2D(_TexWallNorm, i.pos.zy) +
-				i.b.z *tex2D(_TexWallNorm, i.pos.xy) +
-				((i.b.y > 0)?i.b.y *tex2D(_TexFlrNorm, i.pos.xz):
-				-i.b.y *tex2D(_TexCeilNorm, i.pos.zx))
+				i.b.x *tex2D(_TexWallNorm, i.pos.zy *_Scale) +
+				i.b.z *tex2D(_TexWallNorm, i.pos.xy *_Scale) +
+				((i.b.y > 0)?i.b.y *tex2D(_TexFlrNorm, i.pos.xz *_Scale):
+				-i.b.y *tex2D(_TexCeilNorm, i.pos.zx *_Scale))
 				) /blendMag;
 		}
 		
