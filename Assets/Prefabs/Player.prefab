@@ -38,6 +38,7 @@ GameObject:
   - 114: {fileID: 11400010}
   - 82: {fileID: 8200000}
   - 82: {fileID: 8200002}
+  - 114: {fileID: 11421164}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -396,6 +397,18 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
   minimumFoostepOccurence: 1
   foostepSpeedScale: .0799999982
+--- !u!114 &11421164
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9de6d3560a4f8b14abba909de5c954e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: player
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1
@@ -438,6 +451,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: Type
+      value: player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
