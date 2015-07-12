@@ -268,6 +268,14 @@ namespace Vox {
 			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
 
+		public void setupMeshes() {
+			foreach(GameObject ob in obs) {
+				foreach(Renderer rend in ob.GetComponents<Renderer>()) {
+					EditorUtility.SetSelectedWireframeHidden(rend, true);
+				}
+			}
+		}
+
 		public float getSize() {
 			return size;
 		}

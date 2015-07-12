@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Vox {
 
@@ -25,6 +26,23 @@ namespace Vox {
 		}
 
 		public VoxelBlock() : this(Voxel.empty) { }
+
+		public VoxelBlock(BinaryReader reader) {
+			children = new VoxelHolder[CHILD_DIMENSION, CHILD_DIMENSION, CHILD_DIMENSION];
+			++blockCount;
+			for (byte xi = 0; xi < CHILD_DIMENSION; ++xi)
+				for (byte yi = 0; yi < CHILD_DIMENSION; ++yi)
+					for (byte zi = 0; zi < CHILD_DIMENSION; ++zi)
+						children[xi, yi, zi] = VoxelHolder.deserialize(reader);
+		}
+
+		public override void serialize(BinaryWriter writer) {
+			writer.Write(VoxelHolder.VOXEL_BLOCK_SERIAL_ID);
+			for (byte xi = 0; xi < CHILD_DIMENSION; ++xi)
+				for (byte yi = 0; yi < CHILD_DIMENSION; ++yi)
+					for (byte zi = 0; zi < CHILD_DIMENSION; ++zi)
+						children[xi, yi, zi].serialize(writer);
+		}
 
 		public void set(Voxel fillValue) {
 			for (byte xi = 0; xi < CHILD_DIMENSION; ++xi)

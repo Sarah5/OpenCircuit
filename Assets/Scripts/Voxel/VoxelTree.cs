@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace Vox {
 
@@ -44,6 +45,7 @@ namespace Vox {
 		//[HideInInspector]
 //		public List<VoxelRenderer> chunks = new List<VoxelRenderer>();
 		public RendererDict renderers = new RendererDict();
+		public byte[] voxelData = new byte[0];
 		//private Queue<VoxelJob> updateCheckQueue = new Queue<VoxelJob>(200);
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
 		//private Queue<VoxelUpdateJob> updateQueue = new Queue<VoxelUpdateJob>(100);
@@ -280,13 +282,28 @@ namespace Vox {
 		//}
 		
 		public void OnBeforeSerialize() {
-
+			voxelData = new byte[0];
+			if (getHead() != null) {
+				MemoryStream stream = new MemoryStream();
+				BinaryWriter writer = new BinaryWriter(stream);
+				getHead().serialize(writer);
+				voxelData = stream.ToArray();
+				stream.Close();
+			}
 		}
 
 		public void OnAfterDeserialize() {
+			if (voxelData.Length > 0) {
+				MemoryStream stream = new MemoryStream(voxelData);
+				BinaryReader reader = new BinaryReader(stream);
+				head = (VoxelBlock)VoxelHolder.deserialize(reader);
+				voxelData = new byte[0];
+				stream.Close();
+			}
 			foreach (VoxelRenderer rend in renderers.Values) {
 				rend.control = this;
-//				((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
+//				rend.setupMeshes();
+				((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
 			}
 		}
 

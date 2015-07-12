@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 
 namespace Vox {
 	
 //	[System.Serializable]
 	public abstract class VoxelHolder {
+
+		public const byte VOXEL_SERIAL_ID = 0;
+		public const byte VOXEL_BLOCK_SERIAL_ID = 1;
 
 		public static int blockCount = 0;
 
@@ -23,6 +27,19 @@ namespace Vox {
 		public abstract VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z);
 
 		public abstract Voxel toVoxel();
+
+		public abstract void serialize(BinaryWriter writer);
+
+		public static VoxelHolder deserialize(BinaryReader reader) {
+			byte type = reader.ReadByte();
+			switch(type) {
+			case VOXEL_BLOCK_SERIAL_ID:
+				return new VoxelBlock(reader);
+			case VOXEL_SERIAL_ID:
+				return new Voxel(reader);
+			}
+			return null;
+		}
 
 		public static bool operator ==(VoxelHolder v1, VoxelHolder v2) {
 			if (System.Object.ReferenceEquals(v1, v2))

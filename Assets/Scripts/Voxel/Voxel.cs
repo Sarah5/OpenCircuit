@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 
 namespace Vox {
 
@@ -19,6 +20,17 @@ namespace Vox {
 		public Voxel(Voxel other) {
 			this.matType = other.matType;
 			this.opacity = other.opacity;
+		}
+
+		public Voxel(BinaryReader reader) {
+			this.matType = reader.ReadByte();
+			this.opacity = reader.ReadByte();
+		}
+
+		public override void serialize(BinaryWriter writer) {
+			writer.Write(VoxelHolder.VOXEL_SERIAL_ID);
+			writer.Write(matType);
+			writer.Write(opacity);
 		}
 
 		public override byte detail() {
