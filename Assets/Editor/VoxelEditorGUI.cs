@@ -218,15 +218,25 @@ public class VoxelEditorGUI : Editor {
 				editor.init();
 				editor.generateRenderers();
 			}
-		} else if (editor.hasVoxelData()) {
+		}
+		if (editor.hasVoxelData()) {
 			if (GUILayout.Button("Clear")) {
 				if (EditorUtility.DisplayDialog("Clear Voxels?", "Are you sure you want to clear all voxel data?", "Yes", "No")) {
 					editor.wipe();
 				}
-			} else if (GUILayout.Button("Reskin")) {
+			}
+			if (GUILayout.Button("Reskin")) {
 				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Yes", "No")) {
 					editor.generateRenderers();
 				}
+			}
+			if (GUILayout.Button("Export")) {
+				editor.export(EditorUtility.SaveFilePanel("Choose File to Export To", "", "Voxels", "vox"));
+			}
+		}
+		if (GUILayout.Button("Import")) {
+			if (!editor.import(EditorUtility.OpenFilePanel("Choose File to Export To", "", "vox"))) {
+				EditorUtility.DisplayDialog("Wrong Voxel Format", "The file you chose was an unknown or incompatible voxel format version.", "OK");
 			}
 		}
 		lock(editor.renderers) {

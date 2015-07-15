@@ -14,6 +14,7 @@ namespace Vox {
 	[ExecuteInEditMode]
 	public class VoxelTree : MonoBehaviour, ISerializationCallbackReceiver {
 
+		public const ulong FILE_FORMAT_VERSION = 1;
 
 		// basic stats
 		public float BaseSize = 16;
@@ -289,6 +290,32 @@ namespace Vox {
 //					rend.setupMeshes();
 					((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
 				}
+			}
+		}
+		
+		public bool import(string fileName) {
+			clearRenderers();
+			Stream stream = File.OpenRead(fileName);
+			BinaryReader reader = new BinaryReader(stream);
+			ulong fileFormatVersion = reader.ReadUInt64();
+			if (fileFormatVersion != FILE_FORMAT_VERSION) {
+				stream.Close ();
+				print("Wrong voxel file format version: " +fileFormatVersion +", should be " +FILE_FORMAT_VERSION);
+				return false;
+			} else {
+				head = (VoxelBlock)VoxelHolder.deserialize(reader);
+				stream.Close();
+				return true;
+			}
+		}
+		
+		public void export(string fileName) {
+			if (getHead() != null) {
+				Stream stream = File.Create(fileName);
+				BinaryWriter writer = new BinaryWriter(stream);
+				writer.Write(FILE_FORMAT_VERSION);
+				getHead().serialize(writer);
+				stream.Close();
 			}
 		}
 
