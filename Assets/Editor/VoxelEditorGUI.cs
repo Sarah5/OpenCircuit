@@ -26,9 +26,6 @@ public class VoxelEditorGUI : Editor {
 	protected readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
 
 	private SerializedObject ob;
-	//private bool materialsFoldout = false;
-	//private List<Vox.VoxelMaterial> voxelMaterials;
-	//	public Vector2 scrollPos = new Vector2(0, 0);
 	
 	[MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
@@ -81,10 +78,10 @@ public class VoxelEditorGUI : Editor {
 		// brush list
 		editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
 		
-		// brush material type
-		string[] materials = new string[editor.voxelMaterials.Length];
-		for(int i=0; i<materials.Length; ++i)
-			materials[i] = editor.voxelMaterials[i].name;
+		// brush substance type
+		string[] substances = new string[editor.voxelSubstances.Length];
+		for(int i=0; i<substances.Length; ++i)
+			substances[i] = editor.voxelSubstances[i].name;
 		
 		// brush size
 		switch(editor.selectedBrush) {
@@ -97,7 +94,7 @@ public class VoxelEditorGUI : Editor {
 				editor.sphereBrushSize = 0;
 			GUILayout.EndHorizontal();
 
-			editor.sphereBrushMaterial = (byte)GUILayout.SelectionGrid(editor.sphereBrushMaterial, materials, 1);
+			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
 			break;
 
 		case 1:
@@ -110,7 +107,7 @@ public class VoxelEditorGUI : Editor {
 //			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
 			GUILayout.EndHorizontal();
 
-			editor.cubeBrushMaterial = (byte)GUILayout.SelectionGrid(editor.cubeBrushMaterial, materials, 1);
+			editor.cubeBrushSubstance = (byte)GUILayout.SelectionGrid(editor.cubeBrushSubstance, substances, 1);
 			break;
 		}
 
@@ -175,10 +172,10 @@ public class VoxelEditorGUI : Editor {
 
 		EditorGUILayout.Separator();
 
-		// materials
+		// substances
 
-		SerializedProperty voxelMaterials = ob.FindProperty("voxelMaterials");
-		EditorGUILayout.PropertyField(voxelMaterials, new GUIContent("Voxel Materials"), true);
+		SerializedProperty voxelSubstances = ob.FindProperty("voxelSubstances");
+		EditorGUILayout.PropertyField(voxelSubstances, new GUIContent("Voxel Substances"), true);
 
 		// procedural stats
 		SerializedProperty useHeightmap = ob.FindProperty("useHeightmap");
@@ -186,10 +183,10 @@ public class VoxelEditorGUI : Editor {
 		if (useHeightmap.boolValue) {
 			SerializedProperty heightmaps = ob.FindProperty("heightmaps");
 			EditorGUILayout.PropertyField(heightmaps, new GUIContent("Height Maps"), true);
-			SerializedProperty heightmapMaterials = ob.FindProperty("heightmapMaterials");
-			EditorGUILayout.PropertyField(heightmapMaterials, new GUIContent("Height Map Materials"), true);
-			SerializedProperty materialMap = ob.FindProperty("materialMap");
-			EditorGUILayout.PropertyField(materialMap, new GUIContent("Material Map"));
+			SerializedProperty heightmapSubstances = ob.FindProperty("heightmapSubstances");
+			EditorGUILayout.PropertyField(heightmapSubstances, new GUIContent("Height Map Substances"), true);
+			SerializedProperty substanceMap = ob.FindProperty("substanceMap");
+			EditorGUILayout.PropertyField(substanceMap, new GUIContent("Substance Map"));
 		} else {
 			SerializedProperty maxChange = ob.FindProperty("maxChange");
 			EditorGUILayout.PropertyField(maxChange, new GUIContent("Roughness"));
@@ -211,8 +208,8 @@ public class VoxelEditorGUI : Editor {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		string generateButtonName = editor.hasVoxelData()? "Regenerate": "Generate";
 		if (GUILayout.Button(generateButtonName)) {
-			if (editor.voxelMaterials.Length < 1) {
-				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel material defined to generate the voxel object.", "OK");
+			if (editor.voxelSubstances.Length < 1) {
+				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog(generateButtonName +" Voxels?", "Are you sure you want to generate the voxel terain from scratch?", "Yes", "No")) {
 				editor.wipe();
 				editor.init();
@@ -277,10 +274,10 @@ public class VoxelEditorGUI : Editor {
 		Vector3 point = getRayCollision(mouseLocation).point;
 		switch(editor.selectedBrush) {
 		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushMaterial, byte.MaxValue), true);
+			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, byte.MaxValue), true);
 			break;
 		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushMaterial, byte.MaxValue), true);
+			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, byte.MaxValue), true);
 			break;
 		}
 	}

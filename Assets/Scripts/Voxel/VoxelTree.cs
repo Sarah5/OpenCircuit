@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -28,7 +28,7 @@ namespace Vox {
 		[HideInInspector]
 		public Camera cam;
 		public float curLodDetail = 10f;
-		public VoxelMaterial[] voxelMaterials;
+		public VoxelSubstance[] voxelSubstances;
 		public VoxelMask[] masks;
 		public float maxChange;
 		public bool createColliders = true;

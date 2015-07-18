@@ -21,9 +21,7 @@ namespace Vox {
 		public const float NORMAL_SMOOTHNESS = 0.1f; // 0 - 1
 
 		public Dictionary<int, object> vertices;
-		public Dictionary<int, byte> vertexMaterials;
-//		[System.NonSerialized]
-//		public VoxelBlock parent;
+		public Dictionary<int, byte> vertexSubstances;
 		[System.NonSerialized]
 		public VoxelTree control;
 		public MeshCollider collider;
@@ -63,7 +61,6 @@ namespace Vox {
 		}
 
 		public VoxelRenderer(VoxelIndex index, VoxelTree control, Vector3 localPosition) {
-//			this.parent = parent;
 			this.index = index;
 			this.position = localPosition;
 			this.control = control;
@@ -77,18 +74,14 @@ namespace Vox {
 			}
 		}
 
-//		public VoxelBlock getBlock() {
-//			return parent;
-//		}
-
 		public void genMesh(VoxelUpdateInfo info) {
 			size = info.size;
 
 			Queue<int[]> triangleSet = new Queue<int[]>();
 			vertices = new Dictionary<int, object>();
-			vertexMaterials = new Dictionary<int, byte>();
+			vertexSubstances = new Dictionary<int, byte>();
 			Voxel[, ,] voxels = createVoxelArray(info);
-			MarchingCubes.setup(info.size / VOXEL_DIMENSION, control.isoLevel, ref vertices, ref vertexMaterials, ref voxels, position - new Vector3(0.5f, 0.5f, 0.5f) * size / VOXEL_DIMENSION, null);
+			MarchingCubes.setup(info.size / VOXEL_DIMENSION, control.isoLevel, ref vertices, ref vertexSubstances, ref voxels, position - new Vector3(0.5f, 0.5f, 0.5f) * size / VOXEL_DIMENSION, null);
 			int totalTris = 0;
 
 			for (byte x = (byte)(1 - xExtend), x1 = (byte)(x + 1); x1 < xDim; x = x1++) {
@@ -120,7 +113,7 @@ namespace Vox {
 				for (int i = 0; i < triangleList.Length; ++i) {
 					if (vertices[triangleList[i]].GetType() == typeof(Vector3)) {
 						finalVertices.Add((Vector3)vertices[triangleList[i]]);
-						//finalMats.Add(vertexMaterials[triangleList[i]]);
+						//finalMats.Add(vertexSubstances[triangleList[i]]);
 						vertices[triangleList[i]] = finalVertices.Count - 1;
 					}
 					triangles.Add((int)vertices[triangleList[i]]);
@@ -169,20 +162,20 @@ namespace Vox {
 				colMesh.Optimize();
 			}
 
-			Dictionary<byte, Dictionary<int, int>> materialVertices = new Dictionary<byte, Dictionary<int, int>>();
+			Dictionary<byte, Dictionary<int, int>> substanceVertices = new Dictionary<byte, Dictionary<int, int>>();
 			byte[] MATS = new byte[VERTS.Length];
 			foreach (int index in vertices.Keys) {
-				if (vertexMaterials.ContainsKey(index)) {
-					byte material = vertexMaterials[index];
-					MATS[(int)vertices[index]] = material;
-					if (!materialVertices.ContainsKey(material))
-						materialVertices[material] = new Dictionary<int, int>();
-					materialVertices[material][(int)vertices[index]] = materialVertices[material].Count;
+				if (vertexSubstances.ContainsKey(index)) {
+					byte substance = vertexSubstances[index];
+					MATS[(int)vertices[index]] = substance;
+					if (!substanceVertices.ContainsKey(substance))
+						substanceVertices[substance] = new Dictionary<int, int>();
+					substanceVertices[substance][(int)vertices[index]] = substanceVertices[substance].Count;
 				}
 			}
 
 			GameObject[] oldObs = obs;
-			obs = new GameObject[materialVertices.Count];
+			obs = new GameObject[substanceVertices.Count];
 			if (oldObs != null && oldObs.Length > obs.Length) {
 				Array.Copy(oldObs, obs, obs.Length);
 				for (int i = obs.Length; i < oldObs.Length; ++i) {
@@ -207,14 +200,14 @@ namespace Vox {
 			}
 
 			List<int>[] tris = new List<int>[byte.MaxValue];
-			foreach(byte key in materialVertices.Keys)
+			foreach(byte key in substanceVertices.Keys)
 				tris[key] = new List<int>(TRIS.Length /obs.Length);
 			for(int i=0; i<TRIS.Length; i+=3) {
 				List<byte> prevMats = new List<byte>(3);
 				for (int j = 0; j < 3; ++j) {
 					byte mat = MATS[TRIS[i + j]];
 					if (!prevMats.Contains(mat)) {
-						Dictionary<int, int> matVerts = materialVertices[mat];
+						Dictionary<int, int> matVerts = substanceVertices[mat];
 						for (int k = 0; k < 3; ++k) {
 							int vert = TRIS[i + k];
 							if (!matVerts.ContainsKey(vert))
@@ -227,18 +220,18 @@ namespace Vox {
 			}
 
 			int obIndex = 0;
-			foreach (byte material in materialVertices.Keys) {
-				Dictionary<int, int> matVerts = materialVertices[material];
+			foreach (byte substance in substanceVertices.Keys) {
+				Dictionary<int, int> matVerts = substanceVertices[substance];
 				Vector3[] verts = new Vector3[matVerts.Count];
 				Vector3[] norms = new Vector3[matVerts.Count];
 				Vector2[] uvs = new Vector2[matVerts.Count];
 				foreach (int index in matVerts.Keys) {
 					int i = matVerts[index];
 					norms[i] = NORMS[index];
-					if (MATS[index] < material) {
+					if (MATS[index] < substance) {
 						verts[i] = VERTS[index] +norms[i] * 0.01f *Mathf.Pow(size, 1.5f) /VOXEL_DIMENSION;
 						uvs[i] = Vector2.zero;
-					} else if (MATS[index] > material) {
+					} else if (MATS[index] > substance) {
 						verts[i] = VERTS[index];// -norms[i] * 0.01f * size / VOXEL_DIMENSION;
 						uvs[i] = Vector2.up;
 					} else {
@@ -255,12 +248,12 @@ namespace Vox {
 				m.vertices = verts;
 				m.normals = norms;
 				m.uv = uvs;
-				m.triangles = tris[material].ToArray();
+				m.triangles = tris[substance].ToArray();
 				m.RecalculateBounds();
 				m.Optimize();
 				MeshRenderer rend = obs[obIndex].GetComponent<MeshRenderer>();
-				rend.sharedMaterial = control.voxelMaterials[material].renderMaterial;
-				rend.sharedMaterial.renderQueue = material;
+				rend.sharedMaterial = control.voxelSubstances[substance].renderMaterial;
+//				rend.sharedMaterial.renderQueue = substance;
 				rend.enabled = true;
 				++obIndex;
 			}
@@ -459,7 +452,7 @@ namespace Vox {
 
 
 				Queue<int[]> triangleSet = new Queue<int[]>();
-				MarchingCubes.setup(info.size / VOXEL_DIMENSION, control.isoLevel, ref vertices, ref vertexMaterials, ref voxels, position - new Vector3(0.5f, 0.5f, 0.5f) * size / VOXEL_DIMENSION, VERTS);
+				MarchingCubes.setup(info.size / VOXEL_DIMENSION, control.isoLevel, ref vertices, ref vertexSubstances, ref voxels, position - new Vector3(0.5f, 0.5f, 0.5f) * size / VOXEL_DIMENSION, VERTS);
 
 				byte xStart = (byte)(1 - xExtend + (VOXEL_DIMENSION + xExtend - 1) * (x / 2));
 				byte xEnd = (byte)(2 + (xDim - 2) * ((x + 1) / 2));

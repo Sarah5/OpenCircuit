@@ -2,17 +2,17 @@
 Shader "Voxel/Normal" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
-		_Scale("Texture Scale", Float) = 1
+		_Glossiness ("Smoothness", Range(0,1)) = 0.5
+		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_Sigma ("Blend Tightness", Range(0, 0.57)) = 0.5
+		_Blend ("Blend Sharpness", Float) = 4
+		_Scale ("Texture Scale", Float) = 1
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
 		_TexFlrDif ("Diffuse Floor Texture", 2D) = "surface" {}
 		_TexCeilDif ("Diffuse Ceiling Texture", 2D) = "surface" {}
 		_TexWallNorm ("Normal Wall Texture", 2D) = "surface" {}
 		_TexFlrNorm ("Normal Floor Texture", 2D) = "surface" {}
 		_TexCeilNorm ("Normal Ceiling Texture", 2D) = "surface" {}
-		_Sigma ("Blend Tightness", Range(0, 0.57)) = 0.5
-		_Blend ("Blend Sharpness", Float) = 4
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -41,10 +41,8 @@ Shader "Voxel/Normal" {
 		fixed4 _Color;
 		
 		struct Input {
-			float2 uv_MainTex;
 			float4 pos;
 			float3 b;
-			float alpha;
 			INTERNAL_DATA
 		};
 		
@@ -75,8 +73,6 @@ Shader "Voxel/Normal" {
 			o.b.y = pow(max(0, abs(v.normal.y) -_Sigma), _Blend);
 			
 			if (v.normal.y < 0) o.b.y = -o.b.y;
-			
-			o.alpha = v.texcoord.y;
         }
 
 		void surfaceFunc(Input IN, inout SurfaceOutputStandard o) {
@@ -88,7 +84,6 @@ Shader "Voxel/Normal" {
 			o.Normal = UnpackNormal(height);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-			o.Alpha = IN.alpha;
 		}
 		ENDCG
 	} 

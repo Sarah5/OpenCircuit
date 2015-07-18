@@ -11,12 +11,12 @@ namespace Vox {
 
 		public bool useHeightmap;
 		public Texture2D[] heightmaps;
-		public byte[] heightmapMaterials;
+		public byte[] heightmapSubstances;
 		
 		public string data_file;
 		
 		public Texture2D heightmap;
-		public Texture2D materialMap;
+		public Texture2D substanceMap;
 
 		// editor data
 		[System.NonSerialized]
@@ -26,11 +26,11 @@ namespace Vox {
 		[System.NonSerialized]
 		public float sphereBrushSize = 1;
 		[System.NonSerialized]
-		public byte sphereBrushMaterial = 0;
+		public byte sphereBrushSubstance = 0;
 		[System.NonSerialized]
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
 		[System.NonSerialized]
-		public byte cubeBrushMaterial = 0;
+		public byte cubeBrushSubstance = 0;
 
 
 		public void Awake() {
@@ -61,7 +61,7 @@ namespace Vox {
 						map[j, i] = ((pix.r + pix.g + pix.b) / 3.0f) * voxels;
 					}
 				}
-				head.setToHeightmap(maxDetail, 0, 0, 0, ref map, heightmapMaterials[index], this);
+				head.setToHeightmap(maxDetail, 0, 0, 0, ref map, heightmapSubstances[index], this);
 			}
 		}
 		
