@@ -31,7 +31,6 @@ namespace Vox {
 		public byte xExtend, yExtend, zExtend;
 		public GameObject[] obs;
 		public Vector3[] VERTS, NORMS;
-		//public byte[] MATS;
 		public int[] TRIS;
 		public bool applied = false;
 		public bool old = false;
@@ -143,6 +142,7 @@ namespace Vox {
 
 			removePolyCount();
 
+			// generate the collider mesh and attach it to the voxel tree's game object
 			if (control.createColliders) {
 				if (collider == null) {
 					Mesh m = new Mesh();
@@ -162,6 +162,8 @@ namespace Vox {
 				colMesh.Optimize();
 			}
 
+
+
 			Dictionary<byte, Dictionary<int, int>> substanceVertices = new Dictionary<byte, Dictionary<int, int>>();
 			byte[] MATS = new byte[VERTS.Length];
 			foreach (int index in vertices.Keys) {
@@ -173,35 +175,11 @@ namespace Vox {
 					substanceVertices[substance][(int)vertices[index]] = substanceVertices[substance].Count;
 				}
 			}
-
-			GameObject[] oldObs = obs;
-			obs = new GameObject[substanceVertices.Count];
-			if (oldObs != null && oldObs.Length > obs.Length) {
-				Array.Copy(oldObs, obs, obs.Length);
-				for (int i = obs.Length; i < oldObs.Length; ++i) {
-					GameObject.DestroyImmediate(oldObs[i]);
-				}
-			} else {
-				if (oldObs != null)
-					Array.Copy(oldObs, obs, oldObs.Length);
-				for(int i=(oldObs==null)?0:oldObs.Length; i<obs.Length; ++i) {
-					obs[i] = new GameObject("Voxel Section");
-					obs[i].isStatic = control.useStaticMeshes;
-					Transform t = obs[i].transform;
-					t.parent = control.transform;
-					t.localPosition = Vector3.zero;
-					t.hideFlags |= HideFlags.HideInHierarchy;
-					MeshRenderer rend = obs[i].AddComponent<MeshRenderer>();
-					rend.enabled = false;
-					rend.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.BlendProbesAndSkybox;
-					EditorUtility.SetSelectedWireframeHidden(rend, true);
-					obs[i].AddComponent<MeshFilter>().sharedMesh = new Mesh();
-				}
-			}
-
+			
+			// build triangle lists for each mesh from the master triangle list
 			List<int>[] tris = new List<int>[byte.MaxValue];
 			foreach(byte key in substanceVertices.Keys)
-				tris[key] = new List<int>(TRIS.Length /obs.Length);
+				tris[key] = new List<int>(TRIS.Length /substanceVertices.Count);
 			for(int i=0; i<TRIS.Length; i+=3) {
 				List<byte> prevMats = new List<byte>(3);
 				for (int j = 0; j < 3; ++j) {
@@ -219,49 +197,32 @@ namespace Vox {
 				}
 			}
 
+			// create and initialize the game objects which will have the mesh renderers attached to them
+			GameObject[] oldObs = obs;
+			obs = new GameObject[substanceVertices.Count];
+			if (oldObs != null && oldObs.Length > obs.Length) {
+				Array.Copy(oldObs, obs, obs.Length);
+				for (int i = obs.Length; i < oldObs.Length; ++i) {
+					GameObject.DestroyImmediate(oldObs[i]);
+				}
+			} else {
+				if (oldObs != null)
+					Array.Copy(oldObs, obs, oldObs.Length);
+				for(int i=(oldObs==null)?0:oldObs.Length; i<obs.Length; ++i) {
+					obs[i] = createRendererGameObject();
+				}
+			}
+
+			// Assign vertex data to the game object meshes
 			int obIndex = 0;
 			foreach (byte substance in substanceVertices.Keys) {
-				Dictionary<int, int> matVerts = substanceVertices[substance];
-				Vector3[] verts = new Vector3[matVerts.Count];
-				Vector3[] norms = new Vector3[matVerts.Count];
-				Vector2[] uvs = new Vector2[matVerts.Count];
-				foreach (int index in matVerts.Keys) {
-					int i = matVerts[index];
-					norms[i] = NORMS[index];
-					if (MATS[index] < substance) {
-						verts[i] = VERTS[index] +norms[i] * 0.01f *Mathf.Pow(size, 1.5f) /VOXEL_DIMENSION;
-						uvs[i] = Vector2.zero;
-					} else if (MATS[index] > substance) {
-						verts[i] = VERTS[index];// -norms[i] * 0.01f * size / VOXEL_DIMENSION;
-						uvs[i] = Vector2.up;
-					} else {
-						verts[i] = VERTS[index];
-						uvs[i] = Vector2.up;
-					}
-				}
-
-				Mesh m = obs[obIndex].GetComponent<MeshFilter>().sharedMesh;
-				m.triangles = null;
-				m.normals = null;
-				m.uv = null;
-				m.vertices = null;
-				m.vertices = verts;
-				m.normals = norms;
-				m.uv = uvs;
-				m.triangles = tris[substance].ToArray();
-				m.RecalculateBounds();
-				m.Optimize();
-				MeshRenderer rend = obs[obIndex].GetComponent<MeshRenderer>();
-				rend.sharedMaterial = control.voxelSubstances[substance].renderMaterial;
-//				rend.sharedMaterial.renderQueue = substance;
-				rend.enabled = true;
+				assignMesh(obs[obIndex], substance, substanceVertices[substance], MATS, tris[substance].ToArray());
 				++obIndex;
 			}
 
 
 
 			addPolyCount();
-			//obs[0].GetComponent<MeshRenderer>().enabled = true;
 			if (control.createColliders) {
 				collider.enabled = false;
 				if (VoxelBlock.isRenderSize(size, control))
@@ -269,6 +230,56 @@ namespace Vox {
 			}
 			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
 			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
+		}
+
+		protected GameObject createRendererGameObject() {
+			GameObject gameObject = new GameObject("Voxel Section");
+			gameObject.isStatic = control.useStaticMeshes;
+			Transform t = gameObject.transform;
+			t.parent = control.transform;
+			t.localPosition = Vector3.zero;
+			t.hideFlags |= HideFlags.HideInHierarchy;
+			MeshRenderer rend = gameObject.AddComponent<MeshRenderer>();
+			rend.enabled = false;
+			rend.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.BlendProbesAndSkybox;
+			EditorUtility.SetSelectedWireframeHidden(rend, true);
+			gameObject.AddComponent<MeshFilter>().sharedMesh = new Mesh();
+			return gameObject;
+		}
+
+		protected void assignMesh(GameObject meshObject, byte substance, Dictionary<int, int> substanceVertices, byte[] MATS, int[] triangles) {
+			Vector3[] verts = new Vector3[substanceVertices.Count];
+			Vector3[] norms = new Vector3[substanceVertices.Count];
+			Vector2[] uvs = new Vector2[substanceVertices.Count];
+			foreach (int index in substanceVertices.Keys) {
+				int i = substanceVertices[index];
+				norms[i] = NORMS[index];
+				if (MATS[index] < substance) {
+					verts[i] = VERTS[index] +norms[i] * 0.01f *Mathf.Pow(size, 1.5f) /VOXEL_DIMENSION;
+					uvs[i] = Vector2.zero;
+				} else if (MATS[index] > substance) {
+					verts[i] = VERTS[index];// -norms[i] * 0.01f * size / VOXEL_DIMENSION;
+					uvs[i] = Vector2.up;
+				} else {
+					verts[i] = VERTS[index];
+					uvs[i] = Vector2.up;
+				}
+			}
+			Mesh m = meshObject.GetComponent<MeshFilter>().sharedMesh;
+			m.triangles = null;
+			m.normals = null;
+			m.uv = null;
+			m.vertices = null;
+			m.vertices = verts;
+			m.normals = norms;
+			m.uv = uvs;
+			m.triangles = triangles;
+			m.RecalculateBounds();
+			m.Optimize();
+			MeshRenderer rend = meshObject.GetComponent<MeshRenderer>();
+			rend.sharedMaterial = control.voxelSubstances[substance].renderMaterial;
+//			rend.sharedMaterial.renderQueue = substance;
+			rend.enabled = true;
 		}
 
 		public void setupMeshes() {
