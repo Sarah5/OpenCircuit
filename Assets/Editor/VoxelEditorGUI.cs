@@ -42,7 +42,7 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public override void OnInspectorGUI() {
-		ob.Update();
+//		ob.Update();
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 
 		editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, GUILayout.MinHeight(20));
@@ -65,6 +65,8 @@ public class VoxelEditorGUI : Editor {
 		
 		// finally, apply the changes
 		ob.ApplyModifiedProperties();
+
+		editor.Update();
 	}
 
 	protected void doMaskGUI() {
@@ -99,8 +101,14 @@ public class VoxelEditorGUI : Editor {
 			break;
 
 		case 1:
-			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
-			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Dimensions");
+			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
+			editor.cubeBrushDimensions.y = EditorGUILayout.FloatField(editor.cubeBrushDimensions.y);
+			editor.cubeBrushDimensions.z = EditorGUILayout.FloatField(editor.cubeBrushDimensions.z);
+//			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
+//			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
+			GUILayout.EndHorizontal();
 
 			editor.cubeBrushMaterial = (byte)GUILayout.SelectionGrid(editor.cubeBrushMaterial, materials, 1);
 			break;
@@ -201,24 +209,39 @@ public class VoxelEditorGUI : Editor {
 
 		// generation
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		editor.Update();
-		string generateButtonName = editor.hasGeneratedData()? "Regenerate": "Generate";
+		string generateButtonName = editor.hasVoxelData()? "Regenerate": "Generate";
 		if (GUILayout.Button(generateButtonName)) {
 			if (editor.voxelMaterials.Length < 1) {
 				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel material defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog(generateButtonName +" Voxels?", "Are you sure you want to generate the voxel terain from scratch?", "Yes", "No")) {
 				editor.wipe();
 				editor.init();
+				editor.generateRenderers();
 			}
 		}
-		if (editor.hasGeneratedData()) {
+		if (editor.hasVoxelData()) {
 			if (GUILayout.Button("Clear")) {
 				if (EditorUtility.DisplayDialog("Clear Voxels?", "Are you sure you want to clear all voxel data?", "Yes", "No")) {
 					editor.wipe();
 				}
 			}
+			if (GUILayout.Button("Reskin")) {
+				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Yes", "No")) {
+					editor.generateRenderers();
+				}
+			}
+			if (GUILayout.Button("Export")) {
+				editor.export(EditorUtility.SaveFilePanel("Choose File to Export To", "", "Voxels", "vox"));
+			}
 		}
-		EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
+		if (GUILayout.Button("Import")) {
+			if (!editor.import(EditorUtility.OpenFilePanel("Choose File to Export To", "", "vox"))) {
+				EditorUtility.DisplayDialog("Wrong Voxel Format", "The file you chose was an unknown or incompatible voxel format version.", "OK");
+			}
+		}
+		lock(editor.renderers) {
+			EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
+		}
 		EditorGUILayout.Separator();
 	}
 

@@ -22,8 +22,8 @@ public class RoboEyes : AbstractRobotComponent {
 			Vector3 dir = objPos - transform.position;
 			dir.Normalize();
 			float angle = Vector3.Angle(dir, transform.forward);
-			print (roboController.gameObject.name);
-			print (angle);
+//			print (roboController.gameObject.name);
+//			print (angle);
 			if(angle < fieldOfViewAngle * 0.5f) {
 				Physics.Raycast (transform.position, dir, out hit, sightDistance);
 				if (hit.transform == obj ) {//&& Vector3.Dot (transform.forward.normalized, (objPos - transform.position).normalized) > 0) {

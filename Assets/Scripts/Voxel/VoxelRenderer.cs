@@ -42,8 +42,16 @@ namespace Vox {
 
 		public void clear() {
 			lock (this) {
-				if (control != null)
-					control.renderers.Remove(index);
+				if (control != null) {
+					lock(control.renderers) {
+						control.renderers.Remove(index);
+						if (control.getHead() != null) {
+							VoxelHolder block = control.getHead().get(index);
+							if (block.GetType() == typeof(VoxelBlock))
+								((VoxelBlock)block).renderer = null;
+						}
+					}
+				}
 				removePolyCount();
 				if (obs != null)
 					foreach (GameObject ob in obs) {
@@ -64,7 +72,9 @@ namespace Vox {
 			VERTS = new Vector3[0];
 			NORMS = new Vector3[0];
 			TRIS = new int[0];
-			control.renderers[index] = this;
+			lock(control.renderers) {
+				control.renderers[index] = this;
+			}
 		}
 
 //		public VoxelBlock getBlock() {
@@ -788,25 +798,25 @@ namespace Vox {
 		}
 
 		private void removePolyCount() {
-			lock(this) {
-				if (obs != null) {
-					foreach (GameObject ob in obs) {
-						triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-						vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
-					}
-				}
-			}
+//			lock(this) {
+//				if (obs != null) {
+//					foreach (GameObject ob in obs) {
+//						triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+//						vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+//					}
+//				}
+//			}
 		}
 
 		private void addPolyCount() {
-			lock(this) {
-				if (obs != null) {
-					foreach (GameObject ob in obs) {
-						triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-						vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
-					}
-				}
-			}
+//			lock(this) {
+//				if (obs != null) {
+//					foreach (GameObject ob in obs) {
+//						triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+//						vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+//					}
+//				}
+//			}
 		}
 	}
 

@@ -22,6 +22,7 @@ namespace Vox {
 
 		protected void apply() {
 			traverse(control.getBaseUpdateInfo(), control.maxDetail);
+			control.dirty = true;
 		}
 
 		protected void traverse(VoxelUpdateInfo info, byte detailLevel) {

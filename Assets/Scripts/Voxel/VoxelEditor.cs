@@ -19,25 +19,35 @@ namespace Vox {
 		public Texture2D materialMap;
 
 		// editor data
+		[System.NonSerialized]
 		public int selectedMode = 0;
+		[System.NonSerialized]
 		public int selectedBrush = 0;
+		[System.NonSerialized]
 		public float sphereBrushSize = 1;
+		[System.NonSerialized]
 		public byte sphereBrushMaterial = 0;
+		[System.NonSerialized]
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
+		[System.NonSerialized]
 		public byte cubeBrushMaterial = 0;
 
 
 		public void Awake() {
-			if (Application.isPlaying) {
+			if (Application.isPlaying && !hasRenderers()) {
 				init();
 			}
 		}
 
 		public void init() {
-			if (useHeightmap)
-				initializeHeightmap();
-			else
-				initialize();
+			initialize();
+			if (useHeightmap) {
+//				initializeHeightmap();
+				loadData();
+			} else {
+//				initialize();
+				genData(0);
+			}
 		}
 
 		public void loadData() {
@@ -55,26 +65,24 @@ namespace Vox {
 			}
 		}
 		
-		public void initializeHeightmap() {
-			
-			head = new VoxelBlock();
-			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
-			
-			sizes = new float[maxDetail + 1];
-			float s = BaseSize;
-			for (int i = 0; i <= maxDetail; ++i) {
-				sizes[i] = s;
-				s /= 2;
-			}
-			cam = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Camera>();
-			loadData();
-			
-			applyRenderers();
-			
-			updateLocalCamPosition();
-			
-			enqueueCheck(new UpdateCheckJob(head, this, 0));
-		}
+//		public void initializeHeightmap() {
+//			
+//			head = new VoxelBlock();
+//			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
+//			
+//			sizes = new float[maxDetail + 1];
+//			float s = BaseSize;
+//			for (int i = 0; i <= maxDetail; ++i) {
+//				sizes[i] = s;
+//				s /= 2;
+//			}
+//			cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<Camera>();
+////			loadData();
+//			
+////			updateLocalCamPosition();
+//			
+////			enqueueCheck(new UpdateCheckJob(head, this, 0));
+//		}
 		
 		public void saveData() {
 			BinaryFormatter b = new BinaryFormatter();
@@ -83,8 +91,14 @@ namespace Vox {
 			f.Close();
 		}
 
-		public bool hasGeneratedData() {
-			return getHead() != null || renderers.Count > 0;
+		public bool hasVoxelData() {
+			return getHead() != null;
+		}
+
+		public bool hasRenderers() {
+			lock(renderers) {
+				return renderers.Count > 0;
+			}
 		}
 	}
 }

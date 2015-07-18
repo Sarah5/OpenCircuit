@@ -175,6 +175,7 @@ namespace Vox {
 					}
 				}
 			}
+			control.dirty = true;
 		}
 
 		public void setToHeightmap(byte detailLevel, int x, int y, int z, ref float[,] map, byte[,] mats, VoxelTree control) {
