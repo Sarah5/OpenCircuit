@@ -1,5 +1,5 @@
 ﻿
-Shader "Voxel/Normal" {
+Shader "Voxel/NormalBlend" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
@@ -12,6 +12,7 @@ Shader "Voxel/Normal" {
 		_Blend ("Blend Sharpness", Float) = 4
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_CutoffLevel("Alpha Cutoff Level", Range(0,1)) = 0.0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -22,7 +23,7 @@ Shader "Voxel/Normal" {
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
 		#pragma vertex vertexFunc
-		#pragma surface surfaceFunc Standard fullforwardshadows
+		#pragma surface surfaceFunc Standard fullforwardshadows alphatest:_CutoffLevel
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -41,7 +42,7 @@ Shader "Voxel/Normal" {
 		fixed4 _Color;
 		
 		struct Input {
-			float2 uv_MainTex;
+			float2 uv_TexWallDif;
 			float4 pos;
 			float3 b;
 			float alpha;
@@ -88,7 +89,7 @@ Shader "Voxel/Normal" {
 			o.Normal = UnpackNormal(height);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-			o.Alpha = IN.alpha;
+			o.Alpha = height.a -IN.uv_TexWallDif.y;
 		}
 		ENDCG
 	} 
