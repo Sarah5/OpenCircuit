@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: VoxelLushRock
+  m_Name: VoxelLush
   m_Shader: {fileID: 4800000, guid: 7f79771678d1c9b4d8202740c6c4f2fc, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -132,11 +132,19 @@ Material:
       data:
         first:
           name: _Scale
-        second: .25
+        second: .5
       data:
         first:
           name: _Cutoff
         second: .5
+      data:
+        first:
+          name: _Glossiness
+        second: .100000001
+      data:
+        first:
+          name: _Metallic
+        second: 0
       data:
         first:
           name: _Parallax
@@ -145,10 +153,6 @@ Material:
         first:
           name: _ZWrite
         second: 1
-      data:
-        first:
-          name: _Glossiness
-        second: .100000001
       data:
         first:
           name: _BumpScale
@@ -168,10 +172,6 @@ Material:
       data:
         first:
           name: _Mode
-        second: 0
-      data:
-        first:
-          name: _Metallic
         second: 0
       data:
         first:
