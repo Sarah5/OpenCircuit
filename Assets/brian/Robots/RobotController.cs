@@ -6,6 +6,7 @@ public class RobotController : MonoBehaviour {
 
 	//private Dictionary<string, AbstractRobotComponent> abilities
 	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
+	public RobotInterest[] locations;
 
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
@@ -27,7 +28,10 @@ public class RobotController : MonoBehaviour {
 
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		original = gameObjectRenderer.material;
-
+		foreach (RobotInterest location in locations) {
+			sightingFound(location);
+			trackedTargets.Add(location);
+		}
 	}
 
 	// Update is called once per frame
