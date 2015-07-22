@@ -80,7 +80,7 @@ Shader "Voxel/NormalBlend" {
 			if (v.normal.y < 0) o.b.y = -o.b.y;
 			
 			#ifdef IS_BASE
-			o.alpha = 0;
+			o.alpha = 1;
 			#endif
 			
 			#ifdef IS_X
@@ -101,7 +101,7 @@ Shader "Voxel/NormalBlend" {
 			o.Normal = UnpackNormal(height);
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-			o.Alpha = height.a -IN.alpha;
+			o.Alpha = height.a +IN.alpha -1;
 		}
 		ENDCG
 	} 

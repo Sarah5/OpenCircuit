@@ -140,8 +140,6 @@ namespace Vox {
 			if (TRIS.Length < 1 && (obs == null || obs.Length < 1))
 				return;
 
-			removePolyCount();
-
 			// generate the collider mesh and attach it to the voxel tree's game object
 			if (control.createColliders) {
 				if (collider == null) {
@@ -162,67 +160,61 @@ namespace Vox {
 				colMesh.Optimize();
 			}
 
-
-
-			Dictionary<byte, Dictionary<int, int>> substanceVertices = new Dictionary<byte, Dictionary<int, int>>();
-			byte[] MATS = new byte[VERTS.Length];
+			// convert the vertexSubstances structure into a more directly usable format
+			byte[] substanceToVertices = new byte[VERTS.Length];
 			foreach (int index in vertices.Keys) {
 				if (vertexSubstances.ContainsKey(index)) {
 					byte substance = vertexSubstances[index];
-					MATS[(int)vertices[index]] = substance;
-					if (!substanceVertices.ContainsKey(substance))
-						substanceVertices[substance] = new Dictionary<int, int>();
-					substanceVertices[substance][(int)vertices[index]] = substanceVertices[substance].Count;
+					substanceToVertices[(int)vertices[index]] = substance;
 				}
 			}
 			
-			// build triangle lists for each mesh from the master triangle list
-			List<int>[] tris = new List<int>[byte.MaxValue];
-			foreach(byte key in substanceVertices.Keys)
-				tris[key] = new List<int>(TRIS.Length /substanceVertices.Count);
+			// build triangle and vertex lists for each mesh from the master triangle list
+			Dictionary<SubstanceCollection, Dictionary<int, int>> substanceVertices = new Dictionary<SubstanceCollection, Dictionary<int, int>>();
+			Dictionary<SubstanceCollection, List<int>> substanceTriangles = new Dictionary<SubstanceCollection, List<int>>();
 			for(int i=0; i<TRIS.Length; i+=3) {
-				List<byte> prevMats = new List<byte>(3);
-				for (int j = 0; j < 3; ++j) {
-					byte mat = MATS[TRIS[i + j]];
-					if (!prevMats.Contains(mat)) {
-						Dictionary<int, int> matVerts = substanceVertices[mat];
-						for (int k = 0; k < 3; ++k) {
-							int vert = TRIS[i + k];
-							if (!matVerts.ContainsKey(vert))
-								matVerts[vert] = matVerts.Count;
-							tris[mat].Add(matVerts[vert]);
-						}
-						prevMats.Add(mat);
-					}
+				SubstanceCollection subs = new SubstanceCollection();
+				for(int j=0; j<3; ++j) {
+					byte sub = substanceToVertices[TRIS[i +j]];
+					subs.add(sub);
+				}
+				if (!substanceTriangles.ContainsKey(subs)) {
+					substanceTriangles[subs] = new List<int>(TRIS.Length /substanceToVertices.Length);
+					substanceVertices[subs] = new Dictionary<int, int>();
+				}
+				List<int> specificSubstanceTriangles = substanceTriangles[subs];
+				Dictionary<int, int> specificSubstanceVertexIndices = substanceVertices[subs];
+				for(int j=0; j<3; ++j) {
+					int vertexIndex = TRIS[i +j];
+					if (!specificSubstanceVertexIndices.ContainsKey(vertexIndex))
+						specificSubstanceVertexIndices[vertexIndex] = specificSubstanceVertexIndices.Count;
+					specificSubstanceTriangles.Add(specificSubstanceVertexIndices[vertexIndex]);
 				}
 			}
 
 			// create and initialize the game objects which will have the mesh renderers attached to them
-			GameObject[] oldObs = obs;
-			obs = new GameObject[substanceVertices.Count];
-			if (oldObs != null && oldObs.Length > obs.Length) {
+			GameObject[] oldObs = (obs == null)? new GameObject[0]: obs;
+			obs = new GameObject[substanceTriangles.Count];
+			if (oldObs.Length > obs.Length) {
 				Array.Copy(oldObs, obs, obs.Length);
 				for (int i = obs.Length; i < oldObs.Length; ++i) {
 					GameObject.DestroyImmediate(oldObs[i]);
 				}
 			} else {
-				if (oldObs != null)
-					Array.Copy(oldObs, obs, oldObs.Length);
-				for(int i=(oldObs==null)?0:oldObs.Length; i<obs.Length; ++i) {
+				Array.Copy(oldObs, obs, oldObs.Length);
+				for(int i=oldObs.Length; i<obs.Length; ++i) {
 					obs[i] = createRendererGameObject();
 				}
 			}
 
 			// Assign vertex data to the game object meshes
 			int obIndex = 0;
-			foreach (byte substance in substanceVertices.Keys) {
-				assignMesh(obs[obIndex], substance, substanceVertices[substance], MATS, tris[substance].ToArray());
+			foreach (SubstanceCollection substances in substanceTriangles.Keys) {
+				assignMesh(obs[obIndex], substances, substanceVertices[substances], substanceTriangles[substances], substanceToVertices);
 				++obIndex;
 			}
 
-
-
-			addPolyCount();
+			// refresh collider
 			if (control.createColliders) {
 				collider.enabled = false;
 				if (VoxelBlock.isRenderSize(size, control))
@@ -247,24 +239,57 @@ namespace Vox {
 			return gameObject;
 		}
 
-		protected void assignMesh(GameObject meshObject, byte substance, Dictionary<int, int> substanceVertices, byte[] MATS, int[] triangles) {
-			Vector3[] verts = new Vector3[substanceVertices.Count];
-			Vector3[] norms = new Vector3[substanceVertices.Count];
-			Vector2[] uvs = new Vector2[substanceVertices.Count];
-			foreach (int index in substanceVertices.Keys) {
-				int i = substanceVertices[index];
+		protected void assignMesh(GameObject meshObject, SubstanceCollection substances, Dictionary<int, int> vertices, List<int> triangles, byte[] MATS) {
+			Vector3[] verts = new Vector3[vertices.Count];
+			Vector3[] norms = new Vector3[vertices.Count];
+			Vector2[] uvs = new Vector2[vertices.Count];
+
+			// create the vertex, normal, and uv arrays
+			foreach (int index in vertices.Keys) {
+				int i = vertices[index];
 				norms[i] = NORMS[index];
-				if (MATS[index] < substance) {
-					verts[i] = VERTS[index] +norms[i] * 0.01f *Mathf.Pow(size, 1.5f) /VOXEL_DIMENSION;
+				verts[i] = VERTS[index];
+				switch(substances.getSubstanceRelativeIndex(MATS[index])) {
+				case 0:
 					uvs[i] = Vector2.zero;
-				} else if (MATS[index] > substance) {
-					verts[i] = VERTS[index];// -norms[i] * 0.01f * size / VOXEL_DIMENSION;
+					break;
+				case 1:
+					uvs[i] = Vector2.right;
+					break;
+				case 2:
 					uvs[i] = Vector2.up;
-				} else {
-					verts[i] = VERTS[index];
-					uvs[i] = Vector2.up;
+					break;
 				}
 			}
+
+			// apply the render materials to the renderer
+			MeshRenderer rend = meshObject.GetComponent<MeshRenderer>();
+			byte[] substanceArray = substances.getSubstances();
+			if (substanceArray.Length == 1) {
+				Material material = new Material(control.voxelSubstances[substanceArray[0]].renderMaterial);
+				material.EnableKeyword("IS_BASE");
+				rend.material = material;
+			} else {
+				Material[] materials = new Material[substanceArray.Length];
+				for(int i=0; i<materials.Length; ++i) {
+					Material material = new Material(control.voxelSubstances[substanceArray[i]].blendMaterial);
+					material.renderQueue = i;
+					switch(i) {
+					case 0:
+						material.EnableKeyword("IS_BASE");
+						break;
+					case 1:
+						material.EnableKeyword("IS_X");
+						break;
+					case 2:
+						material.EnableKeyword("IS_Y");
+						break;
+					}
+					materials[i] = material;
+				}
+				rend.materials = materials;
+			}
+			
 			Mesh m = meshObject.GetComponent<MeshFilter>().sharedMesh;
 			m.triangles = null;
 			m.normals = null;
@@ -273,12 +298,9 @@ namespace Vox {
 			m.vertices = verts;
 			m.normals = norms;
 			m.uv = uvs;
-			m.triangles = triangles;
+			m.triangles = triangles.ToArray();
 			m.RecalculateBounds();
 			m.Optimize();
-			MeshRenderer rend = meshObject.GetComponent<MeshRenderer>();
-			rend.sharedMaterial = control.voxelSubstances[substance].renderMaterial;
-//			rend.sharedMaterial.renderQueue = substance;
 			rend.enabled = true;
 		}
 
