@@ -43,6 +43,7 @@ namespace Vox {
 		public VoxelBlock head;
 		[HideInInspector]
 		public float[] sizes;
+		[System.NonSerialized]
 		public RendererDict renderers = new RendererDict();
 		public byte[] voxelData = new byte[0];
 		public bool dirty = true;
@@ -284,13 +285,13 @@ namespace Vox {
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
 				stream.Close();
 			}
-			lock(renderers) {
-				foreach (VoxelRenderer rend in renderers.Values) {
-					rend.control = this;
-//					rend.setupMeshes();
-					((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
-				}
-			}
+//			lock(renderers) {
+//				foreach (VoxelRenderer rend in renderers.Values) {
+//					rend.control = this;
+////					rend.setupMeshes();
+//					((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
+//				}
+//			}
 		}
 		
 		public bool import(string fileName) {
