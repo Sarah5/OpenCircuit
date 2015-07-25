@@ -73,6 +73,10 @@ namespace Vox {
 			}
 		}
 
+//		~VoxelRenderer() {
+//			clear();
+//		}
+
 		public void genMesh(VoxelUpdateInfo info) {
 			size = info.size;
 
@@ -144,13 +148,11 @@ namespace Vox {
 			if (control.createColliders) {
 				if (collider == null) {
 					Mesh m = new Mesh();
-					m.MarkDynamic();
 					collider = control.gameObject.AddComponent<MeshCollider>();
 					collider.sharedMesh = m;
-					collider.hideFlags = HideFlags.HideInInspector;
+					collider.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 				}
 				Mesh colMesh = collider.sharedMesh;
-
 				colMesh.triangles = null;
 				colMesh.normals = null;
 				colMesh.vertices = VERTS;
@@ -227,6 +229,7 @@ namespace Vox {
 		protected GameObject createRendererGameObject() {
 			GameObject gameObject = new GameObject("Voxel Section");
 			gameObject.isStatic = control.useStaticMeshes;
+			gameObject.hideFlags |= HideFlags.DontSave;
 			Transform t = gameObject.transform;
 			t.parent = control.transform;
 			t.localPosition = Vector3.zero;
@@ -268,12 +271,14 @@ namespace Vox {
 			if (substanceArray.Length == 1) {
 				Material material = new Material(control.voxelSubstances[substanceArray[0]].renderMaterial);
 				material.EnableKeyword("IS_BASE");
+				material.hideFlags = HideFlags.HideAndDontSave;
 				rend.material = material;
 			} else {
 				Material[] materials = new Material[substanceArray.Length];
 				for(int i=0; i<materials.Length; ++i) {
 					Material material = new Material(control.voxelSubstances[substanceArray[i]].blendMaterial);
 					material.renderQueue = i;
+					material.hideFlags = HideFlags.HideAndDontSave;
 					switch(i) {
 					case 0:
 						material.EnableKeyword("IS_BASE");
