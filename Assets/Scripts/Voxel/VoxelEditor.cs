@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -7,8 +8,11 @@ using System.IO;
 namespace Vox {
 
 	[AddComponentMenu("Scripts/Voxel/VoxelEditor")]
+	[ExecuteInEditMode]
 	public class VoxelEditor : VoxelTree {
 
+		protected static readonly Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
+		
 		public bool useHeightmap;
 		public Texture2D[] heightmaps;
 		public byte[] heightmapSubstances;
@@ -31,6 +35,8 @@ namespace Vox {
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
 		[System.NonSerialized]
 		public byte cubeBrushSubstance = 0;
+		[System.NonSerialized]
+		public bool drawGhostBrush = true;
 
 
 		public void Awake() {
@@ -100,5 +106,66 @@ namespace Vox {
 				return renderers.Count > 0;
 			}
 		}
+
+		public void OnDrawGizmosSelected() {
+			if (drawGhostBrush && selectedMode == 1) {
+				Ray mouseRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+				Gizmos.color = brushGhostColor;
+				switch(selectedBrush) {
+				case 0:
+					Gizmos.DrawSphere(getRayCollision(mouseRay).point, sphereBrushSize);
+					break;
+				case 1:
+					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions /2), getRayCollision(mouseRay).point);
+					break;
+				}
+			}
+		}
+		
+		public static RaycastHit getRayCollision(Ray ray) {
+			RaycastHit firstHit = new RaycastHit();
+			firstHit.distance = float.PositiveInfinity;
+			foreach(RaycastHit hit in Physics.RaycastAll(ray)) {
+				if (hit.distance < firstHit.distance) {
+					firstHit = hit;
+				}
+			}
+			return firstHit;
+		}
+
+		protected Mesh generateRectangleMesh(Vector3 scale) {
+			Mesh mesh = new Mesh();
+			Vector3[] vertices = new Vector3[] {
+				new Vector3(-1, -1, -1),
+				new Vector3( 1, -1, -1),
+				new Vector3(-1,  1, -1),
+				new Vector3( 1,  1, -1),
+				new Vector3(-1, -1,  1),
+				new Vector3( 1, -1,  1),
+				new Vector3(-1,  1,  1),
+				new Vector3( 1,  1,  1),
+			};
+			for(int i=0; i<vertices.Length; ++i) {
+				vertices[i] = new Vector3(vertices[i].x *scale.x, vertices[i].y *scale.y, vertices[i].z *scale.z);
+			}
+			mesh.vertices = vertices;
+			mesh.normals = new Vector3[vertices.Length];
+			mesh.triangles = new int[] {
+				0, 1, 5,
+				5, 4, 0,
+				2, 7, 3,
+				7, 2, 6,
+				0, 3, 1,
+				2, 3, 0,
+				4, 5, 7,
+				6, 4, 7,
+				1, 3, 5,
+				5, 3, 7,
+				0, 4, 2,
+				4, 6, 2,
+			};
+			return mesh;
+		}
+
 	}
 }

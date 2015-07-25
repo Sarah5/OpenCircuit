@@ -5,25 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-//[System.Serializable]
-//public class VoxelEditorGUI {
-
-//	//int size = 256;
-//	//int power = 8;
-//	string name;
-//	int amount = 1;
-//	int unit;
-
-//}
-
-
 [CustomEditor(typeof(Vox.VoxelEditor))]
 public class VoxelEditorGUI : Editor {
 
 	protected const string numForm = "##,0.000";
 	protected const string numFormInt = "##,#";
-	protected readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Masks")};
-	protected readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
+	protected static readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Masks")};
+	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
 
 	private SerializedObject ob;
 	
@@ -74,6 +62,9 @@ public class VoxelEditorGUI : Editor {
 
 	protected void doSculptGUI() {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+
+		// brush ghost
+		editor.drawGhostBrush = EditorGUILayout.Toggle ("Show Ghost Brush", editor.drawGhostBrush);
 
 		// brush list
 		editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
@@ -267,11 +258,14 @@ public class VoxelEditorGUI : Editor {
 				Event.current.Use();
 			}
 			break;
+		case EventType.MouseMove:
+			SceneView.RepaintAll();
+			break;
 		}
 	}
 
 	protected static void addBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-		Vector3 point = getRayCollision(mouseLocation).point;
+		Vector3 point = Vox.VoxelEditor.getRayCollision(mouseLocation).point;
 		switch(editor.selectedBrush) {
 		case 0:
 			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, byte.MaxValue), true);
@@ -283,7 +277,7 @@ public class VoxelEditorGUI : Editor {
 	}
 	
 	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-		Vector3 point = getRayCollision(mouseLocation).point;
+		Vector3 point = Vox.VoxelEditor.getRayCollision(mouseLocation).point;
 		switch(editor.selectedBrush) {
 		case 0:
 			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
@@ -292,17 +286,6 @@ public class VoxelEditorGUI : Editor {
 			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
 			break;
 		}
-	}
-
-	protected static RaycastHit getRayCollision(Ray ray) {
-		RaycastHit firstHit = new RaycastHit();
-		firstHit.distance = float.PositiveInfinity;
-		foreach(RaycastHit hit in Physics.RaycastAll(ray)) {
-			if (hit.distance < firstHit.distance) {
-				firstHit = hit;
-			}
-		}
-		return firstHit;
 	}
 
 }

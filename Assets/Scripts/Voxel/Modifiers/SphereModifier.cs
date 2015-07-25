@@ -6,6 +6,7 @@ namespace Vox {
 	public class SphereModifier : Modifier {
 
 		public VoxelHolder value;
+		public bool overwriteSubstance;
 
 		public SphereModifier(VoxelTree control, Vector3 worldPosition, float worldRadius, VoxelHolder value, bool updateMesh)
 			: base(control, updateMesh) {
@@ -28,7 +29,8 @@ namespace Vox {
 			if (dis < minDis)
 				return value;
 			byte newOpacity = (byte)((original.averageOpacity() * (dis - minDis) + value.averageOpacity() * (maxDis - dis)) / 2);
-			if ((dis - minDis) > 0.5f)
+			if (newOpacity >= 2 *original.averageOpacity() ||
+			    (overwriteSubstance && dis < radius))
 				return new Voxel(value.averageMaterialType(), newOpacity);
 			return new Voxel(original.averageMaterialType(), newOpacity);
 		}
