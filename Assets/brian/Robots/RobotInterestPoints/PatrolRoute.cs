@@ -7,6 +7,7 @@ public class PatrolRoute : RobotInterest {
 
 	void Awake() {
 		Type = "patrolRoute";
+		//possibleActions.Add (new PursueAction (this));
 		points = GetComponentsInChildren<RoutePoint> ();
 		for (int i = 0; i < points.Length; i++) {
 			if (i < points.Length - 1) {

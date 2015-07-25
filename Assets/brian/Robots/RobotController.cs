@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class RobotController : MonoBehaviour {
 
-	//private Dictionary<string, AbstractRobotComponent> abilities
+	private PriorityQueue availableActions = new PriorityQueue ();
 	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
 	public RobotInterest[] locations;
 
