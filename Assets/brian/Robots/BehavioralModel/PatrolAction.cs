@@ -28,7 +28,7 @@ public class PatrolAction : Action {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			jet.setAvailability(true);
-			jet.setTarget = null;
+			jet.setTarget(null);
 		}
 	}
 
