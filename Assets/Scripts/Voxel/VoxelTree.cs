@@ -265,6 +265,7 @@ namespace Vox {
 			if (head != null) {
 				head = null;
 			}
+			dirty = true;
 		}
 
 		//public void OnGUI() {
@@ -274,7 +275,7 @@ namespace Vox {
 		//}
 		
 		public void OnBeforeSerialize() {
-			if (voxelData.Length < 1 || dirty) {
+			if (voxelData.Length < 1 || dirty || head == null) {
 				dirty = false;
 				voxelData = new byte[0];
 				if (getHead() != null) {
@@ -308,6 +309,7 @@ namespace Vox {
 				return false;
 			} else {
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
+				dirty = true;
 				stream.Close();
 				return true;
 			}
