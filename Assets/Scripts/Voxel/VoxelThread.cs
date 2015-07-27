@@ -56,6 +56,10 @@ namespace Vox {
 			//MonoBehaviour.print("WHO's your daddy?");
 		}
 
+		public static int getJobCount() {
+			return updateQueue.count;
+		}
+
 		//private static void checkThreadReader() {
 		//	//while (true) {
 		//		while (updateCheckQueue.Count > 0) {
