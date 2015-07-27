@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RoutePoint : RobotInterest {
 	private RoutePoint next;
@@ -19,5 +20,10 @@ public class RoutePoint : RobotInterest {
 
 	protected override bool isVisible()  {
 		return false;
+	}
+
+	public override List<Action> getAvailableActions (RobotController controller) {
+		List<Action> actions = base.getAvailableActions (controller);
+		return actions;
 	}
 }

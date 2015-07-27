@@ -33,6 +33,12 @@ public class PatrolRoute : RobotInterest {
 		return min;
 	}
 
+	public override List<Action> getAvailableActions (RobotController controller) {
+		List<Action> actions = base.getAvailableActions (controller);
+		actions.Add(new PatrolAction(controller, this));
+		return actions;
+	}
+
 	protected override bool isVisible()  {
 		return false;
 	}

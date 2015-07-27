@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class PriorityQueue {
 	
 	List<Prioritizable> list = new List<Prioritizable>();
 
 	public void Enqueue (Prioritizable p) {
+		if (p == null) {
+			throw new NullReferenceException("PriorityQueue does not accept null objects");
+		}
 		float min = 0;
 		if (list.Count == 0) {
 				list.Add(p);
