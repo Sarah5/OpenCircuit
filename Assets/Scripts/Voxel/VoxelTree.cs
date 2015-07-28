@@ -46,6 +46,7 @@ namespace Vox {
 		[System.NonSerialized]
 		public RendererDict renderers = new RendererDict();
 		public byte[] voxelData = new byte[0];
+		[System.NonSerialized]
 		public bool dirty = true;
 		[System.NonSerialized]
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
@@ -275,26 +276,30 @@ namespace Vox {
 		//}
 		
 		public void OnBeforeSerialize() {
-			if (voxelData.Length < 1 || dirty || head == null) {
-				dirty = false;
-				voxelData = new byte[0];
-				if (getHead() != null) {
-					MemoryStream stream = new MemoryStream();
-					BinaryWriter writer = new BinaryWriter(stream);
-					getHead().serialize(writer);
-					voxelData = stream.ToArray();
-					stream.Close();
+			lock(this) {
+				if (voxelData.Length < 1 || dirty || head == null) {
+					dirty = false;
+					voxelData = new byte[0];
+					if (getHead() != null) {
+						MemoryStream stream = new MemoryStream();
+						BinaryWriter writer = new BinaryWriter(stream);
+						getHead().serialize(writer);
+						voxelData = stream.ToArray();
+						stream.Close();
+					}
 				}
 			}
 		}
 
 		public void OnAfterDeserialize() {
 			clearRenderers();
-			if (voxelData.Length > 0) {
-				MemoryStream stream = new MemoryStream(voxelData);
-				BinaryReader reader = new BinaryReader(stream);
-				head = (VoxelBlock)VoxelHolder.deserialize(reader);
-				stream.Close();
+			lock (this) {
+				if (voxelData.Length > 0) {
+					MemoryStream stream = new MemoryStream(voxelData);
+					BinaryReader reader = new BinaryReader(stream);
+					head = (VoxelBlock)VoxelHolder.deserialize(reader);
+					stream.Close();
+				}
 			}
 		}
 		
