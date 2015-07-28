@@ -52,6 +52,8 @@ namespace Vox {
 		private Vector3 localCamPosition;
 		[System.NonSerialized]
 		private int updateCheckJobs;
+		[System.NonSerialized]
+		private bool generationPaused = false;
 
 
 
@@ -70,9 +72,6 @@ namespace Vox {
 				s /= 2;
 			}
 			updateCheckJobs = 0;
-			lock(this) {
-				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-			}
 
 			// initialize voxels
 			head = new VoxelBlock();
@@ -110,6 +109,12 @@ namespace Vox {
 				updateCounter = (updateCounter + 1) % 2;
 			}
 			applyQueuedMeshes();
+			if (generationPaused) {
+				if (VoxelThread.getJobCount() < 1 && jobQueue.Count < 1) {
+					generationPaused = false;
+					Time.timeScale = 1;
+				}
+			}
 		}
 
 		public void enqueueCheck(VoxelJob job) {
@@ -142,6 +147,9 @@ namespace Vox {
 		}
 
 		public void updateLocalCamPosition() {
+			lock(this) {
+				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+			}
 			localCamPosition = transform.TransformPoint(cam.transform.position);
 		}
 
@@ -240,6 +248,18 @@ namespace Vox {
 					e.Current.clear();
 				}
 			}
+			List<Transform> children = new List<Transform>(transform.childCount);
+			foreach(Transform child in transform) {
+				if ((child.hideFlags &  HideFlags.DontSave) != 0)
+					children.Add(child);
+			}
+			foreach(Transform child in children) {
+				GameObject.DestroyImmediate(child.gameObject);
+			}
+			foreach(MeshCollider collider in GetComponents<MeshCollider>()) {
+				if ((collider.hideFlags & HideFlags.HideInInspector) != 0)
+					GameObject.DestroyImmediate(collider);
+			}
 		}
 
 		public void generateRenderers() {
@@ -249,13 +269,11 @@ namespace Vox {
 		}
 
 		public void wipe() {
-//			lock(this) {
-//				jobQueue.Clear();
-//			}
 			clearRenderers();
 			if (head != null) {
 				head = null;
 			}
+			dirty = true;
 		}
 
 		//public void OnGUI() {
@@ -265,7 +283,7 @@ namespace Vox {
 		//}
 		
 		public void OnBeforeSerialize() {
-			if (voxelData.Length < 1 || dirty) {
+			if (voxelData.Length < 1 || dirty || head == null) {
 				dirty = false;
 				voxelData = new byte[0];
 				if (getHead() != null) {
@@ -279,19 +297,13 @@ namespace Vox {
 		}
 
 		public void OnAfterDeserialize() {
+//			clearRenderers();
 			if (voxelData.Length > 0) {
 				MemoryStream stream = new MemoryStream(voxelData);
 				BinaryReader reader = new BinaryReader(stream);
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
 				stream.Close();
 			}
-//			lock(renderers) {
-//				foreach (VoxelRenderer rend in renderers.Values) {
-//					rend.control = this;
-////					rend.setupMeshes();
-//					((VoxelBlock)(getHead().get(rend.index))).renderer = rend;
-//				}
-//			}
 		}
 		
 		public bool import(string fileName) {
@@ -305,6 +317,7 @@ namespace Vox {
 				return false;
 			} else {
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
+				dirty = true;
 				stream.Close();
 				return true;
 			}
@@ -318,6 +331,11 @@ namespace Vox {
 				getHead().serialize(writer);
 				stream.Close();
 			}
+		}
+
+		public void pauseForGeneration() {
+			generationPaused = true;
+			Time.timeScale = 0;
 		}
 
 		internal void enqueueMeshApply(VoxelJob job) {

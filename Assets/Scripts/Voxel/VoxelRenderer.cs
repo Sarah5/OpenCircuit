@@ -38,7 +38,7 @@ namespace Vox {
 
 
 		public void clear() {
-			lock (this) {
+//			lock (this) {
 				if (control != null) {
 					lock(control.renderers) {
 						control.renderers.Remove(index);
@@ -56,7 +56,7 @@ namespace Vox {
 					}
 				if (collider != null)
 					GameObject.DestroyImmediate(collider);
-			}
+//			}
 		}
 
 		public VoxelRenderer(VoxelIndex index, VoxelTree control, Vector3 localPosition) {
@@ -72,10 +72,6 @@ namespace Vox {
 				control.renderers[index] = this;
 			}
 		}
-
-//		~VoxelRenderer() {
-//			clear();
-//		}
 
 		public void genMesh(VoxelUpdateInfo info) {
 			size = info.size;

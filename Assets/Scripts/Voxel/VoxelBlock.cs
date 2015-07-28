@@ -236,6 +236,7 @@ namespace Vox {
 					}
 				}
 			}
+			control.dirty = true;
 		}
 
 		//public void setSphere(VoxelUpdateInfo info, byte detailLevel, Vector3 min, Vector3 max, Voxel value, VoxelControlV2 control) {
