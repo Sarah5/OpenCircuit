@@ -53,6 +53,8 @@ namespace Vox {
 		private Vector3 localCamPosition;
 		[System.NonSerialized]
 		private int updateCheckJobs;
+		[System.NonSerialized]
+		private bool generationPaused = false;
 
 
 
@@ -108,6 +110,12 @@ namespace Vox {
 				updateCounter = (updateCounter + 1) % 2;
 			}
 			applyQueuedMeshes();
+			if (generationPaused) {
+				if (VoxelThread.getJobCount() < 1 && jobQueue.Count < 1) {
+					generationPaused = false;
+					Time.timeScale = 1;
+				}
+			}
 		}
 
 		public void enqueueCheck(VoxelJob job) {
@@ -292,8 +300,8 @@ namespace Vox {
 		}
 
 		public void OnAfterDeserialize() {
-			clearRenderers();
-			lock (this) {
+//			clearRenderers();
+			lock(this) {
 				if (voxelData.Length > 0) {
 					MemoryStream stream = new MemoryStream(voxelData);
 					BinaryReader reader = new BinaryReader(stream);
@@ -328,6 +336,11 @@ namespace Vox {
 				getHead().serialize(writer);
 				stream.Close();
 			}
+		}
+
+		public void pauseForGeneration() {
+			generationPaused = true;
+			Time.timeScale = 0;
 		}
 
 		internal void enqueueMeshApply(VoxelJob job) {
