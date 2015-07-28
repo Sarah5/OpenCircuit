@@ -239,23 +239,23 @@ public class VoxelEditorGUI : Editor {
 		if (editor.selectedMode != 1)
 			return;
 		int controlId = GUIUtility.GetControlID(FocusType.Passive);
-		switch(Event.current.GetTypeForControl(controlId)) {
+		switch(UnityEngine.Event.current.GetTypeForControl(controlId)) {
 		case EventType.MouseDown:
-			if (Event.current.button == 0) {
+			if (UnityEngine.Event.current.button == 0) {
 				GUIUtility.hotControl = controlId;
-				if (Event.current.shift) {
-					subtractBrush(editor, HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+				if (UnityEngine.Event.current.shift) {
+					subtractBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
 				} else {
-					addBrush(editor, HandleUtility.GUIPointToWorldRay(Event.current.mousePosition));
+					addBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
 				}
-				Event.current.Use();
+				UnityEngine.Event.current.Use();
 			}
 			break;
 
 		case EventType.MouseUp:
-			if (Event.current.button == 0) {
+			if (UnityEngine.Event.current.button == 0) {
 				GUIUtility.hotControl = 0;
-				Event.current.Use();
+				UnityEngine.Event.current.Use();
 			}
 			break;
 		case EventType.MouseMove:
