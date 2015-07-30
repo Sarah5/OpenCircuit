@@ -42,5 +42,8 @@ public class PatrolAction : Action {
 		}
 	}
 
+	public override bool isStale() {
+		return false;
+	}
 
 }

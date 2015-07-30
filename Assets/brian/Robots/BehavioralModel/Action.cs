@@ -12,6 +12,7 @@ public abstract class Action : Prioritizable {
 		this.controller = controller;
 	}
 
+	public abstract bool isStale();
 	public abstract bool canExecute ();
 	public abstract void execute ();
 	public abstract void stopExecution();

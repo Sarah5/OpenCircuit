@@ -32,6 +32,11 @@ public class PursueAction : Action {
 		}
 	}
 
+	public override bool isStale() {
+		//TODO check if target is still visible
+		return false;
+	}
+
 	public override void onMessage(RobotMessage message) {
 	}
 }

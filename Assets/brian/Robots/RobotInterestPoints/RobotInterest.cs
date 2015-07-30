@@ -8,8 +8,6 @@ public class RobotInterest : MonoBehaviour {
 
 	public string Type = "";
 
-	protected RobotController agent = null;
-	
 	// Use this for initialization
 	void Start () {
 		//print ("called start on: " + this.GetType());
@@ -25,7 +23,6 @@ public class RobotInterest : MonoBehaviour {
 
 	public virtual List<Action> getAvailableActions (RobotController controller) {
 		List<Action> actions = new List<Action> ();
-		agent = controller;
 		return actions;
 	}
 }

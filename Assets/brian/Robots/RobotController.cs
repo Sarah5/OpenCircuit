@@ -8,27 +8,16 @@ public class RobotController : MonoBehaviour {
 	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
 	public RobotInterest[] locations;
 
-	//private List<Action> currentActions = new List<Action>();
 	private Action currentAction = null;
 
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
-	HoverJet jet = null;
-	RobotArms arms = null;
-	NavMeshAgent agent = null;
-
-	private Material original;
-
+	
 	Queue<RobotMessage> messageQueue = new Queue<RobotMessage>();
 
 
 	void Start() {
-		arms = GetComponentInChildren<RobotArms>();
-		agent = GetComponentInChildren<NavMeshAgent>();
-
-
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
-		original = gameObjectRenderer.material;
 		foreach (RobotInterest location in locations) {
 			sightingFound(location);
 			trackedTargets.Add(location);
@@ -51,39 +40,6 @@ public class RobotController : MonoBehaviour {
 			}
 			else if (message.Type.Equals("action")) {
 				currentAction.onMessage(message);
-			}
-
-			/*else if (message.Type.Equals("target reached")) {
-				if (jet != null) {
-					jet.setTarget(null);
-					if (message.Target.Type.Equals("routePoint")) {
-						//print ("target reached received and jet != null: " + message.Target.Type);
-
-						jet.setTarget(((RoutePoint)message.Target).Next);
-					}
-					else if (message.Target.Type.Equals("dropPoint")) {
-						arms.dropTarget();
-					}
-				}
-			}*/
-			else if (message.Type.Equals("target grabbed")) {
-				if (jet != null) {
-					for (int i = 0; i < trackedTargets.Count; i++) {
-						if (trackedTargets[i].Type.Equals("dropPoint")) {
-							agent.speed = 10;
-							jet.setTarget(trackedTargets[i]);
-							break;
-						}
-					}
-				}
-				sightingFound(message.Target);
-			}
-			else if (message.Type.Equals("target dropped")) {
-				agent.speed = 3;
-				sightingLost(message.Target);
-				if (jet != null) {
-					jet.setTarget(null);
-				}
 			}
 		}
 	}
@@ -121,6 +77,11 @@ public class RobotController : MonoBehaviour {
 		} else if (message.Type.Equals ("target lost")) {
 			trackedTargets.Remove(message.Target);
 		}
+	}
+
+	public void addAction(Action action) {
+		availableActions.Add (action);
+		evaluateActions ();
 	}
 
 	public void trackTarget(RobotInterest target) {
@@ -164,21 +125,5 @@ public class RobotController : MonoBehaviour {
 		} else {
 			return externalMentalModel; 
 		}
-	}
-	
-//	private void lightUp() {
-		/*MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
-		
-		Material newMaterial = new Material(Shader.Find("Transparent/Diffuse"));
-		
-		newMaterial.color = Color.green;
-		gameObjectRenderer.material = newMaterial ;*/
-	//}
-
-	private void resetMaterial() {
-
-		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
-
-		gameObjectRenderer.material = original ;
 	}
 }
