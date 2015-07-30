@@ -110,7 +110,7 @@ namespace Vox {
 
 		public void OnDrawGizmosSelected() {
 			if (drawGhostBrush && selectedMode == 1) {
-				Ray mouseRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+				Ray mouseRay = HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
 				Gizmos.color = brushGhostColor;
 				switch(selectedBrush) {
 				case 0:

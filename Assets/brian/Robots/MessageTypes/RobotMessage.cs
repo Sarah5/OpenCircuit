@@ -1,22 +1,22 @@
 ﻿public class RobotMessage {
 
-	string source;
+	string message;
 	string type;
 	RobotInterest target;
 
-	public RobotMessage(string src, string type, RobotInterest target) {
-		this.source = src;
+	public RobotMessage(string type, string message, RobotInterest target) {
 		this.type = type;
+		this.message = message;
 		this.target = target;
 	}
 
 
-	public string Source {
+	public string Message {
 		get {
-			return source;
+			return message;
 		}
 		set {
-			source = value;
+			message = value;
 		}
 	}
 

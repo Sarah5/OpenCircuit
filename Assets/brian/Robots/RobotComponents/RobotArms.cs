@@ -9,9 +9,11 @@ public class RobotArms : AbstractRobotComponent {
 	private AudioSource footstepEmitter;
 
 	private RobotInterest target = null;
+	private HoldAction action;
 
 	
 	void Start() {
+		action = new HoldAction (roboController, null);
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
 		footstepEmitter.enabled = true;
 		footstepEmitter.loop = false;
@@ -19,8 +21,19 @@ public class RobotArms : AbstractRobotComponent {
 
 	void OnTriggerEnter(Collider collision) {
 		if (target == null) {
-			footstepEmitter.PlayOneShot (pickUp, 1);
-			attachTarget (collision.gameObject);
+			target = collision.gameObject.GetComponent<RobotInterest> ();
+			if (target != null) {
+				footstepEmitter.PlayOneShot (pickUp, 1);
+				action.setTarget(target);
+				roboController.addAction(action);
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider collision) {
+		if (target != null) {
+			action.setTarget (null);
+			target = null;
 		}
 
 	}
@@ -37,27 +50,24 @@ public class RobotArms : AbstractRobotComponent {
 
 			}
 			target.transform.parent = null;
-			roboController.enqueueMessage(new RobotMessage("arms", "target dropped", target));
+			roboController.enqueueMessage(new RobotMessage("action", "target dropped", target));
 			footstepEmitter.PlayOneShot (drop, 1);
 
-			
+			target = null;
 			//target.transform.localPosition = new Vector3(0, .5f, .85f);
 		}
 	}
 
-	private void attachTarget(GameObject obj) {
-		target = obj.GetComponent<RobotInterest> ();
-		if (target != null) {
-			Rigidbody rigidbody = obj.GetComponent<Rigidbody> ();
-			if (rigidbody != null) {
-				rigidbody.isKinematic = true;
-				rigidbody.useGravity = false;
-				rigidbody.velocity = new Vector3(0,0,0);
-			}
-			target.transform.parent = transform;
-			target.transform.localPosition = new Vector3(0, .5f, .85f);
-			roboController.enqueueMessage(new RobotMessage("arms", "target grabbed", target));
+	public void attachTarget(RobotInterest obj) {
+		Rigidbody rigidbody = obj.GetComponent<Rigidbody> ();
+		if (rigidbody != null) {
+			rigidbody.isKinematic = true;
+			rigidbody.useGravity = false;
+			rigidbody.velocity = new Vector3(0,0,0);
 		}
+		target.transform.parent = transform;
+		target.transform.localPosition = new Vector3(0, .5f, .85f);
+		roboController.enqueueMessage(new RobotMessage("arms", "target grabbed", target));
 	}
 
 }

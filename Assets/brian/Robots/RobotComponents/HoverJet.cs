@@ -31,7 +31,7 @@ public class HoverJet : AbstractRobotComponent {
 	void Update () {
 		if (target != null) {
 			if (Vector3.Distance(roboController.transform.position, target.transform.position) < .5f) {
-				roboController.enqueueMessage(new RobotMessage("HoverJet", "target reached", target));
+				roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
 			}
 
 			if (nav.enabled)

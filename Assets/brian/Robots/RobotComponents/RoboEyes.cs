@@ -38,10 +38,10 @@ public class RoboEyes : AbstractRobotComponent {
 		for (int i = 0; i < RobotInterest.interestPoints.Count; i++) {
 			bool targetInView = canSee (RobotInterest.interestPoints [i].transform);
 			if ((!targetMap.ContainsKey (RobotInterest.interestPoints [i]) || !targetMap [RobotInterest.interestPoints[i]]) && targetInView) {
-				roboController.enqueueMessage(new RobotMessage("eyes", "target sighted", RobotInterest.interestPoints[i]));
+				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", RobotInterest.interestPoints[i]));
 			}
 			else if (targetMap.ContainsKey(RobotInterest.interestPoints [i]) && targetMap [RobotInterest.interestPoints[i]] && !targetInView) {
-				roboController.enqueueMessage(new RobotMessage("eyes", "target lost", RobotInterest.interestPoints[i]));
+				roboController.enqueueMessage(new RobotMessage("target lost", "target lost", RobotInterest.interestPoints[i]));
 			}
 			targetMap [RobotInterest.interestPoints [i]] = targetInView;
 		}

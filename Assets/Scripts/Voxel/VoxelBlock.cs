@@ -239,39 +239,6 @@ namespace Vox {
 			control.dirty = true;
 		}
 
-		//public void setSphere(VoxelUpdateInfo info, byte detailLevel, Vector3 min, Vector3 max, Voxel value, VoxelControlV2 control) {
-		//	int factor = 1 << (detailLevel - CHILD_COUNT_POWER);
-		//	byte xiMin = (byte)Mathf.Max(min.x / factor - info.x * CHILD_DIMENSION, 0);
-		//	byte xiMax = (byte)Mathf.Min((max.x + 3) / factor - info.x * CHILD_DIMENSION, CHILD_DIMENSION - 1);
-		//	byte yiMin = (byte)Mathf.Max(min.y / factor - info.y * CHILD_DIMENSION, 0);
-		//	byte yiMax = (byte)Mathf.Min((max.y + 3) / factor - info.y * CHILD_DIMENSION, CHILD_DIMENSION - 1);
-		//	byte ziMin = (byte)Mathf.Max(min.z / factor - info.z * CHILD_DIMENSION, 0);
-		//	byte ziMax = (byte)Mathf.Min((max.z + 3) / factor - info.z * CHILD_DIMENSION, CHILD_DIMENSION - 1);
-
-		//	for (byte xi = xiMin; xi <= xiMax; ++xi) {
-		//		for (byte yi = yiMin; yi <= yiMax; ++yi) {
-		//			for (byte zi = ziMin; zi <= ziMax; ++zi) {
-		//				if (detailLevel <= CHILD_COUNT_POWER) {
-		//					children[xi, yi, zi] = Voxel.setSphere(children[xi, yi, zi], info.x * CHILD_DIMENSION + xi, info.y * CHILD_DIMENSION + yi, info.z * CHILD_DIMENSION + zi, min, max, value);
-		//				} else {
-		//					if (children[xi, yi, zi].GetType() == typeof(Voxel)) {
-		//						children[xi, yi, zi] = new VoxelBlock((Voxel)children[xi, yi, zi]);
-		//					}
-		//					((VoxelBlock)children[xi, yi, zi]).setSphere(new VoxelUpdateInfo(info, xi, yi, zi), (byte)(detailLevel - CHILD_COUNT_POWER), min, max, value, control);
-		//				}
-		//			}
-		//		}
-		//	}
-
-		//	// TODO: this should check if completely contained, not if rendersize (for distant modifications)
-		//	if (isRenderSize(info.size, control) && info != null) {
-		//		MonoBehaviour.print(info.x +", " +info.y +", " +info.z);
-		//		updateAll(info.x, info.y, info.z, info.detailLevel, control, true);
-		//		//myControl.checkQueued();
-		//		//myControl.updateQueued();
-		//	}
-		//}
-
 		public void updateAll(int x, int y, int z, byte detailLevel, VoxelTree control, bool force = false) {
 			// check if this is a high enough detail level.  If not, call the childrens' update methods
 			if (!isRenderSize(control.sizes[detailLevel], control) && (!isRenderLod(x, y, z, control.sizes[detailLevel], control))) {

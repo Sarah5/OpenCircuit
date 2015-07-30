@@ -8,8 +8,6 @@ public class RobotInterest : MonoBehaviour {
 
 	public string Type = "";
 
-	protected List<Action> possibleActions = new List<Action>();
-
 	// Use this for initialization
 	void Start () {
 		//print ("called start on: " + this.GetType());
@@ -23,7 +21,8 @@ public class RobotInterest : MonoBehaviour {
 		return true;
 	}
 
-	protected List<Action> getAvailableActions() {
-		return possibleActions;
+	public virtual List<Action> getAvailableActions (RobotController controller) {
+		List<Action> actions = new List<Action> ();
+		return actions;
 	}
 }
