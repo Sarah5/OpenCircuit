@@ -31,7 +31,7 @@ public abstract class Endeavour: InspectorListElement {
 		return this;
 	}
 
-	public static Endeavour construct() {
+	public static Endeavour constructDefault() {
 		return (Endeavour) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 	}
 	

@@ -39,7 +39,7 @@ public class LabelGUI : Editor {
 		
 		for(int i=0; i<label.operations.Length; ++i)
 			if (label.operations[i] == null)
-				label.operations[i] = Operation.construct();
+				label.operations[i] = Operation.constructDefault();
 		doArrayGUI(ref label.operations);
 	}
 	
@@ -50,14 +50,17 @@ public class LabelGUI : Editor {
 
 		for(int i=0; i<label.endeavours.Length; ++i)
 			if (label.endeavours[i] == null)
-				label.endeavours[i] = Endeavour.construct();
+				label.endeavours[i] = Endeavour.constructDefault();
 		doArrayGUI(ref label.endeavours);
 	}
 
 	private void doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
 		GUILayout.BeginHorizontal();
-		int newSize = EditorGUILayout.IntField("Count", array.Length);
-		array = resize(array, newSize);
+		int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
+		if (newSize != array.Length) {
+			array = resize(array, newSize);
+			return;
+		}
 		GUILayout.EndHorizontal();
 		
 		// draw list

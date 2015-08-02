@@ -35,7 +35,7 @@ public abstract class Operation: InspectorListElement {
 		return this;
 	}
 
-	public static Operation construct() {
+	public static Operation constructDefault() {
 		return (Operation) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 	}
 
