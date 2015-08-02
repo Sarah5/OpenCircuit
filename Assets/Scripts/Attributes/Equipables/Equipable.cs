@@ -1,16 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public abstract class Equipable : MonoBehaviour {
 
-	void Awake() {
-		gameObject.AddComponent<pickupEvent>().item = this;
-	}
-
     protected float reachDistance = 3f;
 
-    protected List<string> POITriggers = new List<string>();
+	void Awake() {
+//		gameObject.AddComponent<pickupEvent>().item = this;
+	}
 
 	public virtual void onPickup(InteractTrigger e) {
 //		Player.getInstance().carryPickup(gameObject, e.getPoint());
@@ -29,7 +27,7 @@ public abstract class Equipable : MonoBehaviour {
 	protected virtual void trigger() {
 		RaycastHit col = reach();
 		if (col.collider != null) {
-			EventHandler evH = col.collider.GetComponent<EventHandler>();
+			Label evH = col.collider.GetComponent<Label>();
 			if (evH != null) {
 				evH.sendTrigger(gameObject, buildTrigger());
 			}
@@ -37,10 +35,6 @@ public abstract class Equipable : MonoBehaviour {
 	}
 
     protected abstract Trigger buildTrigger();
-
-    public List<string> getPOITriggers() {
-        return POITriggers;
-    }
 
 	protected RaycastHit reach() { Vector3 fake; return reach(out fake); }
 	protected RaycastHit reach(out Vector3 position) {
@@ -65,15 +59,20 @@ public abstract class Equipable : MonoBehaviour {
     protected abstract Trigger getTrigger();
 }
 
-public class pickupEvent : Event {
+[System.Serializable]
+public class pickupOperation : Operation {
+
+	private static System.Type[] triggers = new System.Type[] {
+		typeof(InteractTrigger),
+	};
 
 	public Equipable item;
 
-	void Awake() {
-		triggers.Add(InteractTrigger.triggerType);
+	public override System.Type[] getTriggers() {
+		return triggers;
 	}
 
-	public override void initiate(GameObject instigator, Trigger trig) {
+	public override void perform(GameObject instigator, Trigger trig) {
 		InteractTrigger trigger = (InteractTrigger)trig;
 		item.onPickup(trigger);
 	}

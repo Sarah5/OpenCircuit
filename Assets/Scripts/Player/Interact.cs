@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Interact : MonoBehaviour {
@@ -66,7 +66,7 @@ public class Interact : MonoBehaviour {
 			//if(equipper.equipObject(nearest)) {
 			//}
 			if (nearest != null){
-				EventHandler item = nearest.GetComponent<EventHandler>();
+				Label item = nearest.GetComponent<Label>();
 				if (item != null) {
 					//print("first point: " + point);
 					InteractTrigger trig = new InteractTrigger();
