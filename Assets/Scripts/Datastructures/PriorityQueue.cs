@@ -38,7 +38,11 @@ public class PriorityQueue {
 	}
 
 	public Prioritizable peek() {
-		return list [0];
+		Prioritizable result = null;
+		if (list.Count > 0) {
+			result = list[0];
+		}
+		return result;
 	}
 
 	public int Count { get {
