@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Player/Movement")]
 public class Movement : MonoBehaviour {
 
 	private Player myPlayer;

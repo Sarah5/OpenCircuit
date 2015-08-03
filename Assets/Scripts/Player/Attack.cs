@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Player/Attack")]
 public class Attack : MonoBehaviour {
 
-	private Player myPlayer;
+//	private Player myPlayer;
 
 	// Use this for initialization
 	void Awake () {
-		myPlayer = this.GetComponent<Player> ();
+//		myPlayer = this.GetComponent<Player> ();
 	}
 	
 	public void attack() {

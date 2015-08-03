@@ -1,19 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Player/Grab")]
 public class Grab : MonoBehaviour {
 
-	public int attach_index = 0;
-
-	public float testDamper;
-	public float testSpring;
-	public float testMaxForce;
-
+	public float strength = 15;
+	public float holdDistance = 2f;
+	public Vector3 normalHoldPosition = new Vector3(0.0f, -0.5f, 2f);
 	private Player myPlayer;
-
-	private float strength = 15;
-	private const float holdDistance = 2f;
-	public Vector3 normalHoldPosition = new Vector3(0.0f, -0.5f, holdDistance);
 	private Vector3 holdPos;
 	private ConfigurableJoint holdJoint;
 	private GameObject grabbed = null;
@@ -22,15 +16,6 @@ public class Grab : MonoBehaviour {
 	void Awake () {
 		myPlayer = this.GetComponent<Player> ();
 	}
-
-//	public Attach curAttach() {
-//		if (grabbed == null)
-//			return null;
-//		Attach[] test = grabbed.GetComponentsInChildren<Attach> ();
-//		if (test.Length > 0)
-//			return test [attach_index];
-//		return null;
-//	}
 
 	public bool GrabObject(GameObject obj, Vector3 holdPoint) {
 		if (grabbed != null) {
@@ -59,16 +44,12 @@ public class Grab : MonoBehaviour {
 //			this.GetComponent<Inventory>().addItem(obj);
 //	}
 
-//	public void dropObject() {
-//		if (grabbed == null)
-//			return;
-//
-//		Inventory.ItemStack stack = myPlayer.inventory.isEquiped(grabbed);
-//		if (stack != null)
-//			GameObject.Destroy(myPlayer.inventory.dropItem(stack));
-//
-//		releaseObject();
-//	}
+	public void dropObject() {
+		if (grabbed == null)
+			return;
+
+		releaseObject();
+	}
 
 	private void releaseObject() {
 		if (grabbed == null)
@@ -77,14 +58,6 @@ public class Grab : MonoBehaviour {
 		Physics.IgnoreCollision(GetComponent<Collider>(), grabbed.GetComponent<Collider>(), false);
 		grabbed = null;
 	}
-
-	//public void Update() {
-	//	if (holdJoint == null) return;
-	//	driver.positionDamper = testDamper;
-	//	driver.positionSpring = testSpring;
-	//	driver.maximumForce = testMaxForce;
-	//	holdJoint.xDrive = holdJoint.yDrive = holdJoint.zDrive = holdJoint.slerpDrive = driver;
-	//}
 
 	public bool holdObject(GameObject obj, Vector3 holdPoint) {
 		grabbed = obj;
@@ -105,7 +78,7 @@ public class Grab : MonoBehaviour {
 
 		holdJoint.connectedBody = this.gameObject.transform.GetChild(0).GetComponent<Rigidbody>();
 		holdJoint.connectedAnchor = normalHoldPosition;
-		if ((grabbed.GetComponent<Rigidbody>().worldCenterOfMass -holdPoint).sqrMagnitude > holdDistance / 2)
+		if ((grabbed.GetComponent<Rigidbody>().worldCenterOfMass -holdPoint).sqrMagnitude > holdDistance)
 			holdJoint.anchor = grabbed.transform.InverseTransformPoint(holdPoint);
 		else
 			holdJoint.anchor = grabbed.GetComponent<Rigidbody>().centerOfMass;
@@ -128,24 +101,6 @@ public class Grab : MonoBehaviour {
 		return grabbed;
 	}
 
-//	public void increment() {
-//		if (grabbed == null)
-//			return;
-//		if (attach_index < grabbed.GetComponentsInChildren<Attach>().Length -1)
-//			attach_index++;
-//		else
-//			attach_index = 0;
-//	}
-	
-//	public void decrement() {
-//		if (grabbed == null)
-//			return;
-//		if (attach_index > 0)
-//			attach_index--;
-//		else
-//			attach_index = grabbed.GetComponentsInChildren<Attach>().Length -1;
-//	}
-
 	public void holdAside(bool aside) {
 		if (grabbed == null)
 			return;
@@ -153,10 +108,6 @@ public class Grab : MonoBehaviour {
 			holdJoint.connectedAnchor = normalHoldPosition +new Vector3(0, -0.5f, -holdDistance *0.2f);
 		else
 			holdJoint.connectedAnchor = normalHoldPosition;
-	}
-
-	public void rotateHeld() {
-
 	}
 	
 }

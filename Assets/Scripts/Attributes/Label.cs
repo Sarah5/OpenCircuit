@@ -24,17 +24,20 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		return triggers.ContainsKey(type);
 	}
 
-	public void sendTrigger(GameObject instigator, Trigger trig) {
+	public bool sendTrigger(GameObject instigator, Trigger trig) {
         System.Type type = trig.GetType();
 		if (triggers.ContainsKey(type)) {
 			foreach (Operation e in (List<Operation>)triggers[type]) {
                 e.perform(instigator, trig);
             }
+			return true;
 		}
+		return false;
 	}
 
 	public void addOperation(Operation operation, System.Type[] triggerTypes) {
         if (operation != null) {
+			operation.setParent(this);
             foreach (System.Type element in triggerTypes) {
 				if (!triggers.ContainsKey(element)) {
 					triggers[element] = new List<Operation>();
@@ -58,7 +61,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 	public void OnBeforeSerialize() {
 		lock(this) {
-//			print ("serializing...");
 			if (operations == null)
 				operations = new Operation[0];
 			MemoryStream stream = new MemoryStream();
@@ -74,7 +76,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	
 	public void OnAfterDeserialize() {
 		lock(this) {
-//			print ("DESERIALIZING...");
 			MemoryStream stream = new MemoryStream(serializedData);
 			BinaryFormatter formatter = new BinaryFormatter();
 			

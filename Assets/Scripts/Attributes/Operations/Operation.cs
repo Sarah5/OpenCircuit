@@ -9,11 +9,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 public abstract class Operation: InspectorListElement {
 
 	private static string[] typeNames = null;
-
 	public static readonly System.Type[] types = new System.Type[] {
 		typeof(OpenOperation),
 		typeof(DamageOperation),
 	};
+
+	protected Label parent;
 
 	public virtual System.Type[] getTriggers() {
 		return new System.Type[0];
@@ -23,6 +24,10 @@ public abstract class Operation: InspectorListElement {
 	}
 	
 	public virtual void doGUI() {}
+
+	public void setParent(Label label) {
+		this.parent = label;
+	}
 
 	InspectorListElement InspectorListElement.doListElementGUI() {
 		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
