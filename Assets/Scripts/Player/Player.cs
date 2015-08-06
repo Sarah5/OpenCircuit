@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Player/Player")]
 public class Player : MonoBehaviour {
 
 
@@ -19,13 +20,13 @@ public class Player : MonoBehaviour {
 	public float whiteOutDuration;
 	public float blackOutDuration;
 	
-	/*private Attacher myAttacher;
+//	private Attacher myAttacher;
 	private Attack myAttacker;
-	private Equip myEquipper;
-	private Focus myFocus;
+//	private Equip myEquipper;
+//	private Focus myFocus;
 	private Grab myGrabber;
 	private Interact myInteractor;
-	private Inventory myInventory;*/
+//	private Inventory myInventory;
 	private Movement myMover;
 	private Camera myCam;
 	private MouseLook myLooker;
@@ -40,13 +41,13 @@ public class Player : MonoBehaviour {
 	private float blackOutTime;
 	private Texture2D whiteOutTexture;
 
-/*	public Attacher attacher { get { return myAttacher; } set { myAttacher = value; } }
+//	public Attacher attacher { get { return myAttacher; } set { myAttacher = value; } }
 	public Attack attacker { get { return myAttacker; } set { myAttacker = value; } }
-	public Equip equipper { get { return myEquipper; } set { myEquipper = value; } }
-	public Focus focus { get { return myFocus; } set { myFocus = value; } }
+//	public Equip equipper { get { return myEquipper; } set { myEquipper = value; } }
+//	public Focus focus { get { return myFocus; } set { myFocus = value; } }
 	public Grab grabber { get { return myGrabber; } set { myGrabber = value; } }
 	public Interact interactor { get { return myInteractor; } set { myInteractor = value; } }
-	public Inventory inventory { get { return myInventory; } set { myInventory = value; } }*/
+//	public Inventory inventory { get { return myInventory; } set { myInventory = value; } }
 	public Movement mover { get { return myMover; } set { myMover = value; } }
 	public Camera cam { get { return myCam; } set { myCam = value; } }
 	public MouseLook looker { get { return myLooker; } set { myLooker = value; } }
@@ -61,13 +62,13 @@ public class Player : MonoBehaviour {
 
 	void Awake() {
 		Player.instance = this;
-		/*attacher = GetComponent<Attacher>();
+//		attacher = GetComponent<Attacher>();
 		attacker = GetComponent<Attack> ();
-		equipper = GetComponent<Equip>();
-		focus = GetComponent<Focus>();
+//		equipper = GetComponent<Equip>();
+//		focus = GetComponent<Focus>();
 		grabber = GetComponent<Grab>();
 		interactor = GetComponent<Interact>();
-		inventory = GetComponent<Inventory>();*/
+//		inventory = GetComponent<Inventory>();
 		mover = GetComponent<Movement>();
 		cam = GetComponentInChildren<Camera>();
 		looker = GetComponentInChildren<MouseLook>();

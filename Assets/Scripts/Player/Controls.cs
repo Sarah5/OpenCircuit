@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Player/Controls")]
 public class Controls : MonoBehaviour {
 
 	private Player myPlayer;
@@ -40,24 +41,24 @@ public class Controls : MonoBehaviour {
 
 		if (!inGUI()) {
 			if (invertLook)
-				myPlayer.looker.rotate(Input.GetAxis("Mouse X") * mouseSensitivity, -Input.GetAxis("Mouse Y") * mouseSensitivity);
+				myPlayer.looker.rotate(Input.GetAxis("Look Horizontal") * mouseSensitivity, -Input.GetAxis("Look Vertical") * mouseSensitivity);
 			else
-				myPlayer.looker.rotate(Input.GetAxis("Mouse X") * mouseSensitivity, Input.GetAxis("Mouse Y") * mouseSensitivity);
+				myPlayer.looker.rotate(Input.GetAxis("Look Horizontal") * mouseSensitivity, Input.GetAxis("Look Vertical") * mouseSensitivity);
 		}
 		
 		/****************ACTION****************/
 
-		if (Input.GetButtonDown("Fire1")/* && !Input.GetButton("Fire2")*/) {
-			//For now, do nothing!
-		}
-
-//		if (Input.GetButtonDown ("Interact")) {
-//			if (inGUI()) {
-//			} else {
-//				//print("calling interact method");
-//				myPlayer.interactor.interact();
-//			}
+//		if (Input.GetButtonDown("Fire1")/* && !Input.GetButton("Fire2")*/) {
+//			// For now, do nothing!
 //		}
+
+		if (Input.GetButtonDown ("Interact")) {
+			if (inGUI()) {
+			} else {
+				//print("calling interact method");
+				myPlayer.interactor.interact();
+			}
+		}
 //		if (Input.GetButtonDown ("Alt_Interact")) {
 //			if (inGUI()) {
 //			} else {

@@ -13,7 +13,7 @@ public class PursueAction : Action {
 
 	public override bool canExecute() {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-		return jet != null && !jet.isAvailable ();
+		return jet != null && !jet.isAvailable () && controller.knowsTarget(target);
 	}
 	
 	public override void execute() {
@@ -28,15 +28,15 @@ public class PursueAction : Action {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			jet.setTarget(null);
-			jet.setAvailability(false);
+			jet.setAvailability(true);
 		}
 	}
 
 	public override bool isStale() {
-		//TODO check if target is still visible
-		return false;
+		return !controller.knowsTarget (target);
 	}
 
 	public override void onMessage(RobotMessage message) {
+	
 	}
 }
