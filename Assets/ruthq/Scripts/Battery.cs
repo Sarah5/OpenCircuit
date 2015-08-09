@@ -7,18 +7,16 @@ public class Battery : AbstractPowerSource {
 	public float currentCapacity = 100;
 
 	void Update () {
-		drawPower (0.01f);
+		drawPower (1.0f * Time.deltaTime);
 	}
 
 	public override bool drawPower (float amount){
 		if (currentCapacity < amount){
 			return false;
 		}
-		float subtractAmount = amount - currentCapacity;
-			return true;
-
-
-	
+		float subtractAmount = currentCapacity - amount;
+		currentCapacity = subtractAmount;
+		return true;
 	}
 
 

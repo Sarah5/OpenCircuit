@@ -9,7 +9,8 @@ public class HoverJet : AbstractRobotComponent {
 
 	private NavMeshAgent nav;
 
-	
+	private AbstractPowerSource powerSource;
+
 	public void setTarget(RobotInterest target) {
 		this.target = target;
 	}
@@ -25,17 +26,26 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	void Start() {
-		nav = GetComponentInParent<NavMeshAgent> ();
+		nav = roboController.GetComponent<NavMeshAgent> ();
+		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
 	}
 
 	void Update () {
+		if (powerSource == null) {
+			return;
+		}
 		if (target != null) {
-			if (Vector3.Distance(roboController.transform.position, target.transform.position) < .5f) {
-				roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
+			if (Vector3.Distance (roboController.transform.position, target.transform.position) < .5f) {
+				roboController.enqueueMessage (new RobotMessage ("action", "target reached", target));
 			}
 
 			if (nav.enabled)
 				nav.SetDestination (target.transform.position);
+
+			//if (!powerSource.drawPower (5 * Time.deltaTime)){
+				nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
+		//}
+
 		}
 	}
 }
