@@ -231,6 +231,9 @@ public class VoxelEditorGUI : Editor {
 //			--EditorGUI.indentLevel;
 //		}
 
+		// do substances
+		doSubstancesGUI(ob);
+
 
 		// show statistics
 		showStatistics = doBigFoldout(showStatistics, "Statistics");
