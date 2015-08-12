@@ -11,27 +11,27 @@ namespace Vox {
 		public Material blendMaterial;
 
 		// physics
-		public float strength = 10;
-		public float pliability = 10;
-		public float conductivity = 1;
+//		public float strength = 10;
+//		public float pliability = 10;
+//		public float conductivity = 1;
 
 		public VoxelSubstance() {
-			this.strength = 10;
-			this.pliability = 10;
-			this.conductivity = 1;
+//			this.strength = 10;
+//			this.pliability = 10;
+//			this.conductivity = 1;
 		}
 
 		public VoxelSubstance(
 			string name,
 			Material renderMaterial,
-			Material blendMaterial,
-			float strength, float pliability, float conductivity
+			Material blendMaterial
+//			float strength, float pliability, float conductivity
 			) {
 			this.name = name;
 			this.renderMaterial = renderMaterial;
-			this.strength = strength;
-			this.pliability = pliability;
-			this.conductivity = conductivity;
+//			this.strength = strength;
+//			this.pliability = pliability;
+//			this.conductivity = conductivity;
 		}
 	}
 }

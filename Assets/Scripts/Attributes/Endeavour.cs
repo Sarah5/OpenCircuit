@@ -8,7 +8,8 @@ using System.Collections;
 public abstract class Endeavour: InspectorListElement {
 	
 	private static string[] typeNames = null;
-	
+
+	// list of Endeavour types that can be selected in the Label Inspector
 	public static readonly System.Type[] types = new System.Type[] {
 		typeof(PatrolEndeavour),
 	};
