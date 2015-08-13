@@ -10,12 +10,16 @@ public class MentalModel {
 	public void addSighting(RobotInterest target) {
 		if (targetSightings.ContainsKey (target)) {
 			if (targetSightings[target] == 0) {
+				targetSightings [target]++;
+
 				notifyListenersTargetFound(target);
 			}
-			targetSightings [target]++;
+			else {
+				targetSightings [target]++;
+			}
 		} else {
-			notifyListenersTargetFound(target);
 			targetSightings[target] = 1;
+			notifyListenersTargetFound(target);
 		}
 	}
 

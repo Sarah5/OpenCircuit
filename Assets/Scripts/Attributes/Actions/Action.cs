@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public abstract class Action : Prioritizable {
 
@@ -8,14 +9,31 @@ public abstract class Action : Prioritizable {
 
 	protected RobotController controller;
 
+	protected System.Type[] requiredComponents;
+
 	public Action(RobotController controller) {
 		this.controller = controller;
 	}
 
 	public abstract bool isStale();
-	public abstract bool canExecute ();
 	public abstract void execute ();
 	public abstract void stopExecution();
+
+	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+		foreach (System.Type type in requiredComponents) {
+			if (availableComponents.ContainsKey(type)) {
+				int numAvailable = availableComponents[type];
+				if (numAvailable > 0) {
+					--numAvailable;
+					availableComponents[type] = numAvailable;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	public float getPriority() {
 		return priority;

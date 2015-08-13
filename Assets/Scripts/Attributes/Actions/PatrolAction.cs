@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PatrolAction : Action {
 
@@ -10,11 +11,7 @@ public class PatrolAction : Action {
 		this.route = route;
 		this.name = "patrol";
 		this.priority = 1;
-	}
-
-	public override bool canExecute () {
-		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-		return jet != null && !jet.isAvailable ();
+		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
 	public override void execute (){

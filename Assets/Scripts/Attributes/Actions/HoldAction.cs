@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HoldAction : Action {
 
@@ -9,14 +10,11 @@ public class HoldAction : Action {
 		this.target = target;
 		this.name = "grab";
 		this.priority = 10;
+		requiredComponents = new System.Type[] {typeof(RobotArms)};
 	}
 
-	public override bool canExecute () {
-		if (target == null) {
-			return false;
-		}
-		RobotArms arms = controller.GetComponentInChildren<RobotArms> ();
-		return arms != null && !arms.isAvailable ();
+	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+		return target != null && base.canExecute (availableComponents);
 	}
 
 	public override void execute (){

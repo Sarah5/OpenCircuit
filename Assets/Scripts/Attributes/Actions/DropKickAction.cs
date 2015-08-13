@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DropKickAction : Action {
 
@@ -9,11 +10,11 @@ public class DropKickAction : Action {
 		this.name = "dropKick";
 		this.priority = 1;
 		this.target = target;
+		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
-	public override bool canExecute () {
-		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-		return (target != null) && jet != null && !jet.isAvailable ();
+	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+		return (target != null) && base.canExecute (availableComponents);
 	}
 
 	public override void execute (){
