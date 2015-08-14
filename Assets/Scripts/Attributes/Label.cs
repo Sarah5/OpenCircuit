@@ -9,6 +9,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public static readonly HashSet<Label> labels = new HashSet<Label>();
 
+	[System.NonSerialized]
+	public static readonly HashSet<Label> visibleLabels = new HashSet<Label>();
+
 	public byte[] serializedData;
 
 	[System.NonSerialized]
@@ -19,6 +22,19 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	private Dictionary<System.Type, List<Operation>> triggers = new Dictionary<System.Type, List<Operation>>();
 
+	[System.NonSerialized]
+	public string Type = "";
+
+	public void Awake() {
+		Label.labels.Add(this);
+		if (isVisible()) {
+			visibleLabels.Add(this);
+		}
+		triggers = new Dictionary<System.Type, List<Operation>>();
+		foreach(Operation op in operations) {
+			addOperation(op, op.getTriggers());
+		}
+	}
 
 	public bool hasOperationType(System.Type type) {
 		return triggers.ContainsKey(type);
@@ -46,13 +62,14 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
             }
 		}
 	}
-	
-	public void Awake() {
-		Label.labels.Add(this);
-		triggers = new Dictionary<System.Type, List<Operation>>();
-		foreach(Operation op in operations) {
-			addOperation(op, op.getTriggers());
-		}
+
+	public virtual List<Endeavour> getAvailableEndeavours (RobotController controller) {
+		List<Endeavour> endeavour = new List<Endeavour> ();
+		return endeavour;
+	}
+
+	virtual protected bool isVisible() {
+		return true;
 	}
 	
 	public void OnDestroy() {

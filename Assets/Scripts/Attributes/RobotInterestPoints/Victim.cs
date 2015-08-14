@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 
-public class Victim : RobotInterest {
+public class Victim : Label {
 
-	void Awake() {
-		this.name = "player";
+	void Start() {
 	}
 
-	public override List<Action> getAvailableActions (RobotController controller) {
-		List<Action> actions = base.getAvailableActions(controller);
+	public override List<Endeavour> getAvailableEndeavours (RobotController controller) {
+		List<Endeavour> actions = base.getAvailableEndeavours(controller);
 		actions.Add(new PursueAction(controller, this));
 		return actions;
 	}

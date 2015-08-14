@@ -5,13 +5,13 @@ public class HoverJet : AbstractRobotComponent {
 
 	public float speed = 1f;
 
-	private RobotInterest target = null;
+	private Label target = null;
 
 	private NavMeshAgent nav;
 
 	private AbstractPowerSource powerSource;
 
-	public void setTarget(RobotInterest target) {
+	public void setTarget(Label target) {
 		this.target = target;
 	}
 

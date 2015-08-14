@@ -2,9 +2,9 @@
 
 	string message;
 	string type;
-	RobotInterest target;
+	Label target;
 
-	public RobotMessage(string type, string message, RobotInterest target) {
+	public RobotMessage(string type, string message, Label target) {
 		this.type = type;
 		this.message = message;
 		this.target = target;
@@ -29,7 +29,7 @@
 		}
 	}
 
-	public RobotInterest Target {
+	public Label Target {
 		get {
 			return target;
 		}

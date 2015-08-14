@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 
 	public GameObject[] robots;
-	public RobotInterest[] locations;
+	public Label[] locations;
 	
 	private List<RobotController> listeners = new List<RobotController>();
 
@@ -20,16 +20,16 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 				antenna.getController().attachMentalModel(mentalModel);
 			}
 		}
-		foreach (RobotInterest location in locations) {
+		foreach (Label location in locations) {
 			mentalModel.addSighting(location);
 		}
 	}
 
-	public void notifySighting(RobotInterest target) {
+	public void notifySighting(Label target) {
 		broadcastMessage (new EventMessage ("target found", target));
 	}
 
-	public void notifySightingLost(RobotInterest target) {
+	public void notifySightingLost(Label target) {
 		broadcastMessage (new EventMessage ("target lost", target));
 	}
 

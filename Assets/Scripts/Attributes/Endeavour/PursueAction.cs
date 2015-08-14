@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PursueAction : Action {
+public class PursueAction : Endeavour {
 
-	private RobotInterest target;
+	private Label target;
 
-	public PursueAction (RobotController controller, RobotInterest target) : base(controller) {
+	public PursueAction (RobotController controller, Label target) : base(controller) {
 		this.target = target;
 		this.name = "pursue";
 		this.priority = 5;
@@ -18,7 +18,7 @@ public class PursueAction : Action {
 		return jet != null && !jet.isAvailable () && controller.knowsTarget(target);
 	}*/
 
-	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		Debug.Log ("pursue action knows target: " + controller.knowsTarget (target));
 		return controller.knowsTarget (target) && base.canExecute (availableComponents);//jet != null && !jet.isAvailable () && controller.knowsTarget(target);
 	}

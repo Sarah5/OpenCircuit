@@ -2,18 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HoldAction : Action {
+public class HoldAction : Endeavour {
 
-	RobotInterest target;
+	Label target;
 
-	public HoldAction(RobotController controller, RobotInterest target) : base(controller) {
+	public HoldAction(RobotController controller, Label target) : base(controller) {
 		this.target = target;
 		this.name = "grab";
 		this.priority = 10;
 		requiredComponents = new System.Type[] {typeof(RobotArms)};
 	}
 
-	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		return target != null && base.canExecute (availableComponents);
 	}
 
@@ -37,7 +37,7 @@ public class HoldAction : Action {
 		return target == null;
 	}
 
-	public void setTarget(RobotInterest target) {
+	public void setTarget(Label target) {
 		this.target = target;
 	}
 

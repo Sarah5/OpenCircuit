@@ -7,7 +7,7 @@ public class RoboEyes : AbstractRobotComponent {
 	public float fieldOfViewAngle = 140f;           // Number of degrees, centered on forward, for the enemy sight.
 	public float sightDistance = 30.0f;
 
-	private Dictionary<RobotInterest, bool> targetMap = new Dictionary<RobotInterest, bool>();
+	private Dictionary<Label, bool> targetMap = new Dictionary<Label, bool>();
 
 	// Use this for initialization
 	void Start () {
@@ -35,15 +35,16 @@ public class RoboEyes : AbstractRobotComponent {
 	}
 
 	private void lookAround() {
-		for (int i = 0; i < RobotInterest.interestPoints.Count; i++) {
-			bool targetInView = canSee (RobotInterest.interestPoints [i].transform);
-			if ((!targetMap.ContainsKey (RobotInterest.interestPoints [i]) || !targetMap [RobotInterest.interestPoints[i]]) && targetInView) {
-				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", RobotInterest.interestPoints[i]));
+		//for (int i = 0; i < Label.visibleLabels.Count; i++) {
+		foreach (Label label in Label.visibleLabels) {
+			bool targetInView = canSee (label.transform);
+			if ((!targetMap.ContainsKey (label) || !targetMap [label]) && targetInView) {
+				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label));
 			}
-			else if (targetMap.ContainsKey(RobotInterest.interestPoints [i]) && targetMap [RobotInterest.interestPoints[i]] && !targetInView) {
-				roboController.enqueueMessage(new RobotMessage("target lost", "target lost", RobotInterest.interestPoints[i]));
+			else if (targetMap.ContainsKey(label) && targetMap [label] && !targetInView) {
+				roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label));
 			}
-			targetMap [RobotInterest.interestPoints [i]] = targetInView;
+			targetMap [label] = targetInView;
 		}
 	}
 }

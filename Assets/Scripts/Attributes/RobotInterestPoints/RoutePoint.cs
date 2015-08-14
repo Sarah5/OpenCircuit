@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class RoutePoint : RobotInterest {
+public class RoutePoint : Label {
 	private RoutePoint next;
 
-	void Awake() {
+	void Start() {
 		Type = "routePoint";
 	}
 
@@ -22,8 +22,8 @@ public class RoutePoint : RobotInterest {
 		return false;
 	}
 
-	public override List<Action> getAvailableActions (RobotController controller) {
-		List<Action> actions = base.getAvailableActions (controller);
+	public override List<Endeavour> getAvailableEndeavours (RobotController controller) {
+		List<Endeavour> actions = base.getAvailableEndeavours (controller);
 		return actions;
 	}
 }

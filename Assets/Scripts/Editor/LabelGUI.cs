@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-[CustomEditor(typeof(Label))]
+[CustomEditor(typeof(Label), true)]
 public class LabelGUI : Editor {
 	
 	private SerializedObject ob;

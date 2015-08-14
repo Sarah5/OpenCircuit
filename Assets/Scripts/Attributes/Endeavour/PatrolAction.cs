@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PatrolAction : Action {
+public class PatrolAction : Endeavour {
 
 	private PatrolRoute route;
 	private RoutePoint currentDestination;

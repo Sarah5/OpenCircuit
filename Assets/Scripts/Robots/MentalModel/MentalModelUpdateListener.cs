@@ -1,5 +1,5 @@
 ﻿public interface MentalModelUpdateListener {
-	void notifySighting(RobotInterest target);
-	void notifySightingLost(RobotInterest target);
+	void notifySighting(Label target);
+	void notifySightingLost(Label target);
 	
 }

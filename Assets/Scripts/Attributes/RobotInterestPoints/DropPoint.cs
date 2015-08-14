@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DropPoint : RobotInterest {
+public class DropPoint : Label {
 
-	void Awake() {
+	void Start() {
 		Type = "dropPoint";
 	}
 	

@@ -8,7 +8,7 @@ public class RobotArms : AbstractRobotComponent {
 	
 	private AudioSource footstepEmitter;
 
-	private RobotInterest target = null;
+	private Label target = null;
 	private HoldAction action;
 
 	
@@ -21,11 +21,11 @@ public class RobotArms : AbstractRobotComponent {
 
 	void OnTriggerEnter(Collider collision) {
 		if (target == null) {
-			target = collision.gameObject.GetComponent<RobotInterest> ();
+			target = collision.gameObject.GetComponent<Label> ();
 			if (target != null) {
 				footstepEmitter.PlayOneShot (pickUp, 1);
 				action.setTarget(target);
-				roboController.addAction(action);
+				roboController.addEndeavour(action);
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class RobotArms : AbstractRobotComponent {
 		}
 	}
 
-	public void attachTarget(RobotInterest obj) {
+	public void attachTarget(Label obj) {
 		Rigidbody rigidbody = obj.GetComponent<Rigidbody> ();
 		if (rigidbody != null) {
 			rigidbody.isKinematic = true;

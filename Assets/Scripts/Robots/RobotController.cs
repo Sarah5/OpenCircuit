@@ -4,21 +4,23 @@ using System.Collections.Generic;
 
 public class RobotController : MonoBehaviour {
 
-	private HashSet<Action> availableActions = new HashSet<Action> (new ActionComparer());
-	private List<RobotInterest> trackedTargets = new List<RobotInterest> ();
-	public RobotInterest[] locations;
+	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
+	private List<Label> trackedTargets = new List<Label> ();
+	public Label[] locations;
 
-	private HashSet<Action> currentActions = new HashSet<Action>();
-	private List<Action> staleActions = new List<Action> ();
+	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
+	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
 
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
 	
 	Queue<RobotMessage> messageQueue = new Queue<RobotMessage>();
 
+	private bool dirty = false;
+
 	void Start() {
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
-		foreach (RobotInterest location in locations) {
+		foreach (Label location in locations) {
 			sightingFound(location);
 			trackedTargets.Add(location);
 		}
@@ -40,10 +42,13 @@ public class RobotController : MonoBehaviour {
 				evaluateActions();
 			}
 			else if (message.Type.Equals("action")) {
-				foreach( Action action in currentActions) {
+				foreach( Endeavour action in currentEndeavours) {
 					action.onMessage(message);
 				}
 			}
+		}
+		if (dirty) {
+			evaluateActions();
 		}
 	}
 
@@ -56,24 +61,24 @@ public class RobotController : MonoBehaviour {
 			//print ("target lost: " + message.Target.Type);
 			trackedTargets.Remove(message.Target);
 		}
-		evaluateActions();
+		dirty = true;
 	}
 	
-	public void addAction(Action action) {
-		availableActions.Add (action);
+	public void addEndeavour(Endeavour action) {
+		availableEndeavours.Add (action);
 		evaluateActions ();
 	}
 
-	public void trackTarget(RobotInterest target) {
+	public void trackTarget(Label target) {
 		//print ("adding target: " + target.name);
 		trackedTargets.Add (target);
-		foreach (Action action in target.getAvailableActions(this)) {
+		foreach (Endeavour action in target.getAvailableEndeavours(this)) {
 			//print ("add action: " + action.getName());
-			availableActions.Add(action);
+			availableEndeavours.Add(action);
 		}
 	}
 
-	public bool knowsTarget(RobotInterest target) {
+	public bool knowsTarget(Label target) {
 		return getMentalModel ().canSee (target);
 	}
 
@@ -90,39 +95,40 @@ public class RobotController : MonoBehaviour {
 	}
 
 	private void evaluateActions() {
-		PriorityQueue actionQueue = new PriorityQueue ();
-		foreach (Action action in currentActions) {
+		dirty = false;
+		PriorityQueue endeavourQueue = new PriorityQueue ();
+		foreach (Endeavour action in currentEndeavours) {
 			if (action != null) {
 				if (action.isStale ()) {
 					//print("stop executing: " + action.getName());
 					action.stopExecution ();
-					staleActions.Add (action);	
+					staleEndeavours.Add (action);	
 				} else {
 					//print("enqueue: " + action.getName());
 					
-					actionQueue.Enqueue (action);
+					endeavourQueue.Enqueue (action);
 				}
 			}
 			
 		}
-		foreach (Action action in availableActions) {
+		foreach (Endeavour action in availableEndeavours) {
 			if (!action.isStale()) {
-				actionQueue.Enqueue(action);
+				endeavourQueue.Enqueue(action);
 			}
 			else {
 				//print("mark as stale: " + action.getName());
-
-				staleActions.Add(action);
+				
+				staleEndeavours.Add(action);
 			}
 		}
 		
-		foreach (Action action in staleActions) {
+		foreach (Endeavour action in staleEndeavours) {
 			//print ("removing " + action.getName());
-			availableActions.Remove(action);
-			currentActions.Remove(action);
+			availableEndeavours.Remove(action);
+			currentEndeavours.Remove(action);
 		}
-		staleActions.Clear ();
-		HashSet<Action> proposedActions = new HashSet<Action> ();
+		staleEndeavours.Clear ();
+		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
 		
 		//if (currentAction != (Action)actionQueue.peek()) {
 		//	if (currentAction != null) {
@@ -131,22 +137,22 @@ public class RobotController : MonoBehaviour {
 		//	}
 		//}
 		Dictionary<System.Type, int> componentMap = getComponentMap ();
-		while (actionQueue.Count > 0) {
-			if (((Action)actionQueue.peek()).canExecute(componentMap)) {
-				Action action = (Action)actionQueue.Dequeue();
+		while (endeavourQueue.Count > 0) {
+			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
+				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("propose: " + action.getName());
-				proposedActions.Add(action);
+				proposedEndeavours.Add(action);
 				//action.execute();
 			}
 			else {
-				actionQueue.Dequeue();
+				endeavourQueue.Dequeue();
 			}
 		}
 		
-		List<Action> toExecute = new List<Action> ();
-		foreach (Action action in proposedActions) {
-			if (currentActions.Contains(action)) {
-				currentActions.Remove(action);
+		List<Endeavour> toExecute = new List<Endeavour> ();
+		foreach (Endeavour action in proposedEndeavours) {
+			if (currentEndeavours.Contains(action)) {
+				currentEndeavours.Remove(action);
 				
 			}
 			else {
@@ -154,17 +160,17 @@ public class RobotController : MonoBehaviour {
 			}
 		}
 		
-		foreach (Action action in currentActions) {
+		foreach (Endeavour action in currentEndeavours) {
 			//print("stop executing: " + action.getName());
 			action.stopExecution();
 		}
 		
-		foreach (Action action in toExecute) {
+		foreach (Endeavour action in toExecute) {
 			//print("start executing: " + action.getName());
 			
 			action.execute();
 		}
-		currentActions = proposedActions;
+		currentEndeavours = proposedEndeavours;
 	}
 
 	private Dictionary<System.Type, int> getComponentMap() {
@@ -183,7 +189,7 @@ public class RobotController : MonoBehaviour {
 		return componentMap;
 	}
 
-	private void sightingLost(RobotInterest target) {
+	private void sightingLost(Label target) {
 
 		if (externalMentalModel != null) {
 			externalMentalModel.removeSighting(target);
@@ -191,7 +197,7 @@ public class RobotController : MonoBehaviour {
 		mentalModel.removeSighting (target);
 	}
 
-	private void sightingFound(RobotInterest target) {
+	private void sightingFound(Label target) {
 		if (externalMentalModel != null) {
 			//print("adding target " + target.Type);
 			externalMentalModel.addSighting(target);

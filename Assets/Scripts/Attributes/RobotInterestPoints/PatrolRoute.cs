@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class PatrolRoute : RobotInterest {
+public class PatrolRoute : Label {
 
 	private RoutePoint[] points;
 
-	void Awake() {
+	void Start() {
 		Type = "patrolRoute";
 		//possibleActions.Add (new PursueAction (this));
 		points = GetComponentsInChildren<RoutePoint> ();
@@ -33,8 +33,8 @@ public class PatrolRoute : RobotInterest {
 		return min;
 	}
 
-	public override List<Action> getAvailableActions (RobotController controller) {
-		List<Action> actions = base.getAvailableActions (controller);
+	public override List<Endeavour> getAvailableEndeavours (RobotController controller) {
+		List<Endeavour> actions = base.getAvailableEndeavours (controller);
 		actions.Add(new PatrolAction(controller, this));
 		return actions;
 	}

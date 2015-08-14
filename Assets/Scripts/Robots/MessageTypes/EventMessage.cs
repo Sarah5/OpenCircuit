@@ -2,9 +2,9 @@
 public class EventMessage {
 
 	private string type;
-	private RobotInterest targetInfo;
+	private Label targetInfo;
 
-	public EventMessage(string type, RobotInterest target) {
+	public EventMessage(string type, Label target) {
 		this.type = type;
 		this.targetInfo = target;
 	}
@@ -15,7 +15,7 @@ public class EventMessage {
 		}
 	}
 
-	public RobotInterest Target {
+	public Label Target {
 		get {
 			return targetInfo;
 		}

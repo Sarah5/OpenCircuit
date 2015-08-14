@@ -2,18 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class DropKickAction : Action {
+public class DropKickAction : Endeavour {
 
-	RobotInterest target;
+	Label target;
 
-	public DropKickAction(RobotController controller, RobotInterest target) : base(controller) {
+	public DropKickAction(RobotController controller, Label target) : base(controller) {
 		this.name = "dropKick";
 		this.priority = 1;
 		this.target = target;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
-	public bool canExecute (Dictionary<System.Type, int> availableComponents) {
+	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		return (target != null) && base.canExecute (availableComponents);
 	}
 
