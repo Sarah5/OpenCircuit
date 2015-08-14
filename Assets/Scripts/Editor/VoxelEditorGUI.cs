@@ -127,8 +127,21 @@ public class VoxelEditorGUI : Editor {
 		// brush ghost
 		editor.drawGhostBrush = EditorGUILayout.Toggle ("Show Ghost Brush", editor.drawGhostBrush);
 
-		// brush list
-		editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
+		editor.gridEnabled = EditorGUILayout.Toggle("Snap to Grid", editor.gridEnabled);
+        if (editor.gridEnabled) {
+            ++EditorGUI.indentLevel;
+            editor.gridUseVoxelUnits = EditorGUILayout.Toggle("Use Voxel Units", editor.gridUseVoxelUnits);
+			if (editor.gridUseVoxelUnits) {
+				float voxelSize = editor.baseSize / (1 << editor.maxDetail);
+                editor.gridSize = EditorGUILayout.FloatField("Grid Spacing (Voxels)", editor.gridSize /voxelSize) *voxelSize;
+			} else {
+                editor.gridSize = EditorGUILayout.FloatField("Grid Spacing (Meters)", editor.gridSize);
+            }
+			--EditorGUI.indentLevel;
+        }
+
+        // brush list
+        editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
 
 		// brush substance type
 		string[] substances = new string[editor.voxelSubstances.Length];
@@ -138,7 +151,8 @@ public class VoxelEditorGUI : Editor {
 		// brush size
 		switch(editor.selectedBrush) {
 		case 0:
-			GUILayout.BeginHorizontal();
+            GUILayout.Label("Hold 'Shift' to subtract.");
+            GUILayout.BeginHorizontal();
 			GUILayout.Label("Sphere Radius", GUILayout.ExpandWidth(false));
 			editor.sphereBrushSize = GUILayout.HorizontalSlider(editor.sphereBrushSize, 0, 100);
 			editor.sphereBrushSize = EditorGUILayout.FloatField(editor.sphereBrushSize, GUILayout.MaxWidth(64));
@@ -151,6 +165,7 @@ public class VoxelEditorGUI : Editor {
 			break;
 
 		case 1:
+			GUILayout.Label("Hold 'Shift' to subtract.");
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Dimensions");
 			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
@@ -413,8 +428,8 @@ public class VoxelEditorGUI : Editor {
     }
 
     protected static void addBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-		Vector3 point = Vox.VoxelEditor.getRayCollision(mouseLocation).point;
-		switch(editor.selectedBrush) {
+        Vector3 point = editor.getBrushPoint(mouseLocation);
+        switch(editor.selectedBrush) {
 		case 0:
 			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, byte.MaxValue), true);
 			break;
@@ -425,8 +440,8 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-		Vector3 point = Vox.VoxelEditor.getRayCollision(mouseLocation).point;
-		switch(editor.selectedBrush) {
+        Vector3 point = editor.getBrushPoint(mouseLocation);
+        switch(editor.selectedBrush) {
 		case 0:
 			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
 			break;
@@ -436,7 +451,7 @@ public class VoxelEditorGUI : Editor {
 		}
 	}
 
-	protected class VoxelEditorParameters {
+    protected class VoxelEditorParameters {
 		public float baseSize = 32;
 		public byte maxDetail = 6;
 		// public byte isoLevel = 127;

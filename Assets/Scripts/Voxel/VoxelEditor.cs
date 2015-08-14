@@ -18,6 +18,9 @@ namespace Vox {
 		public float maxChange;
         public int proceduralSeed;
         public float heightPercentage;
+        public bool gridEnabled;
+        public bool gridUseVoxelUnits;
+        public float gridSize;
 
         // editor data
         [System.NonSerialized]
@@ -42,15 +45,6 @@ namespace Vox {
 				pauseForGeneration();
 			}
 		}
-
-// 		public void init() {
-// 			initialize();
-// 			if (useHeightmap) {
-// 				loadData();
-// 			} else {
-// 				genData(0);
-// 			}
-// 		}
 
 		public void setToHeightmap() {
 			int dimension = heightmaps[0].height;
@@ -83,14 +77,6 @@ namespace Vox {
 		// currently it just uses a "height map" system.  This is fine for initial generation, but
 		// then more passes need to be done for cliffs, caves, streams, etc.
 		public virtual void setToProcedural() {
-
-			// the following makes a hollow sphere
-			//int dimension = 1 << maxDetail;
-			//Vector3 min = new Vector3(0, 0, 0);
-			//Vector3 max = new Vector3(dimension - 4, dimension - 4, dimension - 4);
-			//head.set(new Voxel(0, byte.MaxValue));
-			//head.setSphere(new VoxelBlock.UpdateInfo(sizes[0], head, this),
-			//	0, 0, 0, maxDetail, min, max, new Voxel(0, 0));
 
 			// the following generates terrain from a height map
 			UnityEngine.Random.seed = proceduralSeed;
@@ -144,25 +130,6 @@ namespace Vox {
 			//}
 		}
 
-//		public void initializeHeightmap() {
-//
-//			head = new VoxelBlock();
-//			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
-//
-//			sizes = new float[maxDetail + 1];
-//			float s = BaseSize;
-//			for (int i = 0; i <= maxDetail; ++i) {
-//				sizes[i] = s;
-//				s /= 2;
-//			}
-//			cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<Camera>();
-////			loadData();
-//
-////			updateLocalCamPosition();
-//
-////			enqueueCheck(new UpdateCheckJob(head, this, 0));
-//		}
-
 		// public void saveData() {
 		// 	BinaryFormatter b = new BinaryFormatter();
 		// 	FileStream f = File.Create(Application.persistentDataPath + "/heightmap.dat");
@@ -186,10 +153,10 @@ namespace Vox {
 				Gizmos.color = brushGhostColor;
 				switch(selectedBrush) {
 				case 0:
-					Gizmos.DrawSphere(getRayCollision(mouseRay).point, sphereBrushSize);
+					Gizmos.DrawSphere(getBrushPoint(mouseRay), sphereBrushSize);
 					break;
 				case 1:
-					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions /2), getRayCollision(mouseRay).point);
+					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
 					break;
 				}
 			}
@@ -206,21 +173,33 @@ namespace Vox {
 			return firstHit;
 		}
 
+	    public Vector3 getBrushPoint(Ray mouseLocation) {
+			Vector3 point = getRayCollision(mouseLocation).point;
+	        if (gridEnabled) {
+	            point = transform.InverseTransformPoint(point);
+	            double halfGrid = gridSize / 2.0;
+	            Vector3 mod = new Vector3(point.x %gridSize, point.y %gridSize, point.z %gridSize);
+				point.x += (mod.x > halfGrid) ? gridSize -mod.x: -mod.x;
+				point.y += (mod.y > halfGrid) ? gridSize -mod.y: -mod.y;
+	            point.z += (mod.z > halfGrid) ? gridSize -mod.z: -mod.z;
+	            point = transform.TransformPoint(point);
+	        }
+	        return point;
+	    }
+
 		protected Mesh generateRectangleMesh(Vector3 scale) {
 			Mesh mesh = new Mesh();
-			Vector3[] vertices = new Vector3[] {
-				new Vector3(-1, -1, -1),
-				new Vector3( 1, -1, -1),
-				new Vector3(-1,  1, -1),
-				new Vector3( 1,  1, -1),
-				new Vector3(-1, -1,  1),
-				new Vector3( 1, -1,  1),
-				new Vector3(-1,  1,  1),
-				new Vector3( 1,  1,  1),
+            scale = scale / 2;
+            Vector3[] vertices = new Vector3[] {
+				new Vector3(-scale.x, -scale.y, -scale.z),
+				new Vector3( scale.x, -scale.y, -scale.z),
+				new Vector3(-scale.x,  scale.y, -scale.z),
+				new Vector3( scale.x,  scale.y, -scale.z),
+				new Vector3(-scale.x, -scale.y,  scale.z),
+				new Vector3( scale.x, -scale.y,  scale.z),
+				new Vector3(-scale.x,  scale.y,  scale.z),
+				new Vector3( scale.x,  scale.y,  scale.z),
 			};
-			for(int i=0; i<vertices.Length; ++i) {
-				vertices[i] = new Vector3(vertices[i].x *scale.x, vertices[i].y *scale.y, vertices[i].z *scale.z);
-			}
 			mesh.vertices = vertices;
 			mesh.normals = new Vector3[vertices.Length];
 			mesh.triangles = new int[] {
