@@ -25,7 +25,7 @@ public abstract class EndeavourFactory : InspectorListElement {
 		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
 		int newSelectedType = EditorGUILayout.Popup(selectedType, getTypeNames());
 		if (newSelectedType != selectedType) {
-			return (Operation) Operation.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
+			return (EndeavourFactory) EndeavourFactory.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 		}
 		
 		doGUI();
