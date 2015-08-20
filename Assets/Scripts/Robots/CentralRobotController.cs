@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 
-	public GameObject[] robots;
+	public RobotController[] robots;
 	public Label[] locations;
 	
 	private List<RobotController> listeners = new List<RobotController>();
@@ -21,7 +21,9 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 			}
 		}
 		foreach (Label location in locations) {
-			mentalModel.addSighting(location);
+			if (location != null) {
+				mentalModel.addSighting(location);
+			}
 		}
 	}
 

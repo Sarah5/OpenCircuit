@@ -15,7 +15,7 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	public byte[] serializedData;
 
 	[System.NonSerialized]
-	public Endeavour[] endeavours = new Endeavour[0];
+	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
 	[System.NonSerialized]
 	public Operation[] operations = new Operation[0];
 
@@ -33,6 +33,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		triggers = new Dictionary<System.Type, List<Operation>>();
 		foreach(Operation op in operations) {
 			addOperation(op, op.getTriggers());
+		}
+
+		foreach (EndeavourFactory endeavour in endeavours) {
+			endeavour.setParent(this);
 		}
 	}
 
@@ -64,8 +68,11 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	}
 
 	public virtual List<Endeavour> getAvailableEndeavours (RobotController controller) {
-		List<Endeavour> endeavour = new List<Endeavour> ();
-		return endeavour;
+		List<Endeavour> availableEndeavours = new List<Endeavour> ();
+		foreach (EndeavourFactory endeavour in endeavours) {
+			availableEndeavours.Add(endeavour.constructEndeavour(controller));
+		}
+		return availableEndeavours;
 	}
 
 	virtual protected bool isVisible() {
@@ -97,7 +104,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			BinaryFormatter formatter = new BinaryFormatter();
 			
 			operations = (Operation[]) formatter.Deserialize(stream);
-			endeavours = (Endeavour[]) formatter.Deserialize(stream);
+			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
+			foreach (EndeavourFactory factory in endeavours) {
+				factory.setParent(this);
+			}
 			stream.Close();
 		}
 	}

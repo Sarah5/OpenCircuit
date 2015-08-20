@@ -22,7 +22,7 @@ public class RobotController : MonoBehaviour {
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		foreach (Label location in locations) {
 			sightingFound(location);
-			trackedTargets.Add(location);
+			trackTarget(location);
 		}
 	}
 
@@ -76,6 +76,7 @@ public class RobotController : MonoBehaviour {
 			//print ("add action: " + action.getName());
 			availableEndeavours.Add(action);
 		}
+		dirty = true;
 	}
 
 	public bool knowsTarget(Label target) {
