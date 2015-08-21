@@ -38,6 +38,10 @@ public class RobotArms : AbstractRobotComponent {
 
 	}
 
+	public bool hasTarget() {
+		return target != null;
+	}
+
 	public void dropTarget() {
 		if (target != null) {
 			Rigidbody rigidbody = target.GetComponent<Rigidbody> ();
@@ -65,7 +69,7 @@ public class RobotArms : AbstractRobotComponent {
 		}
 		target.transform.parent = transform;
 		target.transform.localPosition = new Vector3(0, .5f, .85f);
-		roboController.enqueueMessage(new RobotMessage("arms", "target grabbed", target));
+		roboController.enqueueMessage(new RobotMessage("action", "target grabbed", target));
 	}
 
 }

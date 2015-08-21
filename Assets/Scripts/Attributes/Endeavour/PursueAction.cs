@@ -40,8 +40,6 @@ public class PursueAction : Endeavour {
 	}
 
 	public override bool isStale() {
-		//Debug.Log ("pursue action knows target: " + controller.knowsTarget (target));
-
 		return !controller.knowsTarget (target);
 	}
 
