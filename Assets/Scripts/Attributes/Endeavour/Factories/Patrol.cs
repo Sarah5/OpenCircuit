@@ -11,11 +11,6 @@ public class Patrol : EndeavourFactory {
 	private bool status = false;
 	private int size = 0;
 
-	public Patrol() {
-		//points.Add (null);
-//		initialize ();
-	}
-
 	public override Endeavour constructEndeavour (RobotController controller) {
 		if (getPoints() == null) {
 			Debug.Log ("points null");

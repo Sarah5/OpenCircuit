@@ -24,8 +24,4 @@ public class PatrolRoute : Label {
 		//actions.Add(new PatrolAction(controller, this));
 		//return endeavours;
 	//}
-
-	protected override bool isVisible()  {
-		return false;
-	}
 }

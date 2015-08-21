@@ -17,8 +17,4 @@ public class RoutePoint : Label {
 			next = value;
 		}
 	}
-
-	protected override bool isVisible()  {
-		return false;
-	}
 }

@@ -13,6 +13,7 @@ public abstract class EndeavourFactory : InspectorListElement {
 	public static readonly System.Type[] types = new System.Type[] {
 		typeof(Patrol),
 		typeof(Pursue),
+		typeof(Drop)
 	};
 
 	public void setParent(Label parent) {

@@ -46,8 +46,6 @@ public class RobotArms : AbstractRobotComponent {
 				rigidbody.useGravity = true;
 				rigidbody.AddForce(transform.forward * 50);
 				rigidbody.AddForce(transform.up * 30);
-
-
 			}
 			target.transform.parent = null;
 			roboController.enqueueMessage(new RobotMessage("action", "target dropped", target));

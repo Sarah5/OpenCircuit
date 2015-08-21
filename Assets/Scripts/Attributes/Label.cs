@@ -25,9 +25,12 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public string Type = "";
 
+	[System.NonSerialized]
+	public bool isVisible = true;
+
 	public void Awake() {
 		Label.labels.Add(this);
-		if (isVisible()) {
+		if (isVisible) {
 			visibleLabels.Add(this);
 		}
 		triggers = new Dictionary<System.Type, List<Operation>>();
@@ -75,10 +78,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		return availableEndeavours;
 	}
 
-	virtual protected bool isVisible() {
-		return true;
-	}
-	
 	public void OnDestroy() {
 		Label.labels.Remove(this);
 	}

@@ -24,7 +24,7 @@ public class LabelGUI : Editor {
 	
 	public override void OnInspectorGUI() {
 		Label label = (Label)target;
-
+		label.isVisible = EditorGUILayout.Toggle ("Visible", label.isVisible);
 		doOperationList(label);
 		doEndeavourList(label);
 		
