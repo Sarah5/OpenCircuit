@@ -57,9 +57,15 @@ public class InspectorList {
 			
 			// draw element
 			GUILayout.BeginVertical();
-			SerializedProperty element = array.GetArrayElementAtIndex(i);
-			foreach(SerializedProperty prop in element) {
-				EditorGUILayout.PropertyField(prop, true);
+			/*
+			 * This is a band-aid to prevent an out-of-bounds exception because 
+			 * doElementControls may modify array -Brian
+			 */
+			if (i < array.arraySize) {
+				SerializedProperty element = array.GetArrayElementAtIndex(i);
+				foreach(SerializedProperty prop in element) {
+					EditorGUILayout.PropertyField(prop, true);
+				}
 			}
 			GUILayout.EndVertical();
 			GUILayout.EndHorizontal();
