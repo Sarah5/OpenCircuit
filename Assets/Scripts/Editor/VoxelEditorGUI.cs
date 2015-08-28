@@ -475,8 +475,11 @@ public class VoxelEditorGUI : Editor {
             maxDetail = editor.maxDetail;
             maxChange = editor.maxChange;
             proceduralSeed = editor.proceduralSeed;
-
-            voxelSubstances = (Vox.VoxelSubstance[]) editor.voxelSubstances.Clone();
+			if (voxelSubstances != null) {
+				voxelSubstances = (Vox.VoxelSubstance[])editor.voxelSubstances.Clone ();
+			} else {
+				voxelSubstances = new Vox.VoxelSubstance[0];
+			}
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
         }
