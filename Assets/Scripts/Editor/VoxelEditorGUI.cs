@@ -290,7 +290,7 @@ public class VoxelEditorGUI : Editor {
 		// confirmation
 		GUILayout.Label ("Confirmation", labelBigFont);
 		if (GUILayout.Button("Generate")) {
-			if (editor.voxelSubstances.Length < 1) {
+			if (editor.voxelSubstances == null || editor.voxelSubstances.Length < 1) {
 				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog("Generate Voxels?", "Are you sure you want to generate the voxel terain from scratch?  Any previous work will be overriden.", "Generate", "Cancel")) {
 				generateVoxels(editor);
