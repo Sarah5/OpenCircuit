@@ -9,7 +9,7 @@ public class PatrolAction : Endeavour {
 	private List<Label> routePoints;
 	private int currentDestination;
 
-	public PatrolAction(RobotController controller, List<Label> route) : base(controller) {
+	public PatrolAction(RobotController controller, List<Goal> goals, List<Label> route) : base(controller, goals) {
 		//this.route = route;
 		this.name = "patrol";
 		this.priority = 1;

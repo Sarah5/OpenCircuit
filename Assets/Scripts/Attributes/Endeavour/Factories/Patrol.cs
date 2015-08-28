@@ -18,8 +18,11 @@ public class Patrol : EndeavourFactory {
 		if (parent == null || getPoints() == null) {
 			return null;
 		}
-		return new PatrolAction(controller, getPoints());
+		//Goal[] goals = new Goal[1];
+		//goals [0] = new Goal ("protection", 1);
+		return new PatrolAction(controller, goals, getPoints());
 	}
+
 	public List<Label> getPoints() {
 
 		if (points == null) {
@@ -36,6 +39,7 @@ public class Patrol : EndeavourFactory {
  	}
 
 	public override void doGUI() {
+		base.doGUI ();
 		status = UnityEditor.EditorGUILayout.Foldout (status, "Points");
 
 		if (status && getPoints() != null) {

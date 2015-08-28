@@ -7,6 +7,7 @@ public class RobotController : MonoBehaviour {
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
 	public Label[] locations;
+	public Dictionary<string, Goal> goals = new Dictionary<string, Goal>();
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
@@ -19,6 +20,10 @@ public class RobotController : MonoBehaviour {
 	private bool dirty = false;
 
 	void Start() {
+		goals.Add("protection", new Goal("protection", 1));
+		goals.Add("offense", new Goal("offense", 1));
+		goals.Add ("self-preservation", new Goal ("self-preservation", 1));
+
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		foreach (Label location in locations) {
 			sightingFound(location);
@@ -93,6 +98,10 @@ public class RobotController : MonoBehaviour {
 
 	public void enqueueMessage(RobotMessage message) {
 		messageQueue.Enqueue (message);
+	}
+
+	public Dictionary<string, Goal> getGoals() {
+		return goals;
 	}
 
 	private void evaluateActions() {

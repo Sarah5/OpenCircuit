@@ -3,6 +3,6 @@ using System.Collections;
 
 public class PowerGenerator : AbstractPowerSource {
 	public override bool drawPower (float amount){
-		return true; 
+		return base.drawPower(amount) && true; 
 	}
 }

@@ -8,9 +8,9 @@ public class Pursue : EndeavourFactory {
 		if (parent == null) {
 			return null;
 		}
-		return new PursueAction(controller, parent);
-	}
-
-	public override void doGUI() {
+		//Goal[] goals = new Goal[2];
+		//goals [0] = new Goal ("protection", 3);
+		//goals [1] = new Goal ("offense", 3);
+		return new PursueAction(controller, goals, parent);
 	}
 }

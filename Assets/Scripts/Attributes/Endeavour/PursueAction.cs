@@ -6,7 +6,7 @@ public class PursueAction : Endeavour {
 
 	private Label target;
 
-	public PursueAction (RobotController controller, Label target) : base(controller) {
+	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals) {
 		this.target = target;
 		this.name = "pursue";
 		this.priority = 5;

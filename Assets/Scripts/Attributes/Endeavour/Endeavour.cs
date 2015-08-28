@@ -4,12 +4,13 @@ using System.Collections.Generic;
 
 
 /**
- * Something AI can endeavour to accomplish, or more simply put, execute
+ * Something an AI can endeavour to accomplish, or more simply put, execute
  */
 [System.Serializable]
 public abstract class Endeavour : Prioritizable {
+
+	public List<Goal> goals = new List<Goal>();
 	
-	// Members required for endeavor execution
 	protected string name;
 	protected float priority;
 
@@ -17,8 +18,9 @@ public abstract class Endeavour : Prioritizable {
 
 	protected System.Type[] requiredComponents;
 
-	public Endeavour(RobotController controller) {
+	public Endeavour(RobotController controller, List<Goal> goals) {
 		this.controller = controller;
+		this.goals = goals;
 	}
 
 	public abstract bool isStale();
@@ -43,7 +45,14 @@ public abstract class Endeavour : Prioritizable {
 	}
 
 	public float getPriority() {
-		return priority;
+		float finalPriority = 0;
+		foreach (Goal goal in goals) {
+			Dictionary<string, Goal> robotGoals = controller.getGoals ();
+			if (robotGoals.ContainsKey(goal.name)) {
+				finalPriority += goal.priority * robotGoals[goal.name].priority;
+			}
+		}
+		return finalPriority;
 	}
 	
 	public string getName() {

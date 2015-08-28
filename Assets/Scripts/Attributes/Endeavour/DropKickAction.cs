@@ -6,7 +6,7 @@ public class DropKickAction : Endeavour {
 
 	Label dropPoint;
 
-	public DropKickAction(RobotController controller, Label dropPoint) : base(controller) {
+	public DropKickAction(RobotController controller, List<Goal> goals, Label dropPoint) : base(controller, goals) {
 		this.name = "dropKick";
 		this.priority = 10;
 		this.dropPoint = dropPoint;

@@ -6,7 +6,7 @@ public class HoldAction : Endeavour {
 
 	Label target;
 
-	public HoldAction(RobotController controller, Label target) : base(controller) {
+	public HoldAction(RobotController controller, Label target) : base(controller, new List<Goal>{new Goal("offense", 3), new Goal("protection", 3)} ) {
 		this.target = target;
 		this.name = "grab";
 		this.priority = 10;

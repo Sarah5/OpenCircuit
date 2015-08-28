@@ -16,8 +16,10 @@ public class GameObjectUtil {
 	}
 
 	public static T GetGameObject<T>(string path) where T : MonoBehaviour {
-
-		T test = GameObject.Find (path).GetComponent<T> ();
+		if (path == null) {
+			return null;
+		}
+		T test = GameObject.Find(path).GetComponent<T> ();
 		if (test == null) {
 			Debug.Log("null object");
 		}

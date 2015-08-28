@@ -16,7 +16,7 @@ public class Battery : AbstractPowerSource {
 		}
 		float subtractAmount = currentCapacity - amount;
 		currentCapacity = subtractAmount;
-		return true;
+		return base.drawPower(amount) && true;
 	}
 
 

@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public abstract class EndeavourFactory : InspectorListElement {
+
+	public List<Goal> goals = new List<Goal> ();
+	private bool status = false;
+	private int size = 0;
 
 	[System.NonSerialized]
 	protected Label parent;
@@ -35,13 +40,35 @@ public abstract class EndeavourFactory : InspectorListElement {
 
 	public static EndeavourFactory constructDefault(Label parent) {
 		EndeavourFactory factory = (EndeavourFactory) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
+		factory.goals = new List<Goal> ();
 		//factory.initialize();
 		//factory.setParent (parent);
 		return factory;
 	}
 
-	public abstract void doGUI ();
+	public virtual void doGUI () {
+		status = UnityEditor.EditorGUILayout.Foldout (status, "Goals");
+		
+		if (status && goals != null) {
+			//UnityEditor.EditorGUIUtility.LookLikeControls();
+			size = UnityEditor.EditorGUILayout.IntField ("Size:", goals.Count);
+			EditorGUILayout.Separator();
 
+			foreach (Goal goal in goals) {
+				goal.name = EditorGUILayout.TextField("Name", goal.name);
+				goal.priority = EditorGUILayout.FloatField("Priority", goal.priority);
+				EditorGUILayout.Separator();
+			}
+			if (size < goals.Count) {
+				goals.RemoveRange (size, goals.Count - size);
+				//pointsPaths.RemoveRange(size, getPoints().Count - size);
+			}
+			while (size > goals.Count) {
+				goals.Add(new Goal("", 0));
+				//pointsPaths.Add(null);
+			}
+		}
+	}
 
 	private static string[] getTypeNames() {
 		if (typeNames == null || typeNames.Length != types.Length) {

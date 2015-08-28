@@ -8,9 +8,10 @@ public class Drop : EndeavourFactory {
 		if (parent == null) {
 			return null;
 		}
-		return new DropKickAction(controller, parent);
-	}
-	
-	public override void doGUI() {
+		//Goal[] goals = new Goal[2];
+		//goals[0] = new Goal ("protection", 5);
+		//goals[1] = new Goal ("offense", 5);
+		//Debug.Log ("get drop");
+		return new DropKickAction(controller, goals, parent);
 	}
 }

@@ -106,6 +106,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
 			foreach (EndeavourFactory factory in endeavours) {
 				factory.setParent(this);
+				if (factory.goals == null) {
+					factory.goals = new List<Goal>();
+				}
 			}
 			stream.Close();
 		}
