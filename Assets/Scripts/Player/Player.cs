@@ -19,14 +19,14 @@ public class Player : MonoBehaviour {
 	public AudioClip teleportSound;
 	public float whiteOutDuration;
 	public float blackOutDuration;
-	
+
 //	private Attacher myAttacher;
 	private Attack myAttacker;
 //	private Equip myEquipper;
 //	private Focus myFocus;
 	private Grab myGrabber;
 	private Interact myInteractor;
-//	private Inventory myInventory;
+	private Inventory myInventory;
 	private Movement myMover;
 	private Camera myCam;
 	private MouseLook myLooker;
@@ -47,7 +47,7 @@ public class Player : MonoBehaviour {
 //	public Focus focus { get { return myFocus; } set { myFocus = value; } }
 	public Grab grabber { get { return myGrabber; } set { myGrabber = value; } }
 	public Interact interactor { get { return myInteractor; } set { myInteractor = value; } }
-//	public Inventory inventory { get { return myInventory; } set { myInventory = value; } }
+	public Inventory inventory { get { return myInventory; } set { myInventory = value; } }
 	public Movement mover { get { return myMover; } set { myMover = value; } }
 	public Camera cam { get { return myCam; } set { myCam = value; } }
 	public MouseLook looker { get { return myLooker; } set { myLooker = value; } }
@@ -68,7 +68,7 @@ public class Player : MonoBehaviour {
 //		focus = GetComponent<Focus>();
 		grabber = GetComponent<Grab>();
 		interactor = GetComponent<Interact>();
-//		inventory = GetComponent<Inventory>();
+		inventory = GetComponent<Inventory>();
 		mover = GetComponent<Movement>();
 		cam = GetComponentInChildren<Camera>();
 		looker = GetComponentInChildren<MouseLook>();
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour {
 		hunger = GetComponent<Hunger>();
 		mapViewer = GetComponent<MapViewer>();*/
 		controls = GetComponent<Controls>();
-		
+
 //		coldStart = 80;
 //		coldExtra = 0.1f;
 //		coldColor = new Color(0.25f, 0.5f, 1);

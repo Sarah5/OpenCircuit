@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EMP : Equipable {
-	protected override Trigger buildTrigger() {
-		return null;
+public class EMP : Item {
+
+	public override void invoke(GameObject target) {
+		print ("EMP invoked");
 	}
 
-	protected override Trigger getTrigger() {
-		return null;
-	}
+    public override void onEquip(Inventory equipper) {
+        print("EMP equiped");
+    }
 
-	public override void invoke(GameObject target){
-		print ("invoked");
-	}
+    public override void onUnequip(Inventory equipper) {
+        print("EMP unequiped");
+    }
 
 
 }
