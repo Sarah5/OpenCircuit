@@ -360,6 +360,7 @@ public class VoxelEditorGUI : Editor {
 		showSubstances = doBigFoldout(showSubstances, "Substances");
 		if (showSubstances)
 			InspectorList.doArrayGUISimple(ref voxelSubstances);
+		ob.ApplyModifiedProperties();
 	}
 
 	protected void doGeneralPropertiesGUI(Vox.VoxelEditor editor) {
@@ -461,7 +462,7 @@ public class VoxelEditorGUI : Editor {
 		// public float treeDensity = 0.02f;
 		// public float treeSlopeTolerance = 5;
 		// public float curLodDetail = 10f;
-		public Vox.VoxelSubstance[] voxelSubstances;
+//		public Vox.VoxelSubstance[] voxelSubstances;
 		// public VoxelMask[] masks;
 		public float maxChange;
         public int proceduralSeed;
@@ -475,11 +476,11 @@ public class VoxelEditorGUI : Editor {
             maxDetail = editor.maxDetail;
             maxChange = editor.maxChange;
             proceduralSeed = editor.proceduralSeed;
-			if (voxelSubstances != null) {
-				voxelSubstances = (Vox.VoxelSubstance[])editor.voxelSubstances.Clone ();
-			} else {
-				voxelSubstances = new Vox.VoxelSubstance[0];
-			}
+//			if (voxelSubstances != null) {
+//				voxelSubstances = (Vox.VoxelSubstance[])editor.voxelSubstances.Clone ();
+//			} else {
+//				voxelSubstances = new Vox.VoxelSubstance[0];
+//			}
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
         }
@@ -487,7 +488,7 @@ public class VoxelEditorGUI : Editor {
 		public void setTo(Vox.VoxelEditor editor) {
 			editor.baseSize = baseSize;
             editor.maxDetail = maxDetail;
-            editor.voxelSubstances = voxelSubstances;
+//            editor.voxelSubstances = voxelSubstances;
             editor.createColliders = createColliders;
             editor.useStaticMeshes = useStaticMeshes;
 		}
