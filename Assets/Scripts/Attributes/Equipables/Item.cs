@@ -16,7 +16,7 @@ public abstract class Item : MonoBehaviour {
 	// 	Player.getInstance().carryPickup(gameObject, e.getPoint());
 	// }
 
-	public abstract void invoke(GameObject target);
+	public abstract void invoke(Inventory invoker);
 
     public virtual void onTake(Inventory taker) {
         transform.SetParent(taker.transform);

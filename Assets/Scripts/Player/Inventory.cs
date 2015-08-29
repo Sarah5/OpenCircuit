@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[AddComponentMenu("Scripts/Player/Inventory")]
 public class Inventory : MonoBehaviour {
 
     public Vector2 iconDimensions;
@@ -11,20 +12,24 @@ public class Inventory : MonoBehaviour {
     protected Dictionary<System.Type, List<Item>> items;
     protected Item equipped;
     protected System.Type[] slots;
-    protected bool selecting;
+    protected int selecting;
+    protected int highlighted;
+    protected List<System.Type> unselectedItems;
+    protected Vector2 mousePos;
 
     void Start () {
         items = new Dictionary<System.Type, List<Item>>();
         slots = new System.Type[3];
         equipped = null;
-        selecting = false;
+        selecting = -1;
+        unselectedItems = new List<System.Type>();
     }
 
     public void OnGUI() {
-        if (!selecting)
+        if (selecting < 0)
             return;
         showSlottedItems();
-        showAllItems();
+        showUnequippedItems(selecting);
     }
 
     public bool take(GameObject itemObject) {
@@ -67,6 +72,38 @@ public class Inventory : MonoBehaviour {
         equipped = null;
     }
 
+    public void useEquipped() {
+        if (selecting >= 0) {
+            slots[selecting] = unselectedItems[highlighted];
+        }
+        if (equipped == null)
+            return;
+        equipped.invoke(this);
+    }
+
+    public void doSelect(int slot) {
+        if (selecting != slot) {
+            selecting = slot;
+            mousePos = Vector2.zero;
+        }
+        if (selecting < 0)
+            return;
+        unselectedItems.Clear();
+        unselectedItems.AddRange(items.Keys);
+        foreach(System.Type type in slots)
+            if (type != null)
+                unselectedItems.Remove(type);
+        highlighted = getCircleSelection(unselectedItems.Count, mousePos);
+    }
+
+    public void moveMouse(Vector2 amount) {
+        mousePos += amount;
+    }
+
+    public bool isSelecting() {
+        return selecting >= 0;
+    }
+
     protected void showSlottedItems() {
         float offset = (Screen.width / 2f) - (iconDimensions.x * 1.5f + iconSpacing);
         for (int i = 0; i < slots.Length; ++i) {
@@ -81,16 +118,31 @@ public class Inventory : MonoBehaviour {
         }
     }
 
-    protected void showAllItems() {
-        Vector2 center = new Vector2(Screen.width, Screen.height) - iconDimensions /2;
-        double angle = 0;
-        double angleDiff = 2.0 *Mathf.PI / items.Count;
-        foreach(System.Type itemType in items.Keys) {
+    protected void showUnequippedItems(int slot) {
+        Vector2 center = (new Vector2(Screen.width, Screen.height) - iconDimensions) /2 + new Vector2(-mousePos.x, mousePos.y) *0.1f;
+        double angle = 0.5 *Mathf.PI;
+        double angleDiff = 2.0 *Mathf.PI / unselectedItems.Count;
+        int i=0;
+        GUI.Label(new Rect(10, 10, 100, 100), highlighted.ToString());
+        foreach(System.Type itemType in unselectedItems) {
             Vector2 offset = new Vector2(Mathf.Cos((float)angle), Mathf.Sin((float)angle)) *itemCircleRadius;
-            Rect pos = new Rect(center.x +offset.x, center.y +offset.y, iconDimensions.x, iconDimensions.y);
+            float size = i==highlighted? 2: 1;
+            Rect pos = new Rect(center.x +offset.x, center.y +offset.y, iconDimensions.x *size, iconDimensions.y *size);
             GUI.DrawTexture(pos, getItem(itemType).icon, ScaleMode.ScaleToFit);
             angle += angleDiff;
+            ++i;
         }
+        if (slots[slot] != null) {
+            Rect pos = new Rect(center.x, center.y, iconDimensions.x, iconDimensions.y);
+            GUI.DrawTexture(pos, getItem(slots[slot]).icon, ScaleMode.ScaleToFit);
+        }
+    }
+
+    protected int getCircleSelection(int itemCount, Vector2 mousePosition) {
+        if (mousePosition.sqrMagnitude < (itemCircleRadius *itemCircleRadius) /4)
+            return -1;
+        double angle = Mathf.Atan2(mousePosition.x, mousePosition.y) +Mathf.PI;
+        return ((int)(angle /(2.0*Mathf.PI /itemCount) +0.5)) %itemCount;
     }
 
     protected Item getItem(System.Type type) {
@@ -131,9 +183,9 @@ public class Inventory : MonoBehaviour {
     }
 
     protected List<Item> getItemList(System.Type type) {
-        List<Item> list = items[type];
-        if (list == null)
-            return new List<Item>();
-        return list;
+        List<Item> list;
+        if (items.TryGetValue(type, out list))
+            return list;
+        return new List<Item>();
     }
 }

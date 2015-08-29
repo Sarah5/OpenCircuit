@@ -25,6 +25,9 @@ public class Controls : MonoBehaviour {
 	//		return;
 	//	 }
 
+		if (inGUI())
+			return;
+
 		/****************MOVEMENT****************/
 		myPlayer.mover.setForward(Input.GetAxis("Vertical"));
 
@@ -38,40 +41,34 @@ public class Controls : MonoBehaviour {
 
 		myPlayer.mover.setCrouching(Input.GetButton("Crouch"));
 
+		if (Input.GetButton("Equip1")) {
+			myPlayer.inventory.doSelect(0);
+		} else if (Input.GetButton("Equip2")) {
+			myPlayer.inventory.doSelect(1);
+		} else if (Input.GetButton("Equip3")) {
+			myPlayer.inventory.doSelect(2);
+		} else {
+			myPlayer.inventory.doSelect(-1);
+		}
 
-		if (!inGUI()) {
+		if (myPlayer.inventory.isSelecting()) {
+			myPlayer.inventory.moveMouse(new Vector2(Input.GetAxis("Look Horizontal"), Input.GetAxis("Look Vertical")));
+		} else {
 			if (invertLook)
 				myPlayer.looker.rotate(Input.GetAxis("Look Horizontal") * mouseSensitivity, -Input.GetAxis("Look Vertical") * mouseSensitivity);
 			else
 				myPlayer.looker.rotate(Input.GetAxis("Look Horizontal") * mouseSensitivity, Input.GetAxis("Look Vertical") * mouseSensitivity);
 		}
-		
+
 		/****************ACTION****************/
 
-//		if (Input.GetButtonDown("Fire1")/* && !Input.GetButton("Fire2")*/) {
-//			// For now, do nothing!
-//		}
-
-		if (Input.GetButtonDown ("Interact")) {
-			if (inGUI()) {
-			} else {
-				//print("calling interact method");
-				myPlayer.interactor.interact();
-			}
+		if (Input.GetButtonDown("Use")) {
+			myPlayer.inventory.useEquipped();
 		}
-//		if (Input.GetButtonDown ("Alt_Interact")) {
-//			if (inGUI()) {
-//			} else {
-//				myPlayer.interactor.altInteract();
-//			}
-//		}
-//		if (Input.GetButtonDown("Fire1") && !Input.GetButton("Fire2")) {
-//			if (inGUI ()) {
-//			}
-//			else {
-//				myPlayer.attacker.attack();
-//			}
-//		}
+		if (Input.GetButtonDown ("Interact")) {
+			myPlayer.interactor.interact();
+		}
+
 //		if (Input.GetButton ("Fire2")) {
 //			if (inGUI()) {
 //				myPlayer.focus.unfocus ();
@@ -86,10 +83,6 @@ public class Controls : MonoBehaviour {
 //		else {
 //			myPlayer.focus.unfocus();
 //		}
-//		if (Input.GetAxis ("Rotate") > 0)
-//			myPlayer.grabber.increment();
-//		else if (Input.GetAxis ("Rotate") < 0)
-//			myPlayer.grabber.decrement();
 	}
 
 	bool inGUI() {

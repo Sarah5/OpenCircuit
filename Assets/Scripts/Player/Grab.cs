@@ -12,7 +12,7 @@ public class Grab : MonoBehaviour {
 	private ConfigurableJoint holdJoint;
 	private GameObject grabbed = null;
 	private JointDrive driver;
-	
+
 	void Awake () {
 		myPlayer = this.GetComponent<Player> ();
 	}
@@ -26,7 +26,7 @@ public class Grab : MonoBehaviour {
 		}
 		else return false;
 	}
-	
+
 //	public void pocketObject(GameObject obj) {
 //		if (grabbed != null) {
 //			if (myPlayer.inventory.isEquiped(grabbed) != null) {
@@ -60,6 +60,8 @@ public class Grab : MonoBehaviour {
 	}
 
 	public bool holdObject(GameObject obj, Vector3 holdPoint) {
+		if (obj.GetComponent<Rigidbody>() == null)
+			return false;
 		grabbed = obj;
 
 		Physics.IgnoreCollision(GetComponent<Collider>(), grabbed.GetComponent<Collider>(), true);
@@ -109,5 +111,5 @@ public class Grab : MonoBehaviour {
 		else
 			holdJoint.connectedAnchor = normalHoldPosition;
 	}
-	
+
 }
