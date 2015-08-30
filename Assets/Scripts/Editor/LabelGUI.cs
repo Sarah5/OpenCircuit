@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-[CustomEditor(typeof(Label))]
+[CustomEditor(typeof(Label), true)]
 public class LabelGUI : Editor {
 	
 	private SerializedObject ob;
@@ -24,7 +24,7 @@ public class LabelGUI : Editor {
 	
 	public override void OnInspectorGUI() {
 		Label label = (Label)target;
-
+		label.isVisible = EditorGUILayout.Toggle ("Visible", label.isVisible);
 		doOperationList(label);
 		doEndeavourList(label);
 		
@@ -45,12 +45,15 @@ public class LabelGUI : Editor {
 	
 	public void doEndeavourList(Label label) {
 		endeavoursExpanded = EditorGUILayout.Foldout(endeavoursExpanded, "Endeavours");
-		if (!endeavoursExpanded)
+		if (!endeavoursExpanded) {
 			return;
+		}
 
-		for(int i=0; i<label.endeavours.Length; ++i)
-			if (label.endeavours[i] == null)
-				label.endeavours[i] = Endeavour.constructDefault();
+		for (int i=0; i<label.endeavours.Length; ++i) {
+			if (label.endeavours [i] == null) {
+				label.endeavours [i] = EndeavourFactory.constructDefault (label);
+			}
+		}
 		doArrayGUI(ref label.endeavours);
 	}
 

@@ -17,7 +17,7 @@ namespace Vox {
 		public const ulong FILE_FORMAT_VERSION = 1;
 
 		// basic stats
-		public float BaseSize = 32;
+		public float baseSize = 32;
 		public byte maxDetail = 6;
 		public byte isoLevel = 127;
 		public float lodDetail = 1;
@@ -30,7 +30,6 @@ namespace Vox {
 		public float curLodDetail = 10f;
 		public VoxelSubstance[] voxelSubstances;
 		public VoxelMask[] masks;
-		public float maxChange;
 		public bool createColliders = true;
 		public bool useStaticMeshes = true;
 
@@ -67,7 +66,7 @@ namespace Vox {
 
 			// setup lookup tables, etc.
 			sizes = new float[maxDetail + 1];
-			float s = BaseSize;
+			float s = baseSize;
 			for (int i = 0; i <= maxDetail; ++i) {
 				sizes[i] = s;
 				s /= 2;
@@ -176,71 +175,6 @@ namespace Vox {
 			--updateCheckJobs;
 		}
 
-		// this functions sets the values of the voxels, doing all of the procedural generation work
-		// currently it just uses a "height map" system.  This is fine for initial generation, but
-		// then more passes need to be done for cliffs, caves, streams, etc.
-		protected virtual void genData(int seed) {
-
-			// the following makes a hollow sphere
-			//int dimension = 1 << maxDetail;
-			//Vector3 min = new Vector3(0, 0, 0);
-			//Vector3 max = new Vector3(dimension - 4, dimension - 4, dimension - 4);
-			//head.set(new Voxel(0, byte.MaxValue));
-			//head.setSphere(new VoxelBlock.UpdateInfo(sizes[0], head, this),
-			//	0, 0, 0, maxDetail, min, max, new Voxel(0, 0));
-
-			// the following generates terrain from a height map
-			UnityEngine.Random.seed = seed;
-			int dimension = 1 << maxDetail;
-			float acceleration = 0;
-			float height = dimension * 0.6f;
-			float[,] heightMap = new float[dimension, dimension];
-			float[,] accelMap = new float[dimension, dimension];
-			byte[,] matMap = new byte[dimension, dimension];
-			for (int x = 0; x < dimension; ++x) {
-				for (int z = 0; z < dimension; ++z) {
-					matMap[x, z] = 0;
-
-					// calculate the height
-					if (x != 0) {
-						if (z == 0) {
-							height = heightMap[x - 1, z];
-							acceleration = accelMap[x - 1, z];
-						} else {
-							height = (heightMap[x - 1, z] + heightMap[x, z - 1]) / 2;
-							acceleration = (accelMap[x - 1, z] + accelMap[x, z - 1]) / 2;
-						}
-					}
-					float edgeDistance = Mathf.Max(Mathf.Abs(dimension / 2 - x - 10), Mathf.Abs(dimension / 2 - z - 10));
-					float edgeDistancePercent = 1 - edgeDistance / (dimension / 2);
-					float percent;
-					if (edgeDistancePercent < 0.2)
-						percent = height / (dimension * 0.6f) - 0.4f;
-					else
-						percent = height / (dimension * 0.4f);
-					float roughness = maxChange + 0.2f * (1 - edgeDistancePercent);
-					acceleration += UnityEngine.Random.Range(-roughness * percent, roughness * (1 - percent));
-					acceleration = Mathf.Min(Mathf.Max(acceleration, -roughness * 7), roughness * 7);
-					height = Mathf.Min(Mathf.Max(height + acceleration, 0), dimension);
-					heightMap[x, z] = height;
-					accelMap[x, z] = acceleration;
-				}
-			}
-			head.setToHeightmap(maxDetail, 0, 0, 0, ref heightMap, matMap, this);
-
-			// generate trees
-			//for (int x = 0; x < dimension; ++x) {
-			//	for (int z = 0; z < dimension; ++z) {
-			//		if (Random.Range(Mathf.Abs(accelMap[x, z]) / treeSlopeTolerance, 1) < treeDensity) {
-			//			GameObject tree = (GameObject)GameObject.Instantiate(trees);
-			//			tree.transform.parent = transform;
-			//			tree.transform.localPosition = new Vector3(x * size, heightMap[x, z] * size - 1.5f, z * size);
-			//			++treeCount;
-			//		}
-			//	}
-			//}
-		}
-
 		public void clearRenderers() {
 			lock(renderers) {
 				while(renderers.Count > 0) {
@@ -282,7 +216,7 @@ namespace Vox {
 		//	GUI.Label(new Rect(0, 220, 200, 20), "Voxel Vertex Count: " + VoxelRenderer.vertexCount);
 		//	GUI.Label(new Rect(0, 240, 200, 20), "Voxel Duplicate Triangle Count: " + VoxelRenderer.duplicateTriangleCount);
 		//}
-		
+
 		public void OnBeforeSerialize() {
 			lock(this) {
 				if (voxelData.Length < 1 || dirty || head == null) {
@@ -310,7 +244,7 @@ namespace Vox {
 				}
 			}
 		}
-		
+
 		public bool import(string fileName) {
 			clearRenderers();
 			Stream stream = File.OpenRead(fileName);
@@ -327,7 +261,7 @@ namespace Vox {
 				return true;
 			}
 		}
-		
+
 		public void export(string fileName) {
 			if (getHead() != null) {
 				Stream stream = File.Create(fileName);

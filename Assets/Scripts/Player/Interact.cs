@@ -27,7 +27,7 @@ public class Interact : MonoBehaviour {
 //		}
 //		if (trgt != null && Vector3.Distance(trgt.GetComponent<Collider>().ClosestPointOnBounds(transform.position), transform.position) >= 1.5f) {
 //			trgt = null;
-//		} 
+//		}
 //
 //		if (target == trgt) return;
 //
@@ -54,36 +54,25 @@ public class Interact : MonoBehaviour {
 
 	public void interact() {
 		Grab grabber = myPlayer.grabber;
-//		Equip equipper = myPlayer.equipper;
+		Inventory inventory = myPlayer.inventory;
 		if (grabber.hasObject ()) {
 			grabber.dropObject ();
-		}
-//		else if (equipper.hasObject ()) {
-//			equipper.dropObject();
-//		}
-		else {
+		} else {
 			Vector3 point;
 			GameObject nearest = reach (out point);
-			//if(equipper.equipObject(nearest)) {
-			//}
-			if (nearest != null){
-				Label item = nearest.GetComponent<Label>();
-				bool hasInteractable = false;
-				if (item != null) {
-					InteractTrigger trig = new InteractTrigger();
-					trig.setPoint(point);
-					hasInteractable = item.sendTrigger(gameObject, trig);
-				}
-				if (!hasInteractable) {
-					grabber.GrabObject(nearest, point);
-				}
-			}
+			if (nearest != null && !inventory.take(nearest)) {
+                Label item = nearest.GetComponent<Label>();
+                bool hasInteractable = false;
+                if (item != null) {
+                    InteractTrigger trig = new InteractTrigger();
+                    trig.setPoint(point);
+                    hasInteractable = item.sendTrigger(gameObject, trig);
+                }
+                if (!hasInteractable)
+                    grabber.GrabObject(nearest, point);
+            }
 		}
 	}
-
-//	public void altInteract() {
-//		myPlayer.grabber.pocketObject(reach ());
-//	}
 
 	private GameObject reach() {Vector3 fake; return reach(out fake); }
 	private GameObject reach(out Vector3 position) {
@@ -92,7 +81,7 @@ public class Interact : MonoBehaviour {
 		Ray ray = playerCam.ScreenPointToRay (new Vector3 (playerCam.pixelWidth / 2, playerCam.pixelHeight / 2));
 		RaycastHit[] hits = Physics.RaycastAll(ray, grabDistance);
 		float distance = grabDistance;
-		
+
 		foreach(RaycastHit hit in hits) {
 			if ((hit.collider.ClosestPointOnBounds(transform.position) -transform.position).sqrMagnitude > grabDistance *grabDistance) continue;
 			if (hit.distance > distance) continue;

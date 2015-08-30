@@ -12,8 +12,10 @@ public abstract class Operation: InspectorListElement {
 	public static readonly System.Type[] types = new System.Type[] {
 		typeof(OpenOperation),
 		typeof(DamageOperation),
+		typeof(EMPOp),
 	};
 
+	[System.NonSerialized]
 	protected Label parent;
 
 	public virtual System.Type[] getTriggers() {
@@ -53,5 +55,4 @@ public abstract class Operation: InspectorListElement {
 		}
 		return typeNames;
 	}
-	
 }

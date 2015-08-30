@@ -9,16 +9,39 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public static readonly HashSet<Label> labels = new HashSet<Label>();
 
+	[System.NonSerialized]
+	public static readonly HashSet<Label> visibleLabels = new HashSet<Label>();
+
 	public byte[] serializedData;
 
 	[System.NonSerialized]
-	public Endeavour[] endeavours = new Endeavour[0];
+	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
 	[System.NonSerialized]
 	public Operation[] operations = new Operation[0];
 
 	[System.NonSerialized]
 	private Dictionary<System.Type, List<Operation>> triggers = new Dictionary<System.Type, List<Operation>>();
 
+	[System.NonSerialized]
+	public string Type = "";
+
+	[System.NonSerialized]
+	public bool isVisible = true;
+
+	public void Awake() {
+		Label.labels.Add(this);
+		if (isVisible) {
+			visibleLabels.Add(this);
+		}
+		triggers = new Dictionary<System.Type, List<Operation>>();
+		foreach(Operation op in operations) {
+			addOperation(op, op.getTriggers());
+		}
+
+		foreach (EndeavourFactory endeavour in endeavours) {
+			endeavour.setParent(this);
+		}
+	}
 
 	public bool hasOperationType(System.Type type) {
 		return triggers.ContainsKey(type);
@@ -46,15 +69,15 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
             }
 		}
 	}
-	
-	public void Awake() {
-		Label.labels.Add(this);
-		triggers = new Dictionary<System.Type, List<Operation>>();
-		foreach(Operation op in operations) {
-			addOperation(op, op.getTriggers());
+
+	public virtual List<Endeavour> getAvailableEndeavours (RobotController controller) {
+		List<Endeavour> availableEndeavours = new List<Endeavour> ();
+		foreach (EndeavourFactory endeavour in endeavours) {
+			availableEndeavours.Add(endeavour.constructEndeavour(controller));
 		}
+		return availableEndeavours;
 	}
-	
+
 	public void OnDestroy() {
 		Label.labels.Remove(this);
 	}
@@ -80,7 +103,13 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			BinaryFormatter formatter = new BinaryFormatter();
 			
 			operations = (Operation[]) formatter.Deserialize(stream);
-			endeavours = (Endeavour[]) formatter.Deserialize(stream);
+			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
+			foreach (EndeavourFactory factory in endeavours) {
+				factory.setParent(this);
+				if (factory.goals == null) {
+					factory.goals = new List<Goal>();
+				}
+			}
 			stream.Close();
 		}
 	}

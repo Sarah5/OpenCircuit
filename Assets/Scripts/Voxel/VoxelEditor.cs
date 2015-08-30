@@ -12,18 +12,18 @@ namespace Vox {
 	public class VoxelEditor : VoxelTree {
 
 		protected static readonly Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
-		
-		public bool useHeightmap;
-		public Texture2D[] heightmaps;
-		public byte[] heightmapSubstances;
-		
-		public string data_file;
-		
-		public Texture2D heightmap;
-		public Texture2D substanceMap;
 
-		// editor data
-		[System.NonSerialized]
+		public byte[] heightmapSubstances;
+        public Texture2D[] heightmaps;
+		public float maxChange;
+        public int proceduralSeed;
+        public float heightPercentage;
+        public bool gridEnabled;
+        public bool gridUseVoxelUnits;
+        public float gridSize;
+
+        // editor data
+        [System.NonSerialized]
 		public int selectedMode = 0;
 		[System.NonSerialized]
 		public int selectedBrush = 0;
@@ -46,57 +46,96 @@ namespace Vox {
 			}
 		}
 
-		public void init() {
-			initialize();
-			if (useHeightmap) {
-//				initializeHeightmap();
-				loadData();
-			} else {
-//				initialize();
-				genData(0);
-			}
-		}
-
-		public void loadData() {
-			int voxels = heightmap.height;
+		public void setToHeightmap() {
+			int dimension = heightmaps[0].height;
 
 			for (int index = 0; index < heightmaps.Length; ++index ) {
-				float[,] map = new float[voxels, voxels];
+				float[,] map = new float[dimension, dimension];
 				for (int i = 0; i < heightmaps[index].height; i++) {
 					for (int j = 0; j < heightmaps[index].width; j++) {
-						Color pix = heightmaps[index].GetPixel((heightmap.height - 1) - i, j);
-						map[j, i] = ((pix.r + pix.g + pix.b) / 3.0f) * voxels;
+						Color pix = heightmaps[index].GetPixel((dimension - 1) - i, j);
+						map[j, i] = ((pix.r + pix.g + pix.b) / 3.0f) * dimension;
 					}
 				}
 				head.setToHeightmap(maxDetail, 0, 0, 0, ref map, heightmapSubstances[index], this);
 			}
 		}
-		
-//		public void initializeHeightmap() {
-//			
-//			head = new VoxelBlock();
-//			maxDetail = (byte)Mathf.Log(heightmap.height, 2);
-//			
-//			sizes = new float[maxDetail + 1];
-//			float s = BaseSize;
-//			for (int i = 0; i <= maxDetail; ++i) {
-//				sizes[i] = s;
-//				s /= 2;
-//			}
-//			cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<Camera>();
-////			loadData();
-//			
-////			updateLocalCamPosition();
-//			
-////			enqueueCheck(new UpdateCheckJob(head, this, 0));
-//		}
-		
-		public void saveData() {
-			BinaryFormatter b = new BinaryFormatter();
-			FileStream f = File.Create(Application.persistentDataPath + "/heightmap.dat");
-			b.Serialize(f, heightmap);
-			f.Close();
+
+		public void setToHeight() {
+			int dimension = 1 << maxDetail;
+            float height = heightPercentage / 100f * dimension;
+			float[,] map = new float[dimension, dimension];
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					map[j, i] = height;
+				}
+			}
+			head.setToHeightmap(maxDetail, 0, 0, 0, ref map, 0, this);
 		}
+
+		// this functions sets the values of the voxels, doing all of the procedural generation work
+		// currently it just uses a "height map" system.  This is fine for initial generation, but
+		// then more passes need to be done for cliffs, caves, streams, etc.
+		public virtual void setToProcedural() {
+
+			// the following generates terrain from a height map
+			UnityEngine.Random.seed = proceduralSeed;
+			int dimension = 1 << maxDetail;
+			float acceleration = 0;
+			float height = dimension * 0.6f;
+			float[,] heightMap = new float[dimension, dimension];
+			float[,] accelMap = new float[dimension, dimension];
+			byte[,] matMap = new byte[dimension, dimension];
+			for (int x = 0; x < dimension; ++x) {
+				for (int z = 0; z < dimension; ++z) {
+					matMap[x, z] = 0;
+
+					// calculate the height
+					if (x != 0) {
+						if (z == 0) {
+							height = heightMap[x - 1, z];
+							acceleration = accelMap[x - 1, z];
+						} else {
+							height = (heightMap[x - 1, z] + heightMap[x, z - 1]) / 2;
+							acceleration = (accelMap[x - 1, z] + accelMap[x, z - 1]) / 2;
+						}
+					}
+					float edgeDistance = Mathf.Max(Mathf.Abs(dimension / 2 - x - 10), Mathf.Abs(dimension / 2 - z - 10));
+					float edgeDistancePercent = 1 - edgeDistance / (dimension / 2);
+					float percent;
+					if (edgeDistancePercent < 0.2)
+						percent = height / (dimension * 0.6f) - 0.4f;
+					else
+						percent = height / (dimension * 0.4f);
+					float roughness = maxChange + 0.2f * (1 - edgeDistancePercent);
+					acceleration += UnityEngine.Random.Range(-roughness * percent, roughness * (1 - percent));
+					acceleration = Mathf.Min(Mathf.Max(acceleration, -roughness * 7), roughness * 7);
+					height = Mathf.Min(Mathf.Max(height + acceleration, 0), dimension);
+					heightMap[x, z] = height;
+					accelMap[x, z] = acceleration;
+				}
+			}
+			head.setToHeightmap(maxDetail, 0, 0, 0, ref heightMap, matMap, this);
+
+			// generate trees
+			//for (int x = 0; x < dimension; ++x) {
+			//	for (int z = 0; z < dimension; ++z) {
+			//		if (Random.Range(Mathf.Abs(accelMap[x, z]) / treeSlopeTolerance, 1) < treeDensity) {
+			//			GameObject tree = (GameObject)GameObject.Instantiate(trees);
+			//			tree.transform.parent = transform;
+			//			tree.transform.localPosition = new Vector3(x * size, heightMap[x, z] * size - 1.5f, z * size);
+			//			++treeCount;
+			//		}
+			//	}
+			//}
+		}
+
+		// public void saveData() {
+		// 	BinaryFormatter b = new BinaryFormatter();
+		// 	FileStream f = File.Create(Application.persistentDataPath + "/heightmap.dat");
+		// 	b.Serialize(f, heightmap);
+		// 	f.Close();
+		// }
 
 		public bool hasVoxelData() {
 			return getHead() != null;
@@ -114,15 +153,15 @@ namespace Vox {
 				Gizmos.color = brushGhostColor;
 				switch(selectedBrush) {
 				case 0:
-					Gizmos.DrawSphere(getRayCollision(mouseRay).point, sphereBrushSize);
+					Gizmos.DrawSphere(getBrushPoint(mouseRay), sphereBrushSize);
 					break;
 				case 1:
-					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions /2), getRayCollision(mouseRay).point);
+					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
 					break;
 				}
 			}
 		}
-		
+
 		public static RaycastHit getRayCollision(Ray ray) {
 			RaycastHit firstHit = new RaycastHit();
 			firstHit.distance = float.PositiveInfinity;
@@ -134,21 +173,33 @@ namespace Vox {
 			return firstHit;
 		}
 
+	    public Vector3 getBrushPoint(Ray mouseLocation) {
+			Vector3 point = getRayCollision(mouseLocation).point;
+	        if (gridEnabled) {
+	            point = transform.InverseTransformPoint(point);
+	            double halfGrid = gridSize / 2.0;
+	            Vector3 mod = new Vector3(point.x %gridSize, point.y %gridSize, point.z %gridSize);
+				point.x += (mod.x > halfGrid) ? gridSize -mod.x: -mod.x;
+				point.y += (mod.y > halfGrid) ? gridSize -mod.y: -mod.y;
+	            point.z += (mod.z > halfGrid) ? gridSize -mod.z: -mod.z;
+	            point = transform.TransformPoint(point);
+	        }
+	        return point;
+	    }
+
 		protected Mesh generateRectangleMesh(Vector3 scale) {
 			Mesh mesh = new Mesh();
-			Vector3[] vertices = new Vector3[] {
-				new Vector3(-1, -1, -1),
-				new Vector3( 1, -1, -1),
-				new Vector3(-1,  1, -1),
-				new Vector3( 1,  1, -1),
-				new Vector3(-1, -1,  1),
-				new Vector3( 1, -1,  1),
-				new Vector3(-1,  1,  1),
-				new Vector3( 1,  1,  1),
+            scale = scale / 2;
+            Vector3[] vertices = new Vector3[] {
+				new Vector3(-scale.x, -scale.y, -scale.z),
+				new Vector3( scale.x, -scale.y, -scale.z),
+				new Vector3(-scale.x,  scale.y, -scale.z),
+				new Vector3( scale.x,  scale.y, -scale.z),
+				new Vector3(-scale.x, -scale.y,  scale.z),
+				new Vector3( scale.x, -scale.y,  scale.z),
+				new Vector3(-scale.x,  scale.y,  scale.z),
+				new Vector3( scale.x,  scale.y,  scale.z),
 			};
-			for(int i=0; i<vertices.Length; ++i) {
-				vertices[i] = new Vector3(vertices[i].x *scale.x, vertices[i].y *scale.y, vertices[i].z *scale.z);
-			}
 			mesh.vertices = vertices;
 			mesh.normals = new Vector3[vertices.Length];
 			mesh.triangles = new int[] {

@@ -94,9 +94,9 @@ public class Movement : MonoBehaviour {
 		}
 		desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
 		float speed = desiredVel.magnitude * (sprinting ? sprintMult : 1) *(crouching? crouchSpeedMultiplier: 1);
-		float maxAccel = acceleration;
 		desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
 		desiredVel.y = 0;
+		desiredVel.Normalize();
 
 		// move parallel to the ground
 		if (isGrounded()) {
@@ -113,6 +113,7 @@ public class Movement : MonoBehaviour {
 
 		// handle the maximum acceleration
 		Vector3 force = desiredVel -GetComponent<Rigidbody>().velocity +groundSpeed;
+		float maxAccel = Mathf.Max(acceleration *force.magnitude, acceleration /3);
 		if (force.magnitude > maxAccel) {
 			force.Normalize();
 			force *= maxAccel;
@@ -220,7 +221,7 @@ public class Movement : MonoBehaviour {
 		//if (isStep) {
 		//	return 0;
 		//}
-		
+
 		//// check down
 		//point1 += direction.normalized * ledgeWidth *2;
 		//point2 += direction.normalized * ledgeWidth *2;
@@ -253,6 +254,7 @@ public class Movement : MonoBehaviour {
 		if (collisionInfo.gameObject == floor) {
 			floor = null;
 			groundNormal = Vector3.zero;
+			groundSpeed = Vector3.zero;
 		}
 	}
 
@@ -262,14 +264,14 @@ public class Movement : MonoBehaviour {
 		else
 			forwardSpeed = percent *walkSpeedb;
 	}
-	
+
 	public void setRight(float percent) {
 		if (percent > 0)
 			rightSpeed = percent *walkSpeedr;
 		else
 			rightSpeed = percent *walkSpeedl;
 	}
-	
+
 	public void setSprinting(bool sprint) {
 		if (recovering && myPlayer.oxygen < oxygenBeginSprint)
 			return;
@@ -283,10 +285,11 @@ public class Movement : MonoBehaviour {
 
 	public void jump() {
 		if (!canMove) return;
-		if (!isGrounded ())
+		if (freeFallDelay == 0 && !isGrounded())
 			return;
-		Vector3 upSpeed = new Vector3(0, jumpSpeed, 0);
-		if (floor.GetComponent<Rigidbody>() != null) upSpeed.y += floor.GetComponent<Rigidbody>().velocity.y;
+        freeFallDelay = 0;
+        Vector3 upSpeed = new Vector3(0, jumpSpeed, 0);
+		if (floor != null && floor.GetComponent<Rigidbody>() != null) upSpeed.y += floor.GetComponent<Rigidbody>().velocity.y;
 		GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity + upSpeed;
 		floor = null;
 		setColliderHeight(normHeight - maxStepHeight);
@@ -297,7 +300,7 @@ public class Movement : MonoBehaviour {
 		col.center = col.center + new Vector3(0, (col.height - h) / 2, 0);
 		col.height = h;
 	}
-	
+
 	public bool isGrounded() {
 		return (floor != null && groundNormal.y > 0.6f) || (GetComponent<Rigidbody>().IsSleeping());
 	}

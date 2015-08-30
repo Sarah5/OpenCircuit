@@ -172,46 +172,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!1 &1376384490
+--- !u!1 &1412771245
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 1376384492}
-  - 114: {fileID: 1376384491}
+  - 4: {fileID: 1412771247}
+  - 114: {fileID: 1412771246}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Voxel Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1376384491
+--- !u!114 &1412771246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1376384490}
+  m_GameObject: {fileID: 1412771245}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4ee53a815e183744b32bca72a2ff041, type: 3}
+  m_Script: {fileID: 11500000, guid: 251f13fa7746646468c091635d0002fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializedData: 0001000000ffffffff01000000000000000c020000000f417373656d626c792d435368617270070100000000010000000200000004094f7065726174696f6e020000000903000000090400000005030000000d4f70656e4f7065726174696f6e01000000066c6f636b65640001020000000105040000000f44616d6167654f7065726174696f6e020000000a64616d616765547970650c64616d616765416d6f756e7401000b020000000605000000076275726e696e67000000000b0001000000ffffffff01000000000000000c020000000f417373656d626c792d43536861727007010000000001000000000000000409456e646561766f7572020000000b
---- !u!4 &1376384492
+  BaseSize: 32
+  maxDetail: 6
+  isoLevel: 127
+  lodDetail: 1
+  useLod: 0
+  trees: {fileID: 0}
+  treeDensity: .0199999996
+  treeSlopeTolerance: 5
+  cam: {fileID: 456358333}
+  curLodDetail: 10
+  voxelSubstances:
+  - name: 
+    renderMaterial: {fileID: 2100000, guid: 9196992b7b10d0f4f9c43cc801c9111c, type: 2}
+    blendMaterial: {fileID: 0}
+    strength: 0
+    pliability: 0
+    conductivity: 0
+  masks: []
+  maxChange: .00999999978
+  createColliders: 1
+  useStaticMeshes: 1
+  sizes:
+  - 32
+  - 16
+  - 8
+  - 4
+  - 2
+  - 1
+  - .5
+  voxelData: 
+  useHeightmap: 0
+  heightmaps: []
+  heightmapSubstances: 
+  data_file: 
+  heightmap: {fileID: 0}
+  substanceMap: {fileID: 0}
+--- !u!4 &1412771247
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1376384490}
+  m_GameObject: {fileID: 1412771245}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 68.9619446, y: 43.5074196, z: 78.3528137}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!1 &2139418972
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,4 +306,4 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
