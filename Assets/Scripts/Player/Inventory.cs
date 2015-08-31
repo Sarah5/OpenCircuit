@@ -8,6 +8,7 @@ public class Inventory : MonoBehaviour {
     public Vector2 iconDimensions;
     public float iconSpacing;
     public float itemCircleRadius;
+    public Texture2D itemBackground;
 
     protected Dictionary<System.Type, List<Item>> items;
     protected Item equipped;
@@ -51,8 +52,10 @@ public class Inventory : MonoBehaviour {
     }
 
     public void equip(int slot) {
+        if (slots[slot] == null)
+            return;
         Item newEquiped = getItem(slots[slot]);
-        if (newEquiped.GetType() == equipped.GetType()) {
+        if (equipped != null && newEquiped.GetType() == equipped.GetType()) {
             unequip();
             return;
         }
@@ -74,7 +77,8 @@ public class Inventory : MonoBehaviour {
 
     public void useEquipped() {
         if (selecting >= 0) {
-            slots[selecting] = unselectedItems[highlighted];
+            slots[selecting] = (highlighted < 0)? null: unselectedItems[highlighted];
+            mousePos = Vector3.zero;
         }
         if (equipped == null)
             return;
@@ -83,6 +87,8 @@ public class Inventory : MonoBehaviour {
 
     public void doSelect(int slot) {
         if (selecting != slot) {
+            if (slot < 0)
+                equip(selecting);
             selecting = slot;
             mousePos = Vector2.zero;
         }
@@ -98,6 +104,7 @@ public class Inventory : MonoBehaviour {
 
     public void moveMouse(Vector2 amount) {
         mousePos += amount;
+        mousePos = Vector2.ClampMagnitude(mousePos, itemCircleRadius);
     }
 
     public bool isSelecting() {
@@ -119,11 +126,18 @@ public class Inventory : MonoBehaviour {
     }
 
     protected void showUnequippedItems(int slot) {
+
+        // draw backdrop
+        float backdropWidth = (iconDimensions.x +itemCircleRadius) *3;
+        GUI.color = new Color(1, 1, 1, 0.8f);
+        GUI.DrawTexture(new Rect((Screen.width -backdropWidth) /2, (Screen.height -backdropWidth) /2, backdropWidth, backdropWidth), itemBackground, ScaleMode.ScaleToFit);
+        GUI.color = Color.white;
+
+        // draw unselected items
         Vector2 center = (new Vector2(Screen.width, Screen.height) - iconDimensions) /2 + new Vector2(-mousePos.x, mousePos.y) *0.1f;
         double angle = 0.5 *Mathf.PI;
         double angleDiff = 2.0 *Mathf.PI / unselectedItems.Count;
         int i=0;
-        GUI.Label(new Rect(10, 10, 100, 100), highlighted.ToString());
         foreach(System.Type itemType in unselectedItems) {
             Vector2 offset = new Vector2(Mathf.Cos((float)angle), Mathf.Sin((float)angle)) *itemCircleRadius;
             float size = i==highlighted? 2: 1;
@@ -132,6 +146,8 @@ public class Inventory : MonoBehaviour {
             angle += angleDiff;
             ++i;
         }
+
+        // draw slotted item
         if (slots[slot] != null) {
             Rect pos = new Rect(center.x, center.y, iconDimensions.x, iconDimensions.y);
             GUI.DrawTexture(pos, getItem(slots[slot]).icon, ScaleMode.ScaleToFit);
