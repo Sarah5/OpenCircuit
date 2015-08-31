@@ -10,6 +10,7 @@ public class Inventory : MonoBehaviour {
     public float itemCircleRadius;
     public Texture2D itemBackground;
 
+	protected Player player;
     protected Dictionary<System.Type, List<Item>> items;
     protected Item equipped;
     protected System.Type[] slots;
@@ -24,6 +25,7 @@ public class Inventory : MonoBehaviour {
         equipped = null;
         selecting = -1;
         unselectedItems = new List<System.Type>();
+		player = GetComponent<Player>();
     }
 
     public void OnGUI() {
@@ -32,6 +34,10 @@ public class Inventory : MonoBehaviour {
         showSlottedItems();
         showUnequippedItems(selecting);
     }
+
+	public Player getPlayer() {
+		return player;
+	}
 
     public bool take(GameObject itemObject) {
         Item item = itemObject.GetComponent<Item>();
@@ -79,7 +85,8 @@ public class Inventory : MonoBehaviour {
         if (selecting >= 0) {
             slots[selecting] = (highlighted < 0)? null: unselectedItems[highlighted];
             mousePos = Vector3.zero;
-        }
+			return;
+		}
         if (equipped == null)
             return;
         equipped.invoke(this);
@@ -114,14 +121,14 @@ public class Inventory : MonoBehaviour {
     protected void showSlottedItems() {
         float offset = (Screen.width / 2f) - (iconDimensions.x * 1.5f + iconSpacing);
         for (int i = 0; i < slots.Length; ++i) {
-            offset += iconDimensions.x + iconSpacing;
             if (slots[i] != null) {
                 Item item = getItem(slots[i]);
                 if (item.icon != null) {
                     Rect pos = new Rect(offset, 0, iconDimensions.x, iconDimensions.y);
                     GUI.DrawTexture(pos, item.icon, ScaleMode.ScaleToFit);
                 }
-            }
+			}
+			offset += iconDimensions.x + iconSpacing;
         }
     }
 
@@ -155,7 +162,7 @@ public class Inventory : MonoBehaviour {
     }
 
     protected int getCircleSelection(int itemCount, Vector2 mousePosition) {
-        if (mousePosition.sqrMagnitude < (itemCircleRadius *itemCircleRadius) /4)
+		if (itemCount < 1 || mousePosition.sqrMagnitude < (itemCircleRadius *itemCircleRadius) /4)
             return -1;
         double angle = Mathf.Atan2(mousePosition.x, mousePosition.y) +Mathf.PI;
         return ((int)(angle /(2.0*Mathf.PI /itemCount) +0.5)) %itemCount;
