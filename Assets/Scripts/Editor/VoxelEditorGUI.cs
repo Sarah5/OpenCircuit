@@ -17,6 +17,8 @@ public class VoxelEditorGUI : Editor {
 	private SerializedObject ob;
 	private GUIStyle labelBigFont = null;
 	private GUIStyle foldoutBigFont = null;
+	private GUIStyle buttonBigFont = null;
+	private GUIStyle tabsBigFont = null;
 
 	// generation parameters
 	private bool setupGeneration;
@@ -51,8 +53,18 @@ public class VoxelEditorGUI : Editor {
 		foldoutBigFont.margin = new RectOffset(foldoutBigFont.margin.left, foldoutBigFont.margin.right, foldoutBigFont.margin.top +10, foldoutBigFont.margin.bottom);
 		foldoutBigFont.fontSize = 20;
 		foldoutBigFont.alignment = TextAnchor.LowerLeft;
+		buttonBigFont = new GUIStyle(GUI.skin.button);
+		buttonBigFont.fontSize = 15;
+		tabsBigFont = new GUIStyle(GUI.skin.button);
+		tabsBigFont.fontSize = 20;
 
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+		ob.UpdateIfDirtyOrScript();
+
+		if (editor.generating()) {
+			GUILayout.Label("Generating...", labelBigFont);
+			return;
+		}
 
 		if (setupGeneration) {
 			doGenerationGUI(editor);
@@ -60,7 +72,7 @@ public class VoxelEditorGUI : Editor {
 		} else {
 			if (!editor.hasVoxelData())
 				GUI.enabled = false;
-			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, GUILayout.MinHeight(20));
+			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, tabsBigFont, GUILayout.MinHeight(20));
 			GUI.enabled = true;
 
 			switch (editor.selectedMode) {
@@ -71,15 +83,13 @@ public class VoxelEditorGUI : Editor {
 				doSculptGUI(editor);
 				break;
 			case 2:
-				doMaskGUI();
+				doMaskGUI(editor);
 				break;
 			}
 		}
 
 		// finally, apply the changes
 		ob.ApplyModifiedProperties();
-
-		editor.Update();
 	}
 
 	public void OnSceneGUI() {
@@ -113,7 +123,12 @@ public class VoxelEditorGUI : Editor {
 		}
 	}
 
-	protected void doMaskGUI() {
+	protected void doMaskGUI(Vox.VoxelEditor editor) {
+		GUILayout.BeginHorizontal();
+		GUILayout.Label("Mask Display Transparency");
+		editor.maskDisplayAlpha = GUILayout.HorizontalSlider(editor.maskDisplayAlpha, 0, 1);
+		GUILayout.EndHorizontal();
+
 		// mask list
 		showMasks = doBigFoldout(showMasks, "Substance Masks");
 		if (showMasks) {
@@ -197,7 +212,7 @@ public class VoxelEditorGUI : Editor {
 					editor.wipe();
 				}
 			}
-			if (GUILayout.Button("Reskin")) {
+			if (GUILayout.Button("Reskin", buttonBigFont)) {
 				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
 					editor.generateRenderers();
 				}
@@ -289,14 +304,14 @@ public class VoxelEditorGUI : Editor {
 
 		// confirmation
 		GUILayout.Label ("Confirmation", labelBigFont);
-		if (GUILayout.Button("Generate")) {
+		if (GUILayout.Button("Generate", buttonBigFont)) {
 			if (editor.voxelSubstances == null || editor.voxelSubstances.Length < 1) {
 				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog("Generate Voxels?", "Are you sure you want to generate the voxel terain from scratch?  Any previous work will be overriden.", "Generate", "Cancel")) {
 				generateVoxels(editor);
 			}
 		}
-		if (GUILayout.Button("Cancel Generation")) {
+		if (GUILayout.Button("Cancel Generation", buttonBigFont)) {
 			setupGeneration = false;
 		}
 		EditorGUILayout.Separator();
@@ -462,8 +477,6 @@ public class VoxelEditorGUI : Editor {
 		// public float treeDensity = 0.02f;
 		// public float treeSlopeTolerance = 5;
 		// public float curLodDetail = 10f;
-//		public Vox.VoxelSubstance[] voxelSubstances;
-		// public VoxelMask[] masks;
 		public float maxChange;
         public int proceduralSeed;
         public bool createColliders = true;
@@ -476,11 +489,6 @@ public class VoxelEditorGUI : Editor {
             maxDetail = editor.maxDetail;
             maxChange = editor.maxChange;
             proceduralSeed = editor.proceduralSeed;
-//			if (voxelSubstances != null) {
-//				voxelSubstances = (Vox.VoxelSubstance[])editor.voxelSubstances.Clone ();
-//			} else {
-//				voxelSubstances = new Vox.VoxelSubstance[0];
-//			}
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
         }
@@ -488,7 +496,6 @@ public class VoxelEditorGUI : Editor {
 		public void setTo(Vox.VoxelEditor editor) {
 			editor.baseSize = baseSize;
             editor.maxDetail = maxDetail;
-//            editor.voxelSubstances = voxelSubstances;
             editor.createColliders = createColliders;
             editor.useStaticMeshes = useStaticMeshes;
 		}

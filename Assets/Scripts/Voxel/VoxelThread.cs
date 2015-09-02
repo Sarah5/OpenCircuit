@@ -57,6 +57,7 @@ namespace Vox {
 		}
 
 		public static int getJobCount() {
+			initialize();
 			return updateQueue.count;
 		}
 

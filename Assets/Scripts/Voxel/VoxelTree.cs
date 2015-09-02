@@ -272,6 +272,10 @@ namespace Vox {
 			}
 		}
 
+		public bool generating() {
+			return VoxelThread.getJobCount() > 0 || jobQueue.Count > 0;
+		}
+
 		public void pauseForGeneration() {
 			generationPaused = true;
 			Time.timeScale = 0;

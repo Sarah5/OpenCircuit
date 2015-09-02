@@ -9,10 +9,13 @@ namespace Vox {
 		public Vector3 min, max;
 		public bool updateMesh;
 
+		protected uint minY;
+		protected uint maxY;
+
 		protected Modifier(VoxelTree control, bool updateMesh) {
 			this.control = control;
 			this.updateMesh = updateMesh;
-		}
+		} 
 
 		//protected Modifier(VoxelControlV2 control, Vector3 min, Vector3 max) {
 		//	this.control = control;
@@ -21,6 +24,21 @@ namespace Vox {
 		//}
 
 		protected void apply() {
+			minY = uint.MinValue;
+			maxY = uint.MaxValue;
+			foreach(VoxelMask mask in control.masks) {
+				if (mask.active) {
+					if (mask.maskAbove) {
+						if (maxY > mask.yPosition)
+							maxY = mask.yPosition;
+					} else if (minY < mask.yPosition) {
+						minY = mask.yPosition;
+					}
+				}
+			}
+			maxY -= 1;
+			MonoBehaviour.print("minY: " +minY);
+			MonoBehaviour.print("maxY: " +maxY);
 			traverse(control.getBaseUpdateInfo(), control.maxDetail);
 			control.dirty = true;
 		}
@@ -36,31 +54,18 @@ namespace Vox {
 
 			VoxelBlock block = (VoxelBlock)info.blocks[1, 1, 1];
 
-			int scale = VoxelBlock.CHILD_DIMENSION << (VoxelBlock.CHILD_COUNT_POWER *(detailLevel));
+			uint scale = (uint) (1 << (VoxelBlock.CHILD_COUNT_POWER *(detailLevel -1)));
 //			MonoBehaviour.print (scale);
 //			MonoBehaviour.print (detailLevel);
 
-			uint minY = uint.MinValue;
-			uint maxY = uint.MaxValue;
-			foreach(VoxelMask mask in control.masks) {
-				if (mask.active) {
-					if (mask.maskAbove) {
-						if (maxY > mask.yPosition)
-							maxY = mask.yPosition;
-					} else if (minY < mask.yPosition) {
-						minY = mask.yPosition;
-					}
+			for (byte yi = yiMin; yi <= yiMax; ++yi) {
+
+				if ((info.y *VoxelBlock.CHILD_DIMENSION +yi) < minY /scale ||
+				    (info.y *VoxelBlock.CHILD_DIMENSION +yi) > maxY /scale +1) {
+					continue;
 				}
-			}
-
-			for (byte xi = xiMin; xi <= xiMax; ++xi) {
-				for (byte yi = yiMin; yi <= yiMax; ++yi) {
-
-					if ((info.y +yi +1) *scale <= minY ||
-					    (info.y +yi) *scale >= maxY) {
-						continue;
-					}
-
+				
+				for (byte xi = xiMin; xi <= xiMax; ++xi) {
 					for (byte zi = ziMin; zi <= ziMax; ++zi) {
 						if (detailLevel <= VoxelBlock.CHILD_COUNT_POWER) {
 							block.children[xi, yi, zi] = modifyVoxel(block.children[xi, yi, zi], info.x * VoxelBlock.CHILD_DIMENSION + xi, info.y * VoxelBlock.CHILD_DIMENSION + yi, info.z * VoxelBlock.CHILD_DIMENSION + zi);

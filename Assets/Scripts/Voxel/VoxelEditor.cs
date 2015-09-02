@@ -21,6 +21,7 @@ namespace Vox {
         public bool gridEnabled;
         public bool gridUseVoxelUnits;
         public float gridSize = 1;
+		public float maskDisplayAlpha = 0.3f;
 
         // editor data
         [System.NonSerialized]
@@ -148,6 +149,8 @@ namespace Vox {
 		}
 
 		public void OnDrawGizmosSelected() {
+			if (selectedMode == 0)
+				return;
 			if (drawGhostBrush && selectedMode == 1) {
 				Ray mouseRay = HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
 				Gizmos.color = brushGhostColor;
@@ -159,6 +162,15 @@ namespace Vox {
 					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
 					break;
 				}
+			}
+			if (maskDisplayAlpha > 0) {
+				Gizmos.color = new Color(1, 0, 0, maskDisplayAlpha);
+				foreach(VoxelMask mask in masks) {
+					if (!mask.active)
+						continue;
+					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize /2, mask.yPosition /voxelSize(), baseSize /2));
+				}
+				Gizmos.color = Color.gray;
 			}
 		}
 
