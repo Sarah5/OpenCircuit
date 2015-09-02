@@ -106,12 +106,12 @@ public class Inventory : MonoBehaviour {
         foreach(System.Type type in slots)
             if (type != null)
                 unselectedItems.Remove(type);
-        highlighted = getCircleSelection(unselectedItems.Count, mousePos);
     }
 
     public void moveMouse(Vector2 amount) {
         mousePos += amount;
-        mousePos = Vector2.ClampMagnitude(mousePos, itemCircleRadius);
+		mousePos = Vector2.ClampMagnitude(mousePos, itemCircleRadius);
+		highlighted = getCircleSelection(unselectedItems.Count, mousePos);
     }
 
     public bool isSelecting() {

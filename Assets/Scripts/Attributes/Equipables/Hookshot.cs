@@ -12,7 +12,10 @@ public class Hookshot : Item {
 	protected Vector3 attachPoint;
 
     public override void invoke(Inventory invoker) {
-		breakConnection();
+		if (reelingIn()) {
+			breakConnection();
+			return;
+		}
 
 		player = invoker.getPlayer();
 		RaycastHit[] hits = cast();
@@ -53,6 +56,20 @@ public class Hookshot : Item {
 			col.enabled = true;
 	}
 
+	public bool reelingIn() {
+		return player != null;
+	}
+	
+	public void breakConnection() {
+		if (!reelingIn())
+			return;
+		player.mover.unlockMovement();
+		if (playerRigidbody != null)
+			playerRigidbody.useGravity = true;
+		StopAllCoroutines();
+		player = null;
+	}
+
 	protected IEnumerator reelIn() {
 		while(true) {
 			print("coroutine");
@@ -74,17 +91,7 @@ public class Hookshot : Item {
 			yield return new WaitForFixedUpdate();
 		}
 	}
-
-	protected void breakConnection() {
-		if (player == null)
-			return;
-		player.mover.unlockMovement();
-		if (playerRigidbody != null)
-			playerRigidbody.useGravity = true;
-		StopAllCoroutines();
-		player = null;
-	}
-
+	
 	protected RaycastHit[] cast() {
 		Transform cam = player.cam.transform;
 		RaycastHit[] hits = Physics.RaycastAll(cam.position, cam.forward, reach);
