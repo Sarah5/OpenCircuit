@@ -7,7 +7,6 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 	public static List<AbstractPowerSource> powerSources = new List<AbstractPowerSource> ();
 
 	bool isDisabled = false;
-	float disableTimeRemaining = 0f;
 
 	void Awake() {
 		powerSources.Add (this);
@@ -19,6 +18,7 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 
 	public void disable(float time) {
 		isDisabled = true;
+		CancelInvoke ();
 		Invoke ("enable", time);
 	}
 
