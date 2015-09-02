@@ -14,6 +14,10 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 	void Start () {
 		mentalModel.addUpdateListener (this);
 		for (int i = 0; i < robots.Length; i++) {
+			if (robots[i] == null) {
+					Debug.LogWarning("Null robot attached to CRC with name: " + gameObject.name);
+					continue;
+			}
 			RobotAntenna antenna = robots[i].GetComponentInChildren<RobotAntenna>();
 			if (antenna != null) {
 				listeners.Add(antenna.getController());
@@ -21,7 +25,12 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 			}
 		}
 		foreach (Label location in locations) {
-			if (location != null) {
+			if (location == null) {
+				if (location == null) {
+					Debug.LogWarning("Null location attached to CRC with name: " + gameObject.name);
+					continue;
+				}
+			} else {
 				mentalModel.addSighting(location);
 			}
 		}

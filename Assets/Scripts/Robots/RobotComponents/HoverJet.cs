@@ -3,8 +3,6 @@ using System.Collections;
 
 public class HoverJet : AbstractRobotComponent {
 
-	public float speed = 1f;
-
 	private Label target = null;
 
 	private NavMeshAgent nav;
