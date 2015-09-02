@@ -20,7 +20,7 @@ namespace Vox {
         public float heightPercentage;
         public bool gridEnabled;
         public bool gridUseVoxelUnits;
-        public float gridSize;
+        public float gridSize = 1;
 
         // editor data
         [System.NonSerialized]

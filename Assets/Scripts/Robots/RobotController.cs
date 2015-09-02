@@ -26,6 +26,10 @@ public class RobotController : MonoBehaviour {
 
 		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		foreach (Label location in locations) {
+			if (location == null) {
+				Debug.LogWarning("Null location attached to AI with name: " + gameObject.name);
+				continue;
+			}
 			sightingFound(location);
 			trackTarget(location);
 		}
