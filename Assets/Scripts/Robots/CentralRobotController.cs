@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[AddComponentMenu("Scripts/Robot/Central Robot Controller")]
 public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 
 	public RobotController[] robots;

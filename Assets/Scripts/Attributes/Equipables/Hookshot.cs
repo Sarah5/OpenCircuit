@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Items/Hookshot")]
 public class Hookshot : Item {
 
 	public float length = 20;

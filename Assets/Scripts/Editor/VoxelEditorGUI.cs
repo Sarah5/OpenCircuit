@@ -32,9 +32,7 @@ public class VoxelEditorGUI : Editor {
 
     [MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
-		GameObject ob = new GameObject();
-		ob.name = "Voxel Object";
-		ob.AddComponent<Vox.VoxelEditor>();
+		Vox.VoxelEditor.createEmpty();
 	}
 
 	public void OnEnable() {

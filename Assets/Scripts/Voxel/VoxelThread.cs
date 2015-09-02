@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Vox {
 
-	[AddComponentMenu("Scripts/Voxel/VoxelThread")]
+	[AddComponentMenu("")]
 	[ExecuteInEditMode]
 	public class VoxelThread : MonoBehaviour {
 

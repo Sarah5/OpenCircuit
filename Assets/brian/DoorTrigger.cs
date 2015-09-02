@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Doors/Door Trigger")]
 public class DoorTrigger : MonoBehaviour {
 
 	private DoorControl control = null;

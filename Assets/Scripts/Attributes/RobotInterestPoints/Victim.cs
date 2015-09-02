@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-
+[AddComponentMenu("Scripts/Labels/Victim")]
 public class Victim : Label {
 
 	//public EndeavourFactory[] endeavours = new EndeavourFactory[1] {new Purse()};

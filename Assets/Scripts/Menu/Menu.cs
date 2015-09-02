@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[AddComponentMenu("Scripts/Menu/Menu")]
 public class Menu : MonoBehaviour {
 
 	private Rect startRect = new Rect(0.01f, 0.1f, 0.4f, 0.1f);
@@ -121,6 +122,7 @@ public class Menu : MonoBehaviour {
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
 			Application.Quit();
+			UnityEditor.EditorApplication.isPlaying = false;
 		}
 		int width = 100;
 		int height = 20;

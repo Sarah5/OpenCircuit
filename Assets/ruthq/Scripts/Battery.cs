@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Robot/Battery")]
 public class Battery : AbstractPowerSource {
 
 	public float maximumCapacity = 100;

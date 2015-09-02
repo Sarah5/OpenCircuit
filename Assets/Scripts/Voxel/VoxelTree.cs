@@ -10,15 +10,15 @@ namespace Vox {
 	[System.Serializable]
 	public class RendererDict : SerializableDictionary<VoxelIndex, VoxelRenderer> { }
 
-	[AddComponentMenu("Scripts/Voxel/Tree")]
+	[AddComponentMenu("")]
 	[ExecuteInEditMode]
 	public class VoxelTree : MonoBehaviour, ISerializationCallbackReceiver {
 
 		public const ulong FILE_FORMAT_VERSION = 1;
 
 		// basic stats
-		public float baseSize = 32;
-		public byte maxDetail = 6;
+		public float baseSize = 128;
+		public byte maxDetail = 7;
 		public byte isoLevel = 127;
 		public float lodDetail = 1;
 		public bool useLod = false;

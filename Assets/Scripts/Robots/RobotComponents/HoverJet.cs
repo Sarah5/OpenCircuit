@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Robot/Hover Jet")]
 public class HoverJet : AbstractRobotComponent {
 
 	private Label target = null;

@@ -350,6 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: .100000001
   invertLook: 0
+  enableMousePadHacking: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -11,6 +11,9 @@ namespace Vox {
 	[ExecuteInEditMode]
 	public class VoxelEditor : VoxelTree {
 
+		public const string DEFAULT_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBase.mat";
+		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
+
 		protected static readonly Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
 
 		public byte[] heightmapSubstances;
@@ -229,6 +232,18 @@ namespace Vox {
 				4, 6, 2,
 			};
 			return mesh;
+		}
+
+		public static VoxelEditor createEmpty() {
+			GameObject ob = new GameObject();
+			ob.name = "Voxel Object";
+			VoxelEditor editor = ob.AddComponent<VoxelEditor>();
+			editor.voxelSubstances = new VoxelSubstance[1];
+			VoxelSubstance sub = new VoxelSubstance("Base",
+				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_MATERIAL_PATH),
+				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH));
+			editor.voxelSubstances[0] = sub;
+			return editor;
 		}
 
 	}
