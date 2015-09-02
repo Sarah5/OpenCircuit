@@ -59,6 +59,14 @@ namespace Vox {
 			return this == (VoxelHolder)ob;
 		}
 
+		// NOTE: could be very expensive depending on the specific implementation
+		public override int GetHashCode() {
+			int hashCode = 13;
+			hashCode = hashCode *7 +averageMaterialType();
+			hashCode = hashCode *7 +averageOpacity();
+			return hashCode;
+		}
+
 	}
 
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Hookshot : Item {
 
-	public float reach = 20;
+	public float length = 20;
 	public float reelSpeed = 10;
 
 	protected Player player;
@@ -94,7 +94,7 @@ public class Hookshot : Item {
 	
 	protected RaycastHit[] cast() {
 		Transform cam = player.cam.transform;
-		RaycastHit[] hits = Physics.RaycastAll(cam.position, cam.forward, reach);
+		RaycastHit[] hits = Physics.RaycastAll(cam.position, cam.forward, length);
 		if (hits.Length < 1)
 			return new RaycastHit[0];
 		RaycastHit finalHit = hits[0];

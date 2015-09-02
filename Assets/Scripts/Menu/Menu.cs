@@ -43,7 +43,7 @@ public class Menu : MonoBehaviour {
 
 	public void pause() {
 		if (paused()) return;
-		Screen.lockCursor = false;
+		Cursor.lockState = CursorLockMode.None;
 		activeAtStart = true;
 		timeScale = Time.timeScale;
 		Time.timeScale = 0;
@@ -51,7 +51,7 @@ public class Menu : MonoBehaviour {
 
 	public void unpause() {
 		if (!paused()) return;
-		Screen.lockCursor = true;
+		Cursor.lockState = CursorLockMode.Locked;
 		activeAtStart = false;
 		menuHistory.Clear();
 		Time.timeScale = timeScale;
@@ -230,6 +230,6 @@ public class Menu : MonoBehaviour {
 		menuHistory.Clear();
 		activeAtStart = false;
 		Time.timeScale = 1;
-		Screen.lockCursor = true;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 }

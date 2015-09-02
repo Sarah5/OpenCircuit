@@ -24,7 +24,6 @@ public class RobotController : MonoBehaviour {
 		goals.Add("offense", new Goal("offense", 1));
 		goals.Add ("self-preservation", new Goal ("self-preservation", 1));
 
-		MeshRenderer gameObjectRenderer = GetComponent<MeshRenderer>();
 		foreach (Label location in locations) {
 			if (location == null) {
 				Debug.LogWarning("Null location attached to AI with name: " + gameObject.name);
