@@ -20,9 +20,10 @@ namespace Vox {
         public Texture2D[] heightmaps;
 		public float maxChange;
         public int proceduralSeed;
-        public float heightPercentage;
-        public bool gridEnabled;
-        public bool gridUseVoxelUnits;
+        public float heightPercentage = 50;
+		public float spherePercentage = 75;
+        public bool gridEnabled = false;
+        public bool gridUseVoxelUnits = false;
         public float gridSize = 1;
 		public float maskDisplayAlpha = 0.3f;
 
@@ -64,10 +65,10 @@ namespace Vox {
 				head.setToHeightmap(maxDetail, 0, 0, 0, ref map, heightmapSubstances[index], this);
 			}
 		}
-
+		
 		public void setToHeight() {
 			int dimension = 1 << maxDetail;
-            float height = heightPercentage / 100f * dimension;
+			float height = heightPercentage / 100f * dimension;
 			float[,] map = new float[dimension, dimension];
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
@@ -75,6 +76,15 @@ namespace Vox {
 				}
 			}
 			head.setToHeightmap(maxDetail, 0, 0, 0, ref map, 0, this);
+		}
+		
+		public void setToSphere() {
+			VoxelMask[] masks = this.masks;
+			this.masks = new VoxelMask[0];
+			float radius = spherePercentage / 200f * baseSize;
+			float center = baseSize /2f;
+			new SphereModifier(this, transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue), false);
+			this.masks = masks;
 		}
 
 		// this functions sets the values of the voxels, doing all of the procedural generation work
@@ -166,7 +176,7 @@ namespace Vox {
 					break;
 				}
 			}
-			if (maskDisplayAlpha > 0) {
+			if (maskDisplayAlpha > 0 && masks != null) {
 				Gizmos.color = new Color(1, 0, 0, maskDisplayAlpha);
 				foreach(VoxelMask mask in masks) {
 					if (!mask.active)

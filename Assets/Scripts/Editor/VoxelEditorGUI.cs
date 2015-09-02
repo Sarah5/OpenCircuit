@@ -24,7 +24,6 @@ public class VoxelEditorGUI : Editor {
 	private bool setupGeneration;
 	private int selectedGenerationMode;
 	private bool showSubstances;
-	private float flatGenHeight = 50;
 
 	private bool showMasks;
 	private bool showStatistics;
@@ -46,15 +45,15 @@ public class VoxelEditorGUI : Editor {
 	public override void OnInspectorGUI() {
 		labelBigFont = new GUIStyle(GUI.skin.label);
 		labelBigFont.margin = new RectOffset(labelBigFont.margin.left, labelBigFont.margin.right, labelBigFont.margin.top +10, labelBigFont.margin.bottom);
-		labelBigFont.fontSize = 20;
+		labelBigFont.fontSize = 16;
 		foldoutBigFont = new GUIStyle(EditorStyles.foldout);
 		foldoutBigFont.margin = new RectOffset(foldoutBigFont.margin.left, foldoutBigFont.margin.right, foldoutBigFont.margin.top +10, foldoutBigFont.margin.bottom);
-		foldoutBigFont.fontSize = 20;
+		foldoutBigFont.fontSize = 16;
 		foldoutBigFont.alignment = TextAnchor.LowerLeft;
 		buttonBigFont = new GUIStyle(GUI.skin.button);
-		buttonBigFont.fontSize = 15;
+		buttonBigFont.fontSize = 14;
 		tabsBigFont = new GUIStyle(GUI.skin.button);
-		tabsBigFont.fontSize = 20;
+		tabsBigFont.fixedHeight = 30;
 
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		ob.UpdateIfDirtyOrScript();
@@ -70,7 +69,7 @@ public class VoxelEditorGUI : Editor {
 		} else {
 			if (!editor.hasVoxelData())
 				GUI.enabled = false;
-			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, tabsBigFont, GUILayout.MinHeight(20));
+			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, tabsBigFont, GUILayout.Height(30));
 			GUI.enabled = true;
 
 			switch (editor.selectedMode) {
@@ -154,6 +153,7 @@ public class VoxelEditorGUI : Editor {
         }
 
         // brush list
+		GUILayout.Label("Brush", labelBigFont);
         editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
 
 		// brush substance type
@@ -166,7 +166,7 @@ public class VoxelEditorGUI : Editor {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
             GUILayout.BeginHorizontal();
-			GUILayout.Label("Sphere Radius", GUILayout.ExpandWidth(false));
+			GUILayout.Label("Sphere Radius (m)", GUILayout.ExpandWidth(false));
 			editor.sphereBrushSize = GUILayout.HorizontalSlider(editor.sphereBrushSize, 0, 100);
 			editor.sphereBrushSize = EditorGUILayout.FloatField(editor.sphereBrushSize, GUILayout.MaxWidth(64));
 			if (editor.sphereBrushSize < 0)
@@ -180,7 +180,7 @@ public class VoxelEditorGUI : Editor {
 		case 1:
 			GUILayout.Label("Hold 'Shift' to subtract.");
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Dimensions");
+			GUILayout.Label("Dimensions (m)");
 			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
 			editor.cubeBrushDimensions.y = EditorGUILayout.FloatField(editor.cubeBrushDimensions.y);
 			editor.cubeBrushDimensions.z = EditorGUILayout.FloatField(editor.cubeBrushDimensions.z);
@@ -392,15 +392,17 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	protected void doFlatGenerationGUI() {
-		flatGenHeight = System.Math.Max(System.Math.Min(EditorGUILayout.FloatField("Height Percentage", flatGenHeight), 100f), 0f);
+		generationParameters.heightPercentage = System.Math.Max(System.Math.Min(
+			EditorGUILayout.FloatField("Height Percentage", generationParameters.heightPercentage), 100f), 0f);
 	}
 
 	protected void doSphereGenerationGUI() {
-        GUILayout.Label("UNIMPLEMENTED");
+		generationParameters.spherePercentage = System.Math.Max(System.Math.Min(
+			EditorGUILayout.FloatField("Sphere Radius Percentage", generationParameters.spherePercentage), 100f), 0f);
     }
 
 	protected void doProceduralGenerationGUI() {
-		EditorGUILayout.FloatField("Roughness", generationParameters.maxChange);
+		generationParameters.maxChange = EditorGUILayout.FloatField("Roughness", generationParameters.maxChange);
 		if (generationParameters.maxChange > 5)
 			generationParameters.maxChange = 5;
 		else if (generationParameters.maxChange < 0.01f)
@@ -421,14 +423,12 @@ public class VoxelEditorGUI : Editor {
         editor.initialize();
         switch (selectedGenerationMode) {
         case 0:
-			editor.heightPercentage = flatGenHeight;
             editor.setToHeight();
             break;
         case 1:
-
+			editor.setToSphere();
             break;
         case 2:
-            editor.maxChange = generationParameters.maxChange;
             editor.setToProcedural();
             break;
 		case 3:
@@ -475,6 +475,8 @@ public class VoxelEditorGUI : Editor {
 		// public float treeDensity = 0.02f;
 		// public float treeSlopeTolerance = 5;
 		// public float curLodDetail = 10f;
+		public float spherePercentage;
+		public float heightPercentage;
 		public float maxChange;
         public int proceduralSeed;
         public bool createColliders = true;
@@ -489,6 +491,8 @@ public class VoxelEditorGUI : Editor {
             proceduralSeed = editor.proceduralSeed;
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
+			heightPercentage = editor.heightPercentage;
+			spherePercentage = editor.spherePercentage;
         }
 
 		public void setTo(Vox.VoxelEditor editor) {
@@ -496,6 +500,8 @@ public class VoxelEditorGUI : Editor {
             editor.maxDetail = maxDetail;
             editor.createColliders = createColliders;
             editor.useStaticMeshes = useStaticMeshes;
+			editor.heightPercentage = heightPercentage;
+			editor.spherePercentage = spherePercentage;
 		}
 	}
 

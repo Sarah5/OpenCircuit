@@ -36,6 +36,9 @@ public class LevelLoad {
 
 		// create menu
 		createPrefab("Assets/Prefabs/Main Menu.prefab");
+
+		// set lighting mode
+		Lightmapping.giWorkflowMode = Lightmapping.GIWorkflowMode.OnDemand;
 	}
 
 	private static void createPrefab(string assetPath) {
