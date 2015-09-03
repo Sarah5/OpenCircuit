@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class LevelLoad {
 
 	static LevelLoad() {
-//		freshInitialize();
 		EditorApplication.hierarchyWindowChanged += freshInitialize;
 	}
 

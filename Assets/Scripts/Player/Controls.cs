@@ -5,6 +5,7 @@ using System.Collections;
 public class Controls : MonoBehaviour {
 
 	private Player myPlayer;
+	private bool playerControlsEnabled = true;
 	//private Menu menu;
 
 	public float mouseSensitivity = 1;
@@ -26,7 +27,7 @@ public class Controls : MonoBehaviour {
 	//		return;
 	//	 }
 
-		if (inGUI())
+		if (inGUI() || Time.timeScale == 0)
 			return;
 
 		/****************MOVEMENT****************/
@@ -103,6 +104,14 @@ public class Controls : MonoBehaviour {
 //		else {
 //			myPlayer.focus.unfocus();
 //		}
+	}
+	
+	public void disablePlayerControls() {
+		playerControlsEnabled = false;
+	}
+	
+	public void enablePlayerControls() {
+		playerControlsEnabled = true;
 	}
 
 	bool inGUI() {
