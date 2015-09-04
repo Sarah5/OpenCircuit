@@ -4,6 +4,9 @@ using System.IO;
 
 [System.Serializable]
 public class EMPOp : Operation {
+
+	public float range = 10f;
+	public float time = 5f;
 	
 	private static System.Type[] triggers = new System.Type[] {
 		typeof(InteractTrigger),
@@ -17,10 +20,14 @@ public class EMPOp : Operation {
 		//parent.GetComponent<RobotController>().enabled = false;
 		//AbstractPowerSource [] powerSources = GameObject.FindObjectsOfType<AbstractPowerSource> ();
 		foreach (AbstractPowerSource source in AbstractPowerSource.powerSources) {
-			if (Vector3.Distance(parent.transform.position, source.transform.position) < 10f) {
-//				Debug.Log ("perform");
-				source.disable(5);
+			if (Vector3.Distance(parent.transform.position, source.transform.position) < range) {
+				source.disable(time);
 			}
 		}
+	}
+
+	public override void doGUI () {
+		range = UnityEditor.EditorGUILayout.FloatField ("Range", range);
+		time = UnityEditor.EditorGUILayout.FloatField ("Duration (s)", time);
 	}
 }
