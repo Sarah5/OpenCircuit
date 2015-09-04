@@ -14,7 +14,7 @@ namespace Vox {
 		public const string DEFAULT_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBase.mat";
 		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
 
-		protected static readonly Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
+		protected static Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
 
 		public byte[] heightmapSubstances;
         public Texture2D[] heightmaps;
@@ -28,20 +28,15 @@ namespace Vox {
 		public float maskDisplayAlpha = 0.3f;
 
         // editor data
-        [System.NonSerialized]
 		public int selectedMode = 0;
-		[System.NonSerialized]
 		public int selectedBrush = 0;
-		[System.NonSerialized]
 		public float sphereBrushSize = 1;
-		[System.NonSerialized]
 		public byte sphereBrushSubstance = 0;
-		[System.NonSerialized]
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
-		[System.NonSerialized]
 		public byte cubeBrushSubstance = 0;
-		[System.NonSerialized]
-		public bool drawGhostBrush = true;
+		public float smoothBrushSize = 1;
+		public float smoothBrushStrength = 1;
+		public float ghostBrushAlpha = 0.3f;
 
 
 		public void Awake() {
@@ -164,8 +159,9 @@ namespace Vox {
 		public void OnDrawGizmosSelected() {
 			if (selectedMode == 0)
 				return;
-			if (drawGhostBrush && selectedMode == 1) {
+			if (ghostBrushAlpha > 0 && selectedMode == 1) {
 				Ray mouseRay = HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
+				brushGhostColor.a = ghostBrushAlpha;
 				Gizmos.color = brushGhostColor;
 				switch(selectedBrush) {
 				case 0:
@@ -173,6 +169,9 @@ namespace Vox {
 					break;
 				case 1:
 					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
+					break;
+				case 2:
+					Gizmos.DrawSphere(getBrushPoint(mouseRay), smoothBrushSize);
 					break;
 				}
 			}

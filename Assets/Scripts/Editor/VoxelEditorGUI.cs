@@ -11,7 +11,7 @@ public class VoxelEditorGUI : Editor {
 	protected const string numForm = "##,0.000";
 	protected const string numFormInt = "##,#";
 	protected static readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Mask")};
-	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
+	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle"), new GUIContent("Smooth")};
 	protected static readonly GUIContent[] generationModes = {new GUIContent("Flat"), new GUIContent("Sphere"), new GUIContent("Procedural"), new GUIContent("Heightmaps")};
 
 	private SerializedObject ob;
@@ -99,11 +99,7 @@ public class VoxelEditorGUI : Editor {
 		case EventType.MouseDown:
 			if (UnityEngine.Event.current.button == 0) {
 				GUIUtility.hotControl = controlId;
-				if (UnityEngine.Event.current.shift) {
-					subtractBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
-				} else {
-					addBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
-				}
+				applyBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
 				UnityEngine.Event.current.Use();
 			}
 			break;
@@ -121,10 +117,7 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	protected void doMaskGUI(Vox.VoxelEditor editor) {
-		GUILayout.BeginHorizontal();
-		GUILayout.Label("Mask Display Transparency");
-		editor.maskDisplayAlpha = GUILayout.HorizontalSlider(editor.maskDisplayAlpha, 0, 1);
-		GUILayout.EndHorizontal();
+		editor.maskDisplayAlpha = doSliderFloatField("Mask Display Transparency", editor.maskDisplayAlpha, 0, 1);
 
 		// mask list
 		showMasks = doBigFoldout(showMasks, "Substance Masks");
@@ -137,8 +130,8 @@ public class VoxelEditorGUI : Editor {
 
 	protected void doSculptGUI(Vox.VoxelEditor editor) {
 		// brush ghost
-		editor.drawGhostBrush = EditorGUILayout.Toggle ("Show Ghost Brush", editor.drawGhostBrush);
-
+		editor.ghostBrushAlpha = doSliderFloatField("Brush Ghost Opacity", editor.ghostBrushAlpha, 0, 1);
+		
 		editor.gridEnabled = EditorGUILayout.Toggle("Snap to Grid", editor.gridEnabled);
         if (editor.gridEnabled) {
             ++EditorGUI.indentLevel;
@@ -165,14 +158,7 @@ public class VoxelEditorGUI : Editor {
 		switch(editor.selectedBrush) {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
-            GUILayout.BeginHorizontal();
-			GUILayout.Label("Sphere Radius (m)", GUILayout.ExpandWidth(false));
-			editor.sphereBrushSize = GUILayout.HorizontalSlider(editor.sphereBrushSize, 0, 100);
-			editor.sphereBrushSize = EditorGUILayout.FloatField(editor.sphereBrushSize, GUILayout.MaxWidth(64));
-			if (editor.sphereBrushSize < 0)
-				editor.sphereBrushSize = 0;
-			GUILayout.EndHorizontal();
-
+			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, 100);
 			GUILayout.Label("Substance", labelBigFont);
 			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
 			break;
@@ -190,6 +176,11 @@ public class VoxelEditorGUI : Editor {
 
 			GUILayout.Label("Substance", labelBigFont);
 			editor.cubeBrushSubstance = (byte)GUILayout.SelectionGrid(editor.cubeBrushSubstance, substances, 1);
+			break;
+
+		case 2:
+			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, 100);
+			editor.smoothBrushStrength = doSliderFloatField("Strength", editor.smoothBrushStrength, 0, 5);
 			break;
 		}
 
@@ -441,29 +432,36 @@ public class VoxelEditorGUI : Editor {
         setupGeneration = false;
     }
 
-    protected static void addBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+    protected static void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+		byte opacity = byte.MaxValue;
+		if (UnityEngine.Event.current.shift) {
+			opacity = byte.MinValue;
+		}
         Vector3 point = editor.getBrushPoint(mouseLocation);
         switch(editor.selectedBrush) {
 		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, byte.MaxValue), true);
+			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
 			break;
 		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, byte.MaxValue), true);
+			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			break;
+		case 2:
+			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
 			break;
 		}
 	}
 
-	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-        Vector3 point = editor.getBrushPoint(mouseLocation);
-        switch(editor.selectedBrush) {
-		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
-			break;
-		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
-			break;
-		}
-	}
+//	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+//        Vector3 point = editor.getBrushPoint(mouseLocation);
+//        switch(editor.selectedBrush) {
+//		case 0:
+//			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
+//			break;
+//		case 1:
+//			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
+//			break;
+//		}
+//	}
 
     protected class VoxelEditorParameters {
 		public float baseSize = 32;
@@ -507,6 +505,16 @@ public class VoxelEditorGUI : Editor {
 
 	protected bool doBigFoldout(bool foldedOut, string label) {
 		return EditorGUI.Foldout(GUILayoutUtility.GetRect(new GUIContent(label), foldoutBigFont), foldedOut, label, true, foldoutBigFont);
+	}
+
+	protected float doSliderFloatField(string label, float value, float min, float max) {
+		GUILayout.BeginHorizontal();
+		GUILayout.Label(label, GUILayout.ExpandWidth(false));
+		float newValue = value;
+		newValue = GUILayout.HorizontalSlider(newValue, min, max);
+		newValue = Mathf.Max(Mathf.Min(EditorGUILayout.FloatField(newValue, GUILayout.MaxWidth(64)), max), min);
+		GUILayout.EndHorizontal();
+		return newValue;
 	}
 
 }

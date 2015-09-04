@@ -343,6 +343,17 @@ namespace Vox {
 			}
 		}
 
+		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+			int size = 1 << (CHILD_COUNT_POWER *level -CHILD_COUNT_POWER);
+			for(int xi=0; xi<CHILD_DIMENSION; ++xi) {
+				for(int yi=0; yi<CHILD_DIMENSION; ++yi) {
+					for(int zi=0; zi<CHILD_DIMENSION; ++zi) {
+						children[xi, yi, zi].putInArray((byte)(level -CHILD_COUNT_POWER), ref array, x +xi *size, y +yi *size, z +zi *size, xMin, yMin, zMin, xMax, yMax, zMax);
+					}
+				}
+			}
+		}
+
 		private bool filledWithSubRenderers(bool checkSelf) {
 			if (checkSelf && renderer != null && renderer.applied) {
 				return true;

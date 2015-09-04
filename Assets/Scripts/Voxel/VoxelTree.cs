@@ -167,6 +167,12 @@ namespace Vox {
 			return sizes[maxDetail];
 		}
 
+		public Voxel[,,] getArray(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+			Voxel[,,] array = new Voxel[xMax -xMin, yMax -yMin, zMax -zMin];
+			head.putInArray(maxDetail, ref array, 0, 0, 0, xMin, yMin, zMin, xMax, yMax, zMax);
+			return array;
+		}
+
 		internal void addUpdateCheckJob() {
 			++updateCheckJobs;
 		}
