@@ -29,6 +29,7 @@ namespace Vox {
 			) {
 			this.name = name;
 			this.renderMaterial = renderMaterial;
+			this.blendMaterial = blendMaterial;
 //			this.strength = strength;
 //			this.pliability = pliability;
 //			this.conductivity = conductivity;

@@ -57,6 +57,23 @@ namespace Vox {
 			return null;
 		}
 
+		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+			int size = 1 << (VoxelBlock.CHILD_COUNT_POWER *level);
+			int xStart = Mathf.Max(x, xMin);
+			int xEnd = Mathf.Min(x +size, xMax);
+			int yStart = Mathf.Max(y, yMin);
+			int yEnd = Mathf.Min(y +size, yMax);
+			int zStart = Mathf.Max(z, zMin);
+			int zEnd = Mathf.Min(z +size, zMax);
+			for(int xi=xStart; xi<xEnd; ++xi) {
+				for(int yi=yStart; yi<yEnd; ++yi) {
+					for(int zi=zStart; zi<zEnd; ++zi) {
+						array[xi -xMin, yi -yMin, zi -zMin] = this;
+					}
+				}
+			}
+		}
+
 		public static VoxelHolder setSphere(VoxelHolder original, int x, int y, int z, Vector3 min, Vector3 max, VoxelHolder val) {
 			Vector3 center = (min + max) / 2;
 			float radius = center.x - min.x;

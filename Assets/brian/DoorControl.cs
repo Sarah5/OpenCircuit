@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Doors/Door Control")]
 public class DoorControl : MonoBehaviour {
 
 	Vector3 openPos;

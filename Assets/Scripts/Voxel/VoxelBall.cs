@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Vox {
 
-	[AddComponentMenu("Scripts/Voxel/VoxelBall")]
+	[AddComponentMenu("")]
 	public class VoxelBall : VoxelTree {
 
 		public void Awake() {

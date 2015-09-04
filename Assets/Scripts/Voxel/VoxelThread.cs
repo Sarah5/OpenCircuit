@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Vox {
 
-	[AddComponentMenu("Scripts/Voxel/VoxelThread")]
+	[AddComponentMenu("")]
 	[ExecuteInEditMode]
 	public class VoxelThread : MonoBehaviour {
 
@@ -57,6 +57,7 @@ namespace Vox {
 		}
 
 		public static int getJobCount() {
+			initialize();
 			return updateQueue.count;
 		}
 

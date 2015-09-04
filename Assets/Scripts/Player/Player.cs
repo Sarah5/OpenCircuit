@@ -151,8 +151,16 @@ public class Player : MonoBehaviour {
 			if (blackOutTime < 0)
 				blackOutTime = 0;
 		}
-		// draw the player temperature
-		//GUI.Label (new Rect (10, 10, 100, 100), heat.ToString());
+		
+		if (Time.timeScale == 0) {
+			GUI.color = Color.black;
+			GUIStyle style = new GUIStyle(GUI.skin.label);
+			style.fontSize = 30;
+			style.alignment = TextAnchor.MiddleCenter;
+			GUI.Label(new Rect(Screen.width /2 -100, Screen.height /2 -15, 200, 30),
+				"Paused", style);
+			GUI.color = Color.white;
+		}
 
 		//// draw the player's oxygen level
 		//GUI.Label(new Rect(10, 30, 100, 20), oxygen.ToString());

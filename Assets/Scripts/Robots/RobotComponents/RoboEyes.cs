@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[AddComponentMenu("Scripts/Robot/Robo Eyes")]
 public class RoboEyes : AbstractRobotComponent {
 
 	public float fieldOfViewAngle = 140f;           // Number of degrees, centered on forward, for the enemy sight.

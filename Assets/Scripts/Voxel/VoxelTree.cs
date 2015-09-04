@@ -10,15 +10,15 @@ namespace Vox {
 	[System.Serializable]
 	public class RendererDict : SerializableDictionary<VoxelIndex, VoxelRenderer> { }
 
-	[AddComponentMenu("Scripts/Voxel/Tree")]
+	[AddComponentMenu("")]
 	[ExecuteInEditMode]
 	public class VoxelTree : MonoBehaviour, ISerializationCallbackReceiver {
 
 		public const ulong FILE_FORMAT_VERSION = 1;
 
 		// basic stats
-		public float baseSize = 32;
-		public byte maxDetail = 6;
+		public float baseSize = 128;
+		public byte maxDetail = 7;
 		public byte isoLevel = 127;
 		public float lodDetail = 1;
 		public bool useLod = false;
@@ -167,6 +167,12 @@ namespace Vox {
 			return sizes[maxDetail];
 		}
 
+		public Voxel[,,] getArray(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+			Voxel[,,] array = new Voxel[xMax -xMin, yMax -yMin, zMax -zMin];
+			head.putInArray(maxDetail, ref array, 0, 0, 0, xMin, yMin, zMin, xMax, yMax, zMax);
+			return array;
+		}
+
 		internal void addUpdateCheckJob() {
 			++updateCheckJobs;
 		}
@@ -270,6 +276,10 @@ namespace Vox {
 				getHead().serialize(writer);
 				stream.Close();
 			}
+		}
+
+		public bool generating() {
+			return VoxelThread.getJobCount() > 0 || jobQueue.Count > 0;
 		}
 
 		public void pauseForGeneration() {

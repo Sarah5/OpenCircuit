@@ -11,18 +11,19 @@ public class VoxelEditorGUI : Editor {
 	protected const string numForm = "##,0.000";
 	protected const string numFormInt = "##,#";
 	protected static readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Mask")};
-	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle")};
+	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle"), new GUIContent("Smooth")};
 	protected static readonly GUIContent[] generationModes = {new GUIContent("Flat"), new GUIContent("Sphere"), new GUIContent("Procedural"), new GUIContent("Heightmaps")};
 
 	private SerializedObject ob;
 	private GUIStyle labelBigFont = null;
 	private GUIStyle foldoutBigFont = null;
+	private GUIStyle buttonBigFont = null;
+	private GUIStyle tabsBigFont = null;
 
 	// generation parameters
 	private bool setupGeneration;
 	private int selectedGenerationMode;
 	private bool showSubstances;
-	private float flatGenHeight = 50;
 
 	private bool showMasks;
 	private bool showStatistics;
@@ -30,9 +31,7 @@ public class VoxelEditorGUI : Editor {
 
     [MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
-		GameObject ob = new GameObject();
-		ob.name = "Voxel Object";
-		ob.AddComponent<Vox.VoxelEditor>();
+		Vox.VoxelEditor.createEmpty();
 	}
 
 	public void OnEnable() {
@@ -46,13 +45,23 @@ public class VoxelEditorGUI : Editor {
 	public override void OnInspectorGUI() {
 		labelBigFont = new GUIStyle(GUI.skin.label);
 		labelBigFont.margin = new RectOffset(labelBigFont.margin.left, labelBigFont.margin.right, labelBigFont.margin.top +10, labelBigFont.margin.bottom);
-		labelBigFont.fontSize = 20;
+		labelBigFont.fontSize = 16;
 		foldoutBigFont = new GUIStyle(EditorStyles.foldout);
 		foldoutBigFont.margin = new RectOffset(foldoutBigFont.margin.left, foldoutBigFont.margin.right, foldoutBigFont.margin.top +10, foldoutBigFont.margin.bottom);
-		foldoutBigFont.fontSize = 20;
+		foldoutBigFont.fontSize = 16;
 		foldoutBigFont.alignment = TextAnchor.LowerLeft;
+		buttonBigFont = new GUIStyle(GUI.skin.button);
+		buttonBigFont.fontSize = 14;
+		tabsBigFont = new GUIStyle(GUI.skin.button);
+		tabsBigFont.fixedHeight = 30;
 
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
+		ob.UpdateIfDirtyOrScript();
+
+		if (editor.generating()) {
+			GUILayout.Label("Generating...", labelBigFont);
+			return;
+		}
 
 		if (setupGeneration) {
 			doGenerationGUI(editor);
@@ -60,7 +69,7 @@ public class VoxelEditorGUI : Editor {
 		} else {
 			if (!editor.hasVoxelData())
 				GUI.enabled = false;
-			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, GUILayout.MinHeight(20));
+			editor.selectedMode = GUILayout.Toolbar(editor.selectedMode, modes, tabsBigFont, GUILayout.Height(30));
 			GUI.enabled = true;
 
 			switch (editor.selectedMode) {
@@ -71,15 +80,13 @@ public class VoxelEditorGUI : Editor {
 				doSculptGUI(editor);
 				break;
 			case 2:
-				doMaskGUI();
+				doMaskGUI(editor);
 				break;
 			}
 		}
 
 		// finally, apply the changes
 		ob.ApplyModifiedProperties();
-
-		editor.Update();
 	}
 
 	public void OnSceneGUI() {
@@ -92,11 +99,7 @@ public class VoxelEditorGUI : Editor {
 		case EventType.MouseDown:
 			if (UnityEngine.Event.current.button == 0) {
 				GUIUtility.hotControl = controlId;
-				if (UnityEngine.Event.current.shift) {
-					subtractBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
-				} else {
-					addBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
-				}
+				applyBrush(editor, HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition));
 				UnityEngine.Event.current.Use();
 			}
 			break;
@@ -113,7 +116,9 @@ public class VoxelEditorGUI : Editor {
 		}
 	}
 
-	protected void doMaskGUI() {
+	protected void doMaskGUI(Vox.VoxelEditor editor) {
+		editor.maskDisplayAlpha = doSliderFloatField("Mask Display Transparency", editor.maskDisplayAlpha, 0, 1);
+
 		// mask list
 		showMasks = doBigFoldout(showMasks, "Substance Masks");
 		if (showMasks) {
@@ -125,8 +130,8 @@ public class VoxelEditorGUI : Editor {
 
 	protected void doSculptGUI(Vox.VoxelEditor editor) {
 		// brush ghost
-		editor.drawGhostBrush = EditorGUILayout.Toggle ("Show Ghost Brush", editor.drawGhostBrush);
-
+		editor.ghostBrushAlpha = doSliderFloatField("Brush Ghost Opacity", editor.ghostBrushAlpha, 0, 1);
+		
 		editor.gridEnabled = EditorGUILayout.Toggle("Snap to Grid", editor.gridEnabled);
         if (editor.gridEnabled) {
             ++EditorGUI.indentLevel;
@@ -141,6 +146,7 @@ public class VoxelEditorGUI : Editor {
         }
 
         // brush list
+		GUILayout.Label("Brush", labelBigFont);
         editor.selectedBrush = GUILayout.Toolbar(editor.selectedBrush, brushes, GUILayout.MinHeight(20));
 
 		// brush substance type
@@ -152,14 +158,7 @@ public class VoxelEditorGUI : Editor {
 		switch(editor.selectedBrush) {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
-            GUILayout.BeginHorizontal();
-			GUILayout.Label("Sphere Radius", GUILayout.ExpandWidth(false));
-			editor.sphereBrushSize = GUILayout.HorizontalSlider(editor.sphereBrushSize, 0, 100);
-			editor.sphereBrushSize = EditorGUILayout.FloatField(editor.sphereBrushSize, GUILayout.MaxWidth(64));
-			if (editor.sphereBrushSize < 0)
-				editor.sphereBrushSize = 0;
-			GUILayout.EndHorizontal();
-
+			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, 100);
 			GUILayout.Label("Substance", labelBigFont);
 			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
 			break;
@@ -167,7 +166,7 @@ public class VoxelEditorGUI : Editor {
 		case 1:
 			GUILayout.Label("Hold 'Shift' to subtract.");
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Dimensions");
+			GUILayout.Label("Dimensions (m)");
 			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
 			editor.cubeBrushDimensions.y = EditorGUILayout.FloatField(editor.cubeBrushDimensions.y);
 			editor.cubeBrushDimensions.z = EditorGUILayout.FloatField(editor.cubeBrushDimensions.z);
@@ -177,6 +176,11 @@ public class VoxelEditorGUI : Editor {
 
 			GUILayout.Label("Substance", labelBigFont);
 			editor.cubeBrushSubstance = (byte)GUILayout.SelectionGrid(editor.cubeBrushSubstance, substances, 1);
+			break;
+
+		case 2:
+			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, 100);
+			editor.smoothBrushStrength = doSliderFloatField("Strength", editor.smoothBrushStrength, 0, 5);
 			break;
 		}
 
@@ -197,7 +201,7 @@ public class VoxelEditorGUI : Editor {
 					editor.wipe();
 				}
 			}
-			if (GUILayout.Button("Reskin")) {
+			if (GUILayout.Button("Reskin", buttonBigFont)) {
 				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
 					editor.generateRenderers();
 				}
@@ -289,14 +293,14 @@ public class VoxelEditorGUI : Editor {
 
 		// confirmation
 		GUILayout.Label ("Confirmation", labelBigFont);
-		if (GUILayout.Button("Generate")) {
+		if (GUILayout.Button("Generate", buttonBigFont)) {
 			if (editor.voxelSubstances == null || editor.voxelSubstances.Length < 1) {
 				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
 			} else if (EditorUtility.DisplayDialog("Generate Voxels?", "Are you sure you want to generate the voxel terain from scratch?  Any previous work will be overriden.", "Generate", "Cancel")) {
 				generateVoxels(editor);
 			}
 		}
-		if (GUILayout.Button("Cancel Generation")) {
+		if (GUILayout.Button("Cancel Generation", buttonBigFont)) {
 			setupGeneration = false;
 		}
 		EditorGUILayout.Separator();
@@ -379,15 +383,17 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	protected void doFlatGenerationGUI() {
-		flatGenHeight = System.Math.Max(System.Math.Min(EditorGUILayout.FloatField("Height Percentage", flatGenHeight), 100f), 0f);
+		generationParameters.heightPercentage = System.Math.Max(System.Math.Min(
+			EditorGUILayout.FloatField("Height Percentage", generationParameters.heightPercentage), 100f), 0f);
 	}
 
 	protected void doSphereGenerationGUI() {
-        GUILayout.Label("UNIMPLEMENTED");
+		generationParameters.spherePercentage = System.Math.Max(System.Math.Min(
+			EditorGUILayout.FloatField("Sphere Radius Percentage", generationParameters.spherePercentage), 100f), 0f);
     }
 
 	protected void doProceduralGenerationGUI() {
-		EditorGUILayout.FloatField("Roughness", generationParameters.maxChange);
+		generationParameters.maxChange = EditorGUILayout.FloatField("Roughness", generationParameters.maxChange);
 		if (generationParameters.maxChange > 5)
 			generationParameters.maxChange = 5;
 		else if (generationParameters.maxChange < 0.01f)
@@ -408,14 +414,12 @@ public class VoxelEditorGUI : Editor {
         editor.initialize();
         switch (selectedGenerationMode) {
         case 0:
-			editor.heightPercentage = flatGenHeight;
             editor.setToHeight();
             break;
         case 1:
-
+			editor.setToSphere();
             break;
         case 2:
-            editor.maxChange = generationParameters.maxChange;
             editor.setToProcedural();
             break;
 		case 3:
@@ -428,29 +432,36 @@ public class VoxelEditorGUI : Editor {
         setupGeneration = false;
     }
 
-    protected static void addBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+    protected static void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+		byte opacity = byte.MaxValue;
+		if (UnityEngine.Event.current.shift) {
+			opacity = byte.MinValue;
+		}
         Vector3 point = editor.getBrushPoint(mouseLocation);
         switch(editor.selectedBrush) {
 		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, byte.MaxValue), true);
+			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
 			break;
 		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, byte.MaxValue), true);
+			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			break;
+		case 2:
+			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
 			break;
 		}
 	}
 
-	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-        Vector3 point = editor.getBrushPoint(mouseLocation);
-        switch(editor.selectedBrush) {
-		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
-			break;
-		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
-			break;
-		}
-	}
+//	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+//        Vector3 point = editor.getBrushPoint(mouseLocation);
+//        switch(editor.selectedBrush) {
+//		case 0:
+//			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
+//			break;
+//		case 1:
+//			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
+//			break;
+//		}
+//	}
 
     protected class VoxelEditorParameters {
 		public float baseSize = 32;
@@ -462,8 +473,8 @@ public class VoxelEditorGUI : Editor {
 		// public float treeDensity = 0.02f;
 		// public float treeSlopeTolerance = 5;
 		// public float curLodDetail = 10f;
-//		public Vox.VoxelSubstance[] voxelSubstances;
-		// public VoxelMask[] masks;
+		public float spherePercentage;
+		public float heightPercentage;
 		public float maxChange;
         public int proceduralSeed;
         public bool createColliders = true;
@@ -476,26 +487,34 @@ public class VoxelEditorGUI : Editor {
             maxDetail = editor.maxDetail;
             maxChange = editor.maxChange;
             proceduralSeed = editor.proceduralSeed;
-//			if (voxelSubstances != null) {
-//				voxelSubstances = (Vox.VoxelSubstance[])editor.voxelSubstances.Clone ();
-//			} else {
-//				voxelSubstances = new Vox.VoxelSubstance[0];
-//			}
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
+			heightPercentage = editor.heightPercentage;
+			spherePercentage = editor.spherePercentage;
         }
 
 		public void setTo(Vox.VoxelEditor editor) {
 			editor.baseSize = baseSize;
             editor.maxDetail = maxDetail;
-//            editor.voxelSubstances = voxelSubstances;
             editor.createColliders = createColliders;
             editor.useStaticMeshes = useStaticMeshes;
+			editor.heightPercentage = heightPercentage;
+			editor.spherePercentage = spherePercentage;
 		}
 	}
 
 	protected bool doBigFoldout(bool foldedOut, string label) {
 		return EditorGUI.Foldout(GUILayoutUtility.GetRect(new GUIContent(label), foldoutBigFont), foldedOut, label, true, foldoutBigFont);
+	}
+
+	protected float doSliderFloatField(string label, float value, float min, float max) {
+		GUILayout.BeginHorizontal();
+		GUILayout.Label(label, GUILayout.ExpandWidth(false));
+		float newValue = value;
+		newValue = GUILayout.HorizontalSlider(newValue, min, max);
+		newValue = Mathf.Max(Mathf.Min(EditorGUILayout.FloatField(newValue, GUILayout.MaxWidth(64)), max), min);
+		GUILayout.EndHorizontal();
+		return newValue;
 	}
 
 }

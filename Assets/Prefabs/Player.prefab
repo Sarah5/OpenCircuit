@@ -350,6 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: .100000001
   invertLook: 0
+  enableMousePadHacking: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -438,6 +439,7 @@ MonoBehaviour:
   iconDimensions: {x: 48, y: 48}
   iconSpacing: 48
   itemCircleRadius: 150
+  itemBackground: {fileID: 2800000, guid: 9bf94422de37f294897e6ef487b09270, type: 3}
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

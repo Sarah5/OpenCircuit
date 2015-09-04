@@ -1,6 +1,7 @@
-﻿	using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Robot/Robot Arms")]
 public class RobotArms : AbstractRobotComponent {
 	public AudioClip pickUp;
 	public AudioClip drop;

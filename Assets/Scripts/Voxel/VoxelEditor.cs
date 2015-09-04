@@ -11,32 +11,32 @@ namespace Vox {
 	[ExecuteInEditMode]
 	public class VoxelEditor : VoxelTree {
 
-		protected static readonly Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
+		public const string DEFAULT_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBase.mat";
+		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
+
+		protected static Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
 
 		public byte[] heightmapSubstances;
         public Texture2D[] heightmaps;
 		public float maxChange;
         public int proceduralSeed;
-        public float heightPercentage;
-        public bool gridEnabled;
-        public bool gridUseVoxelUnits;
-        public float gridSize;
+        public float heightPercentage = 50;
+		public float spherePercentage = 75;
+        public bool gridEnabled = false;
+        public bool gridUseVoxelUnits = false;
+        public float gridSize = 1;
+		public float maskDisplayAlpha = 0.3f;
 
         // editor data
-        [System.NonSerialized]
 		public int selectedMode = 0;
-		[System.NonSerialized]
 		public int selectedBrush = 0;
-		[System.NonSerialized]
 		public float sphereBrushSize = 1;
-		[System.NonSerialized]
 		public byte sphereBrushSubstance = 0;
-		[System.NonSerialized]
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
-		[System.NonSerialized]
 		public byte cubeBrushSubstance = 0;
-		[System.NonSerialized]
-		public bool drawGhostBrush = true;
+		public float smoothBrushSize = 1;
+		public float smoothBrushStrength = 1;
+		public float ghostBrushAlpha = 0.3f;
 
 
 		public void Awake() {
@@ -60,10 +60,10 @@ namespace Vox {
 				head.setToHeightmap(maxDetail, 0, 0, 0, ref map, heightmapSubstances[index], this);
 			}
 		}
-
+		
 		public void setToHeight() {
 			int dimension = 1 << maxDetail;
-            float height = heightPercentage / 100f * dimension;
+			float height = heightPercentage / 100f * dimension;
 			float[,] map = new float[dimension, dimension];
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
@@ -71,6 +71,15 @@ namespace Vox {
 				}
 			}
 			head.setToHeightmap(maxDetail, 0, 0, 0, ref map, 0, this);
+		}
+		
+		public void setToSphere() {
+			VoxelMask[] masks = this.masks;
+			this.masks = new VoxelMask[0];
+			float radius = spherePercentage / 200f * baseSize;
+			float center = baseSize /2f;
+			new SphereModifier(this, transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue), false);
+			this.masks = masks;
 		}
 
 		// this functions sets the values of the voxels, doing all of the procedural generation work
@@ -148,8 +157,11 @@ namespace Vox {
 		}
 
 		public void OnDrawGizmosSelected() {
-			if (drawGhostBrush && selectedMode == 1) {
+			if (selectedMode == 0)
+				return;
+			if (ghostBrushAlpha > 0 && selectedMode == 1) {
 				Ray mouseRay = HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
+				brushGhostColor.a = ghostBrushAlpha;
 				Gizmos.color = brushGhostColor;
 				switch(selectedBrush) {
 				case 0:
@@ -158,7 +170,19 @@ namespace Vox {
 				case 1:
 					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
 					break;
+				case 2:
+					Gizmos.DrawSphere(getBrushPoint(mouseRay), smoothBrushSize);
+					break;
 				}
+			}
+			if (maskDisplayAlpha > 0 && masks != null) {
+				Gizmos.color = new Color(1, 0, 0, maskDisplayAlpha);
+				foreach(VoxelMask mask in masks) {
+					if (!mask.active)
+						continue;
+					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize /2, mask.yPosition /voxelSize(), baseSize /2));
+				}
+				Gizmos.color = Color.gray;
 			}
 		}
 
@@ -217,6 +241,18 @@ namespace Vox {
 				4, 6, 2,
 			};
 			return mesh;
+		}
+
+		public static VoxelEditor createEmpty() {
+			GameObject ob = new GameObject();
+			ob.name = "Voxel Object";
+			VoxelEditor editor = ob.AddComponent<VoxelEditor>();
+			editor.voxelSubstances = new VoxelSubstance[1];
+			VoxelSubstance sub = new VoxelSubstance("Base",
+				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_MATERIAL_PATH),
+				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH));
+			editor.voxelSubstances[0] = sub;
+			return editor;
 		}
 
 	}

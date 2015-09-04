@@ -5,10 +5,12 @@ using System.Collections;
 public class Controls : MonoBehaviour {
 
 	private Player myPlayer;
+	private bool playerControlsEnabled = true;
 	//private Menu menu;
 
 	public float mouseSensitivity = 1;
 	public bool invertLook = false;
+	public bool enableMousePadHacking = false;
 
 	void Awake () {
 		myPlayer = this.GetComponent<Player> ();
@@ -25,7 +27,7 @@ public class Controls : MonoBehaviour {
 	//		return;
 	//	 }
 
-		if (inGUI())
+		if (inGUI() || Time.timeScale == 0)
 			return;
 
 		/****************MOVEMENT****************/
@@ -41,14 +43,33 @@ public class Controls : MonoBehaviour {
 
 		myPlayer.mover.setCrouching(Input.GetButton("Crouch"));
 
-		if (Input.GetButton("Equip1")) {
-			myPlayer.inventory.doSelect(0);
-		} else if (Input.GetButton("Equip2")) {
-			myPlayer.inventory.doSelect(1);
-		} else if (Input.GetButton("Equip3")) {
-			myPlayer.inventory.doSelect(2);
+		if (enableMousePadHacking) {
+			if (Input.GetButtonDown("Equip1")) {
+				if (myPlayer.inventory.isSelecting())
+					myPlayer.inventory.doSelect(-1);
+				else
+					myPlayer.inventory.doSelect(0);
+			} else if (Input.GetButtonDown("Equip2")) {
+				if (myPlayer.inventory.isSelecting())
+					myPlayer.inventory.doSelect(-1);
+				else
+					myPlayer.inventory.doSelect(1);
+			} else if (Input.GetButtonDown("Equip3")) {
+				if (myPlayer.inventory.isSelecting())
+					myPlayer.inventory.doSelect(-1);
+				else
+					myPlayer.inventory.doSelect(2);
+			}
 		} else {
-			myPlayer.inventory.doSelect(-1);
+			if (Input.GetButton("Equip1")) {
+				myPlayer.inventory.doSelect(0);
+			} else if (Input.GetButton("Equip2")) {
+				myPlayer.inventory.doSelect(1);
+			} else if (Input.GetButton("Equip3")) {
+				myPlayer.inventory.doSelect(2);
+			} else {
+				myPlayer.inventory.doSelect(-1);
+			}
 		}
 
 		if (myPlayer.inventory.isSelecting()) {
@@ -83,6 +104,14 @@ public class Controls : MonoBehaviour {
 //		else {
 //			myPlayer.focus.unfocus();
 //		}
+	}
+	
+	public void disablePlayerControls() {
+		playerControlsEnabled = false;
+	}
+	
+	public void enablePlayerControls() {
+		playerControlsEnabled = true;
 	}
 
 	bool inGUI() {

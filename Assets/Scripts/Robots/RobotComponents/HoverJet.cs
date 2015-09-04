@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("Scripts/Robot/Hover Jet")]
 public class HoverJet : AbstractRobotComponent {
-
-	public float speed = 1f;
 
 	private Label target = null;
 
 	private NavMeshAgent nav;
 
 	private AbstractPowerSource powerSource;
+
+	private Animation myAnimator;
+
+	public float animSpeedAdjust = 1f;
 
 	public void setTarget(Label target) {
 		this.target = target;
@@ -26,6 +29,7 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	void Start() {
+		myAnimator = GetComponent<Animation> ();
 		nav = roboController.GetComponent<NavMeshAgent> ();
 		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
 	}
@@ -35,12 +39,23 @@ public class HoverJet : AbstractRobotComponent {
 			return;
 		}
 		if (target != null) {
-			if (Vector3.Distance (roboController.transform.position, target.transform.position) < .5f) {
+			float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
+			                                new Vector2(target.transform.position.x, target.transform.position.z));
+			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
+			if (xzDist < .5f && yDist < 1f) {
 				roboController.enqueueMessage (new RobotMessage ("action", "target reached", target));
 			}
 
-			if (nav.enabled)
+			if (nav.enabled) {
 				nav.SetDestination (target.transform.position);
+				if (myAnimator != null) {
+				if (!myAnimator.isPlaying) {
+					myAnimator.Play();
+				}
+
+				myAnimator["Armature.003|Armature.003Action"].speed = nav.velocity.magnitude * animSpeedAdjust;//, nav.velocity * animSpeedAdjust, nav.velocity * animSpeedAdjust);
+				}
+			}
 
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
 				nav.enabled = powerSource.drawPower (5 * Time.deltaTime);

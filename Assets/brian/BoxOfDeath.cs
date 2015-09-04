@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[AddComponentMenu("")]
 public class BoxOfDeath : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collision) {

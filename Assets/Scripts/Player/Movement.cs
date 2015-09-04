@@ -316,4 +316,8 @@ public class Movement : MonoBehaviour {
 	public void lockMovement() {
 		canMove = false;
 	}
+
+	public void unlockMovement() {
+		canMove = true;
+	}
 }

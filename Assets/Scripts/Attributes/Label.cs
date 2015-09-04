@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+[AddComponentMenu("Scripts/Labels/Label")]
 public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	
 	[System.NonSerialized]

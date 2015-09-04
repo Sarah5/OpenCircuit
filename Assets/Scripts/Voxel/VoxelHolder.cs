@@ -30,6 +30,8 @@ namespace Vox {
 
 		public abstract void serialize(BinaryWriter writer);
 
+		public abstract void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax);
+
 		public static VoxelHolder deserialize(BinaryReader reader) {
 			byte type = reader.ReadByte();
 			switch(type) {
@@ -57,6 +59,14 @@ namespace Vox {
 			if (ob == null || GetType () != ob.GetType())
 				return false;
 			return this == (VoxelHolder)ob;
+		}
+
+		// NOTE: could be very expensive depending on the specific implementation
+		public override int GetHashCode() {
+			int hashCode = 13;
+			hashCode = hashCode *7 +averageMaterialType();
+			hashCode = hashCode *7 +averageOpacity();
+			return hashCode;
 		}
 
 	}

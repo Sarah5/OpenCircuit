@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[AddComponentMenu("Scripts/Menu/Menu")]
 public class Menu : MonoBehaviour {
 
 	private Rect startRect = new Rect(0.01f, 0.1f, 0.4f, 0.1f);
@@ -43,7 +44,7 @@ public class Menu : MonoBehaviour {
 
 	public void pause() {
 		if (paused()) return;
-		Screen.lockCursor = false;
+		Cursor.lockState = CursorLockMode.None;
 		activeAtStart = true;
 		timeScale = Time.timeScale;
 		Time.timeScale = 0;
@@ -51,7 +52,7 @@ public class Menu : MonoBehaviour {
 
 	public void unpause() {
 		if (!paused()) return;
-		Screen.lockCursor = true;
+		Cursor.lockState = CursorLockMode.Locked;
 		activeAtStart = false;
 		menuHistory.Clear();
 		Time.timeScale = timeScale;
@@ -121,6 +122,7 @@ public class Menu : MonoBehaviour {
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
 			Application.Quit();
+			UnityEditor.EditorApplication.isPlaying = false;
 		}
 		int width = 100;
 		int height = 20;
@@ -230,6 +232,6 @@ public class Menu : MonoBehaviour {
 		menuHistory.Clear();
 		activeAtStart = false;
 		Time.timeScale = 1;
-		Screen.lockCursor = true;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 }
