@@ -19,7 +19,9 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 	public void disable(float time) {
 		isDisabled = true;
 		CancelInvoke ();
-		Invoke ("enable", time);
+		if (Mathf.Abs(time) > .001f) {
+			Invoke ("enable", time);
+		}
 	}
 
 	public void enable() {
