@@ -10,6 +10,10 @@ public class HoverJet : AbstractRobotComponent {
 
 	private AbstractPowerSource powerSource;
 
+	private Animation myAnimator;
+
+	public float animSpeedAdjust = 1f;
+
 	public void setTarget(Label target) {
 		this.target = target;
 	}
@@ -25,6 +29,7 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	void Start() {
+		myAnimator = GetComponent<Animation> ();
 		nav = roboController.GetComponent<NavMeshAgent> ();
 		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
 	}
@@ -41,8 +46,16 @@ public class HoverJet : AbstractRobotComponent {
 				roboController.enqueueMessage (new RobotMessage ("action", "target reached", target));
 			}
 
-			if (nav.enabled)
+			if (nav.enabled) {
 				nav.SetDestination (target.transform.position);
+				if (myAnimator != null) {
+				if (!myAnimator.isPlaying) {
+					myAnimator.Play();
+				}
+
+				myAnimator["Armature.003|Armature.003Action"].speed = nav.velocity.magnitude * animSpeedAdjust;//, nav.velocity * animSpeedAdjust, nav.velocity * animSpeedAdjust);
+				}
+			}
 
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
 				nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
