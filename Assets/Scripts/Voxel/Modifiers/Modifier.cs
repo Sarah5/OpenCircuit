@@ -26,13 +26,15 @@ namespace Vox {
 		protected void apply() {
 			minY = uint.MinValue;
 			maxY = uint.MaxValue;
-			foreach(VoxelMask mask in control.masks) {
-				if (mask.active) {
-					if (mask.maskAbove) {
-						if (maxY > mask.yPosition)
-							maxY = mask.yPosition;
-					} else if (minY < mask.yPosition) {
-						minY = mask.yPosition;
+			if (control.masks != null) {
+				foreach (VoxelMask mask in control.masks) {
+					if (mask.active) {
+						if (mask.maskAbove) {
+							if (maxY > mask.yPosition)
+								maxY = mask.yPosition;
+						} else if (minY < mask.yPosition) {
+							minY = mask.yPosition;
+						}
 					}
 				}
 			}
