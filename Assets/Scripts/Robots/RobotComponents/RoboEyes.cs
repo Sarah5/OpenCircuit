@@ -12,7 +12,7 @@ public class RoboEyes : AbstractRobotComponent {
 
 	// Use this for initialization
 	void Start () {
-		InvokeRepeating ("lookAround", 0.5f, .01f);
+		InvokeRepeating ("lookAround", 0.5f, .03f);
 	}
 
 	private bool canSee (Transform obj) {
@@ -36,9 +36,9 @@ public class RoboEyes : AbstractRobotComponent {
 	}
 
 	private void lookAround() {
-		//for (int i = 0; i < Label.visibleLabels.Count; i++) {
+		bool hasPower = powerSource.drawPower (5 * Time.deltaTime);
 		foreach (Label label in Label.visibleLabels) {
-			bool targetInView = canSee (label.transform);
+			bool targetInView = hasPower && canSee (label.transform);
 			if ((!targetMap.ContainsKey (label) || !targetMap [label]) && targetInView) {
 				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label));
 			}
