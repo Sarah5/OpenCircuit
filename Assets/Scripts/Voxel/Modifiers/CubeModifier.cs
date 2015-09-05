@@ -6,6 +6,7 @@ namespace Vox {
 	public class CubeModifier : Modifier {
 
 		public Voxel value;
+		public Vector3 min, max;
         public bool overwriteSubstance;
 
         public CubeModifier(VoxelTree control, Vector3 worldPosition, Vector3 worldDimensions, VoxelHolder value, bool updateMesh)
@@ -14,6 +15,7 @@ namespace Vox {
 			Vector3 dimensions = worldDimensions / control.voxelSize();
 			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - dimensions /2 - Vector3.one * (control.voxelSize() / 2);
 			max = min + dimensions;
+			setMinMax(min, max);
 			apply();
 		}
 

@@ -17,11 +17,13 @@ namespace Vox {
 		: base(control, updateMesh) {
 			this.strength = strength;
 			Vector3 radiusCube = new Vector3(worldRadius, worldRadius, worldRadius) / control.voxelSize();
-			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - radiusCube - Vector3.one * (control.voxelSize() / 2);
-			max = min + radiusCube *2;
+			Vector3 min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - radiusCube -Vector3.one *0.5f;
+			Vector3 max = min + radiusCube *2;
 			center = (min + max) / 2;
 			radius = center.x - min.x;
+			setMinMax(min, max);
 			setOriginal();
+			MonoBehaviour.print (min);
 			apply();
 		}
 		
@@ -31,12 +33,12 @@ namespace Vox {
 			float actualStrength = strength *(1 -(dis /radius));
 			if (actualStrength <= 0)
 				return original;
-			byte newOpacity = calculateOpacity((int)(x -min.x +0.5f) +1, (int)(y -min.y +0.5f) +1, (int)(z -min.z +0.5f) +1, actualStrength);
+			byte newOpacity = calculateOpacity(x -minX, y -minY, z -minZ, actualStrength);
 			return new Voxel(original.averageMaterialType(), newOpacity);
 		}
 
 		protected void setOriginal() {
-			original = control.getArray((int)(min.x -0.5f), (int)(min.y -0.5f), (int)(min.z -0.5f), (int)(max.x+1.5f), (int)(max.y+1.5f), (int)(max.z+1.5f));
+			original = control.getArray(minX, minY, minZ, maxX +1, maxY +1, maxZ +1);
 		}
 
 		protected byte calculateOpacity(int x, int y, int z, float strength) {

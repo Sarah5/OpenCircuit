@@ -6,64 +6,65 @@ namespace Vox {
 	public abstract class Modifier {
 
 		public VoxelTree control;
-		public Vector3 min, max;
+//		public Vector3 min, max;
+		public int minX, minY, minZ;
+		public int maxX, maxY, maxZ;
 		public bool updateMesh;
 
-		protected uint minY;
-		protected uint maxY;
+		protected uint maskMinY;
+		protected uint maskMaxY;
 
 		protected Modifier(VoxelTree control, bool updateMesh) {
 			this.control = control;
 			this.updateMesh = updateMesh;
-		} 
-
-		//protected Modifier(VoxelControlV2 control, Vector3 min, Vector3 max) {
-		//	this.control = control;
-		//	this.min = min;
-		//	this.max = max;
-		//}
+		}
+		
+		protected void setMinMax(Vector3 min, Vector3 max) {
+			minX = (int)(min.x +0.01f);
+			minY = (int)(min.y +0.01f);
+			minZ = (int)(min.z +0.01f);
+			maxX = (int)(max.x +0.01f);
+			maxY = (int)(max.y +0.01f);
+			maxZ = (int)(max.z +0.01f);
+		}
 
 		protected void apply() {
-			minY = uint.MinValue;
-			maxY = uint.MaxValue;
+			maskMinY = uint.MinValue;
+			maskMaxY = uint.MaxValue;
 			if (control.masks != null) {
 				foreach (VoxelMask mask in control.masks) {
 					if (mask.active) {
 						if (mask.maskAbove) {
-							if (maxY > mask.yPosition)
-								maxY = mask.yPosition;
-						} else if (minY < mask.yPosition) {
-							minY = mask.yPosition;
+							if (maskMaxY > mask.yPosition)
+								maskMaxY = mask.yPosition;
+						} else if (maskMinY < mask.yPosition) {
+							maskMinY = mask.yPosition;
 						}
 					}
 				}
 			}
-			maxY -= 1;
-			MonoBehaviour.print("minY: " +minY);
-			MonoBehaviour.print("maxY: " +maxY);
+			maskMaxY -= 1;
 			traverse(control.getBaseUpdateInfo(), control.maxDetail);
 			control.dirty = true;
 		}
 
 		protected void traverse(VoxelUpdateInfo info, byte detailLevel) {
 			int factor = 1 << (detailLevel - VoxelBlock.CHILD_COUNT_POWER);
-			byte xiMin = (byte)Mathf.Max(min.x / factor - info.x * VoxelBlock.CHILD_DIMENSION, 0);
-			byte xiMax = (byte)Mathf.Min((max.x + 3) / factor - info.x * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1);
-			byte yiMin = (byte)Mathf.Max(min.y / factor - info.y * VoxelBlock.CHILD_DIMENSION, 0);
-			byte yiMax = (byte)Mathf.Min((max.y + 3) / factor - info.y * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1);
-			byte ziMin = (byte)Mathf.Max(min.z / factor - info.z * VoxelBlock.CHILD_DIMENSION, 0);
-			byte ziMax = (byte)Mathf.Min((max.z + 3) / factor - info.z * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1);
+			byte xiMin = (byte)Mathf.Max(minX / factor - info.x * VoxelBlock.CHILD_DIMENSION, 0f);
+			byte xiMax = (byte)Mathf.Min((maxX + 1) / factor - info.x * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1f);
+			byte yiMin = (byte)Mathf.Max(minY / factor - info.y * VoxelBlock.CHILD_DIMENSION, 0f);
+			byte yiMax = (byte)Mathf.Min((maxY + 1) / factor - info.y * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1f);
+			byte ziMin = (byte)Mathf.Max(minZ / factor - info.z * VoxelBlock.CHILD_DIMENSION, 0f);
+			byte ziMax = (byte)Mathf.Min((maxZ + 1) / factor - info.z * VoxelBlock.CHILD_DIMENSION, VoxelBlock.CHILD_DIMENSION - 1f);
 
 			VoxelBlock block = (VoxelBlock)info.blocks[1, 1, 1];
 
 			uint scale = (uint) (1 << (VoxelBlock.CHILD_COUNT_POWER *(detailLevel -1)));
-//			MonoBehaviour.print (scale);
-//			MonoBehaviour.print (detailLevel);
 
 			for (byte yi = yiMin; yi <= yiMax; ++yi) {
 
-				if ((info.y *VoxelBlock.CHILD_DIMENSION +yi) < minY /scale ||
-				    (info.y *VoxelBlock.CHILD_DIMENSION +yi) > maxY /scale +1) {
+				if ((info.y *VoxelBlock.CHILD_DIMENSION +yi) < maskMinY /scale ||
+				    (info.y *VoxelBlock.CHILD_DIMENSION +yi) > maskMaxY /scale +1) {
 					continue;
 				}
 				

@@ -17,12 +17,13 @@ namespace Vox {
 			: base(control, updateMesh) {
 			this.value = value;
 			Vector3 radiusCube = new Vector3(worldRadius, worldRadius, worldRadius) / control.voxelSize();
-			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - radiusCube - Vector3.one * (control.voxelSize() / 2);
-			max = min + radiusCube * 2;
+			Vector3 min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - radiusCube - Vector3.one * (control.voxelSize() / 2);
+			Vector3 max = min + radiusCube * 2;
 			center = (min + max) / 2;
 			radius = center.x - min.x;
 			minDis = (radius - 1);
 			maxDis = (radius + 1);
+			setMinMax(min, max);
 			apply();
 		}
 

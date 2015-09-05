@@ -54,6 +54,8 @@ namespace Vox {
 		private int updateCheckJobs;
 		[System.NonSerialized]
 		private bool generationPaused = false;
+		[System.NonSerialized]
+		private bool rebakedLighting = false;
 
 
 
@@ -111,8 +113,14 @@ namespace Vox {
 			applyQueuedMeshes();
 			if (generationPaused) {
 				if (VoxelThread.getJobCount() < 1 && jobQueue.Count < 1) {
-					generationPaused = false;
-					Time.timeScale = 1;
+					if (!rebakedLighting) {
+//						print ("howdy!");
+						UnityEditor.Lightmapping.Bake();
+						rebakedLighting = true;
+					} else if (!UnityEditor.Lightmapping.isRunning) {
+						generationPaused = false;
+						Time.timeScale = 1;
+					}
 				}
 			}
 		}
@@ -284,6 +292,7 @@ namespace Vox {
 
 		public void pauseForGeneration() {
 			generationPaused = true;
+			rebakedLighting = false;
 			Time.timeScale = 0;
 		}
 

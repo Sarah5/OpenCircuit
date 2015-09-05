@@ -13,6 +13,7 @@ namespace Vox {
 
 		public const string DEFAULT_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBase.mat";
 		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
+		public const string DEFAULT_PHYSICS_MATERIAL_PATH = "Assets/Materials/Voxel/Rock.physicMaterial";
 
 		protected static Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
 
@@ -250,7 +251,8 @@ namespace Vox {
 			editor.voxelSubstances = new VoxelSubstance[1];
 			VoxelSubstance sub = new VoxelSubstance("Base",
 				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_MATERIAL_PATH),
-				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH));
+				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH),
+				AssetDatabase.LoadAssetAtPath<PhysicMaterial>(DEFAULT_PHYSICS_MATERIAL_PATH));
 			editor.voxelSubstances[0] = sub;
 			return editor;
 		}
