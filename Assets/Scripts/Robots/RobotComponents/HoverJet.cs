@@ -7,8 +7,7 @@ public class HoverJet : AbstractRobotComponent {
 	private Label target = null;
 
 	private NavMeshAgent nav;
-
-	private AbstractPowerSource powerSource;
+	
 
 	private Animation myAnimator;
 
@@ -31,7 +30,6 @@ public class HoverJet : AbstractRobotComponent {
 	void Start() {
 		myAnimator = GetComponent<Animation> ();
 		nav = roboController.GetComponent<NavMeshAgent> ();
-		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
 	}
 
 	void Update () {
@@ -58,7 +56,7 @@ public class HoverJet : AbstractRobotComponent {
 			}
 
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
-				nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
+			nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
 		//}
 
 		}

@@ -3,12 +3,14 @@ using System.Collections;
 
 public abstract class AbstractRobotComponent : MonoBehaviour {
 
+	protected AbstractPowerSource powerSource;
 	protected RobotController roboController;
 	protected bool isOccupied = false;
 
 	// Use this for initialization
 	void Awake () {
 		roboController = GetComponentInParent<RobotController> ();
+		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
 	}
 
 	public RobotController getController() {

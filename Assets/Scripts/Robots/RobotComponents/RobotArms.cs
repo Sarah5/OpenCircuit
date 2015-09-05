@@ -5,8 +5,8 @@ using System.Collections;
 public class RobotArms : AbstractRobotComponent {
 	public AudioClip pickUp;
 	public AudioClip drop;
-
 	
+
 	private AudioSource footstepEmitter;
 
 	private Label target = null;
@@ -18,6 +18,17 @@ public class RobotArms : AbstractRobotComponent {
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
 		footstepEmitter.enabled = true;
 		footstepEmitter.loop = false;
+	}
+
+	void Update () {
+		BoxCollider collider = GetComponent<BoxCollider> ();
+		if (!powerSource.drawPower (5 * Time.deltaTime)) {
+			collider.enabled = false;
+			dropTarget ();
+		}
+		else {
+			collider.enabled = true;
+		}
 	}
 
 	void OnTriggerEnter(Collider collision) {
