@@ -120,7 +120,7 @@ public class VoxelEditorGUI : Editor {
 		editor.maskDisplayAlpha = doSliderFloatField("Mask Display Transparency", editor.maskDisplayAlpha, 0, 1);
 
 		// mask list
-		showMasks = doBigFoldout(showMasks, "Substance Masks");
+		showMasks = doBigFoldout(showMasks, "Masks");
 		if (showMasks) {
 			SerializedProperty voxelMasks = ob.FindProperty("masks");
 			// EditorGUILayout.PropertyField(voxelMasks, new GUIContent("Sculpting Masks"), true);
