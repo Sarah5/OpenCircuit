@@ -25,6 +25,7 @@ public class LabelGUI : Editor {
 	public override void OnInspectorGUI() {
 		Label label = (Label)target;
 		label.isVisible = EditorGUILayout.Toggle ("Visible", label.isVisible);
+		label.threatLevel = EditorGUILayout.FloatField ("Threat Level", label.threatLevel);
 		doOperationList(label);
 		doEndeavourList(label);
 		

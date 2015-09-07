@@ -58,7 +58,37 @@ public class HoverJet : AbstractRobotComponent {
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
 			nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
 		//}
-
 		}
+	}
+
+	public float calculatePathCost(Label target) {
+		//Debug.Log ("evaluating path cost");
+
+		float cost = 0;
+		NavMeshPath path = new NavMeshPath ();
+		if (nav.enabled) {
+			nav.CalculatePath (target.transform.position, path);
+		}
+		foreach (Label item in roboController.getTrackedTargets()) {
+			//print ("checking path cost against item: " + item.name);
+			if (Mathf.Abs(item.threatLevel) > .001) {
+				//print ("target threatLevel " + item.threatLevel);
+				float minDist = -1;
+				foreach (Vector3 vertex in path.corners) {
+					float curDist = Vector3.Distance(vertex, item.transform.position);
+					if (minDist == -1) {
+						minDist = curDist;
+					}
+					else if (curDist < minDist) {
+						minDist = curDist;
+					}
+				}
+				cost +=  item.threatLevel/minDist;
+			}
+		}
+		//if (cost > 0) {
+		//	print ("path cost: " + cost);
+		//}
+		return cost;	
 	}
 }

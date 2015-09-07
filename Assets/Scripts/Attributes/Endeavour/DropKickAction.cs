@@ -45,4 +45,11 @@ public class DropKickAction : Endeavour {
 		}
 	}
 
+	protected override float getCost() {
+		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
+		if (jet != null) {
+			return jet.calculatePathCost(dropPoint);
+		}
+		return 0;
+	}
 }

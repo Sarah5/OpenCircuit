@@ -29,6 +29,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public bool isVisible = true;
 
+	[System.NonSerialized]
+	public float threatLevel = 0;
+
 	public void Awake() {
 		Label.labels.Add(this);
 		if (isVisible) {
@@ -90,6 +93,8 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter formatter = new BinaryFormatter();
 
+			formatter.Serialize(stream, isVisible);
+			formatter.Serialize(stream, threatLevel);
 			formatter.Serialize(stream, operations);
 			formatter.Serialize(stream, endeavours);
 
@@ -102,7 +107,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		lock(this) {
 			MemoryStream stream = new MemoryStream(serializedData);
 			BinaryFormatter formatter = new BinaryFormatter();
-			
+
+			isVisible = (bool)formatter.Deserialize(stream);
+			threatLevel = (float)formatter.Deserialize(stream);
 			operations = (Operation[]) formatter.Deserialize(stream);
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
 			foreach (EndeavourFactory factory in endeavours) {

@@ -46,4 +46,12 @@ public class PursueAction : Endeavour {
 	public override void onMessage(RobotMessage message) {
 	
 	}
+
+	protected override float getCost() {
+		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
+		if (jet != null) {
+			return jet.calculatePathCost(target);
+		}
+		return 0;
+	}
 }
