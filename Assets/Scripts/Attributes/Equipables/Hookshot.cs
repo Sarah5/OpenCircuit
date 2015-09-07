@@ -71,7 +71,7 @@ public class Hookshot : Item {
 	}
 
 	public bool canGrapple(Collider target) {
-		print(target.material.name);
+//		print(target.material.name);
 		return target.material != null && target.material.name.ToLower().StartsWith("grapple");
 	}
 

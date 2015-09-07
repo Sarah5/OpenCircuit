@@ -203,7 +203,7 @@ public class VoxelEditorGUI : Editor {
 					editor.wipe();
 				}
 			}
-			if (GUILayout.Button("Reskin", buttonBigFont)) {
+			if (GUILayout.Button("Reskin", buttonBigFont) && validateSubstances(editor)) {
 				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
 					editor.generateRenderers();
 				}
@@ -295,10 +295,8 @@ public class VoxelEditorGUI : Editor {
 
 		// confirmation
 		GUILayout.Label ("Confirmation", labelBigFont);
-		if (GUILayout.Button("Generate", buttonBigFont)) {
-			if (editor.voxelSubstances == null || editor.voxelSubstances.Length < 1) {
-				EditorUtility.DisplayDialog("Invalid Generation Parameters", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
-			} else if (EditorUtility.DisplayDialog("Generate Voxels?", "Are you sure you want to generate the voxel terain from scratch?  Any previous work will be overriden.", "Generate", "Cancel")) {
+		if (GUILayout.Button("Generate", buttonBigFont) && validateSubstances(editor)) {
+			if (EditorUtility.DisplayDialog("Generate Voxels?", "Are you sure you want to generate the voxel terain from scratch?  Any previous work will be overriden.", "Generate", "Cancel")) {
 				generateVoxels(editor);
 			}
 		}
@@ -455,6 +453,22 @@ public class VoxelEditorGUI : Editor {
 			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true).apply();
 			break;
 		}
+	}
+
+	protected bool validateSubstances(Vox.VoxelEditor editor) {
+		if (editor.voxelSubstances == null || editor.voxelSubstances.Length < 1) {
+			EditorUtility.DisplayDialog("Invalid Substances", "There must be at least one voxel substance defined to generate the voxel object.", "OK");
+			return false;
+		}
+		int i = 1;
+		foreach(Vox.VoxelSubstance sub in editor.voxelSubstances) {
+			if (sub.renderMaterial == null || sub.blendMaterial == null) {
+				EditorUtility.DisplayDialog("Invalid Substance", "Substance " +i +", " +sub.name +", must have a render material and a blend material set.", "OK");
+				return false;
+			}
+			++i;
+		}
+		return true;
 	}
 
     protected class VoxelEditorParameters {

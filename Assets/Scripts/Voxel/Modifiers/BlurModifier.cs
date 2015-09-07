@@ -23,7 +23,7 @@ namespace Vox {
 			radius = center.x - min.x;
 			setMinMax(min, max);
 			setOriginal();
-			MonoBehaviour.print (min);
+//			MonoBehaviour.print (min);
 //			apply();
 		}
 		
