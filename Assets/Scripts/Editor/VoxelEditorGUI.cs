@@ -159,6 +159,7 @@ public class VoxelEditorGUI : Editor {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
 			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, 100);
+			editor.sphereSubstanceOnly = GUILayout.Toggle(editor.sphereSubstanceOnly, "Change Substance Only");
 			GUILayout.Label("Substance", labelBigFont);
 			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
 			break;
@@ -173,7 +174,8 @@ public class VoxelEditorGUI : Editor {
 //			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
 //			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
 			GUILayout.EndHorizontal();
-
+			
+			editor.cubeSubstanceOnly = GUILayout.Toggle(editor.cubeSubstanceOnly, "Change Substance Only");
 			GUILayout.Label("Substance", labelBigFont);
 			editor.cubeBrushSubstance = (byte)GUILayout.SelectionGrid(editor.cubeBrushSubstance, substances, 1);
 			break;
@@ -440,28 +442,20 @@ public class VoxelEditorGUI : Editor {
         Vector3 point = editor.getBrushPoint(mouseLocation);
         switch(editor.selectedBrush) {
 		case 0:
-			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
+			Vox.SphereModifier sphereMod = new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
+			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
+			sphereMod.apply();
 			break;
 		case 1:
-			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
+			cubeMod.apply();
 			break;
 		case 2:
-			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
+			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true).apply();
 			break;
 		}
 	}
-
-//	protected static void subtractBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
-//        Vector3 point = editor.getBrushPoint(mouseLocation);
-//        switch(editor.selectedBrush) {
-//		case 0:
-//			new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(0, byte.MinValue), true);
-//			break;
-//		case 1:
-//			new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(0, byte.MinValue), true);
-//			break;
-//		}
-//	}
 
     protected class VoxelEditorParameters {
 		public float baseSize = 32;

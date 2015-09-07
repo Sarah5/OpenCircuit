@@ -27,7 +27,7 @@ public class Controls : MonoBehaviour {
 	//		return;
 	//	 }
 
-		if (inGUI() || Time.timeScale == 0)
+		if (inGUI() || Time.timeScale == 0 || !playerControlsEnabled)
 			return;
 
 		/****************MOVEMENT****************/

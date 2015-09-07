@@ -6,7 +6,8 @@ namespace Vox {
 	public class SphereModifier : Modifier {
 
 		public VoxelHolder value;
-		public bool overwriteSubstance;
+		public bool overwriteSubstance = true;
+		public bool overwriteShape = true;
 
 		protected Vector3 center;
 		protected float radius;
@@ -24,7 +25,7 @@ namespace Vox {
 			minDis = (radius - 1);
 			maxDis = (radius + 1);
 			setMinMax(min, max);
-			apply();
+//			apply();
 		}
 
 
@@ -33,12 +34,15 @@ namespace Vox {
 			if (dis > maxDis)
 				return original;
 			if (dis < minDis)
-				return value;
+				return new Voxel(value.averageMaterialType(), overwriteShape? value.averageOpacity(): original.averageOpacity());
 			byte newOpacity = (byte)((original.averageOpacity() * (dis - minDis) + value.averageOpacity() * (maxDis - dis)) / 2);
+			byte newSubstance = value.averageMaterialType();
 			if (newOpacity >= 2 *original.averageOpacity() ||
 			    (overwriteSubstance && dis < radius))
-				return new Voxel(value.averageMaterialType(), newOpacity);
-			return new Voxel(original.averageMaterialType(), newOpacity);
+				newSubstance = value.averageMaterialType();
+			if (!overwriteShape)
+				newOpacity = original.averageOpacity();
+			return new Voxel(newSubstance, newOpacity);
 		}
 
 	}

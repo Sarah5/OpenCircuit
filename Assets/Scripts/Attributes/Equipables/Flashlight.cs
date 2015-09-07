@@ -4,10 +4,15 @@ using System.Collections;
 [AddComponentMenu("Scripts/Items/Flashlight")]
 public class Flashlight : Item {
 
-	Light light = null;
+	public float range = 40;
+	public float angle = 60;
+	public float intensity = 1;
+	public Color color = Color.white;
+
+	protected Light lightComp = null;
 
 	public override void invoke(Inventory invoker) {
-		if (light == null || light.enabled)
+		if (lightComp == null || lightComp.enabled)
 			turnOff();
 		else
 			turnOn();
@@ -16,6 +21,7 @@ public class Flashlight : Item {
 	public override void onEquip(Inventory equipper) {
 		base.onEquip(equipper);
 		createLight(equipper.getPlayer().cam.gameObject);
+		turnOn();
 	}
 
 	public override void onUnequip(Inventory equipper) {
@@ -24,34 +30,34 @@ public class Flashlight : Item {
 	}
 
 	protected void turnOn() {
-		light.enabled = true;
+		lightComp.enabled = true;
 	}
 
 	protected void turnOff() {
-		if (light == null)
+		if (lightComp == null)
 			return;
-		light.enabled = false;
+		lightComp.enabled = false;
 	}
 
 	protected void createLight(GameObject target) {
 		deleteLight();
-		light = target.AddComponent<Light>();
-		light.enabled = false;
-		light.type = LightType.Spot;
-		light.range = 40;
-		light.spotAngle = 60;
-		light.color = Color.white;
-		light.intensity = 0.5f;
-//		light.bounceIntensity = 1;
-		light.shadows = LightShadows.Soft;
-//		light.shadowStrength = 1
-		light.renderMode = LightRenderMode.Auto;
+		lightComp = target.AddComponent<Light>();
+		lightComp.enabled = false;
+		lightComp.type = LightType.Spot;
+		lightComp.range = range;
+		lightComp.spotAngle = angle;
+		lightComp.color = color;
+		lightComp.intensity = intensity;
+//		lightComp.bounceIntensity = 1;
+		lightComp.shadows = LightShadows.Soft;
+//		lightComp.shadowStrength = 1
+		lightComp.renderMode = LightRenderMode.Auto;
 	}
 
 	protected void deleteLight() {
-		if (light == null)
+		if (lightComp == null)
 			return;
-		GameObject.Destroy(light);
-		light = null;
+		GameObject.Destroy(lightComp);
+		lightComp = null;
 	}
 }

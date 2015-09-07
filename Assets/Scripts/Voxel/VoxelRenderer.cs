@@ -24,7 +24,7 @@ namespace Vox {
 		public Dictionary<int, byte> vertexSubstances;
 		[System.NonSerialized]
 		public VoxelTree control;
-		public MeshCollider collider;
+//		public MeshCollider collider;
 		public float size;
 		public Vector3 position;
 		public byte xDim, yDim, zDim;
@@ -54,8 +54,8 @@ namespace Vox {
 					foreach (GameObject ob in obs) {
 						GameObject.DestroyImmediate(ob);
 					}
-				if (collider != null)
-					GameObject.DestroyImmediate(collider);
+//				if (collider != null)
+//					GameObject.DestroyImmediate(collider);
 //			}
 		}
 
@@ -140,23 +140,23 @@ namespace Vox {
 			if (TRIS.Length < 1 && (obs == null || obs.Length < 1))
 				return;
 
-			// generate the collider mesh and attach it to the voxel tree's game object
-			if (control.createColliders) {
-				if (collider == null) {
-					Mesh m = new Mesh();
-					collider = control.gameObject.AddComponent<MeshCollider>();
-					collider.sharedMesh = m;
-					collider.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
-				}
-				Mesh colMesh = collider.sharedMesh;
-				colMesh.triangles = null;
-				colMesh.normals = null;
-				colMesh.vertices = VERTS;
-				colMesh.normals = NORMS;
-				colMesh.triangles = TRIS;
-				colMesh.RecalculateBounds();
-				colMesh.Optimize();
-			}
+//			// generate the collider mesh and attach it to the voxel tree's game object
+//			if (control.createColliders) {
+//				if (collider == null) {
+//					Mesh m = new Mesh();
+//					collider = control.gameObject.AddComponent<MeshCollider>();
+//					collider.sharedMesh = m;
+//					collider.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+//				}
+//				Mesh colMesh = collider.sharedMesh;
+//				colMesh.triangles = null;
+//				colMesh.normals = null;
+//				colMesh.vertices = VERTS;
+//				colMesh.normals = NORMS;
+//				colMesh.triangles = TRIS;
+//				colMesh.RecalculateBounds();
+//				colMesh.Optimize();
+//			}
 
 			// convert the vertexSubstances structure into a more directly usable format
 			byte[] substanceToVertices = new byte[VERTS.Length];
@@ -190,7 +190,7 @@ namespace Vox {
 				}
 			}
 
-			// create and initialize the game objects which will have the mesh renderers attached to them
+			// create and initialize the game objects which will have the mesh renderers and colliders attached to them
 			GameObject[] oldObs = (obs == null)? new GameObject[0]: obs;
 			obs = new GameObject[substanceTriangles.Count];
 			if (oldObs.Length > obs.Length) {
@@ -204,6 +204,10 @@ namespace Vox {
 					obs[i] = createRendererGameObject();
 				}
 			}
+			foreach(GameObject ob in obs) {
+				foreach(MeshCollider col in ob.GetComponents<MeshCollider>())
+					GameObject.DestroyImmediate(col);
+			}
 
 			// Assign vertex data to the game object meshes
 			int obIndex = 0;
@@ -212,12 +216,12 @@ namespace Vox {
 				++obIndex;
 			}
 
-			// refresh collider
-			if (control.createColliders) {
-				collider.enabled = false;
-				if (VoxelBlock.isRenderSize(size, control))
-					collider.enabled = true;
-			}
+//			// refresh collider
+//			if (control.createColliders) {
+//				collider.enabled = false;
+//				if (VoxelBlock.isRenderSize(size, control))
+//					collider.enabled = true;
+//			}
 			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
 			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
@@ -263,12 +267,14 @@ namespace Vox {
 
 			// apply the render materials to the renderer
 			MeshRenderer rend = meshObject.GetComponent<MeshRenderer>();
+			PhysicMaterial phyMat = null;
 			byte[] substanceArray = substances.getSubstances();
 			if (substanceArray.Length == 1) {
 				Material material = new Material(control.voxelSubstances[substanceArray[0]].renderMaterial);
 				material.EnableKeyword("IS_BASE");
 				material.hideFlags = HideFlags.HideAndDontSave;
 				rend.material = material;
+				phyMat = control.voxelSubstances[substanceArray[0]].physicsMaterial;
 			} else {
 				Material[] materials = new Material[substanceArray.Length];
 				for(int i=0; i<materials.Length; ++i) {
@@ -278,6 +284,7 @@ namespace Vox {
 					switch(i) {
 					case 0:
 						material.EnableKeyword("IS_BASE");
+						phyMat = control.voxelSubstances[substanceArray[i]].physicsMaterial;
 						break;
 					case 1:
 						material.EnableKeyword("IS_X");
@@ -303,6 +310,14 @@ namespace Vox {
 			m.RecalculateBounds();
 			m.Optimize();
 			rend.enabled = true;
+
+			// add a collider for the mesh
+			if (control.createColliders) {
+				MeshCollider collider = meshObject.AddComponent<MeshCollider>();
+				collider.sharedMesh = m;
+				collider.material = phyMat;
+//				collider.hideFlags = /*HideFlags.HideInInspector | */HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+			}
 		}
 
 		public void setupMeshes() {

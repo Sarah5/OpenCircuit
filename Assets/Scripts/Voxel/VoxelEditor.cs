@@ -33,8 +33,10 @@ namespace Vox {
 		public int selectedBrush = 0;
 		public float sphereBrushSize = 1;
 		public byte sphereBrushSubstance = 0;
+		public bool sphereSubstanceOnly = false;
 		public Vector3 cubeBrushDimensions = new Vector3(1, 1, 1);
 		public byte cubeBrushSubstance = 0;
+		public bool cubeSubstanceOnly = false;
 		public float smoothBrushSize = 1;
 		public float smoothBrushStrength = 1;
 		public float ghostBrushAlpha = 0.3f;

@@ -28,7 +28,7 @@ namespace Vox {
 			maxZ = (int)(max.z +0.01f);
 		}
 
-		protected void apply() {
+		public void apply() {
 			maskMinY = uint.MinValue;
 			maskMaxY = uint.MaxValue;
 			if (control.masks != null) {

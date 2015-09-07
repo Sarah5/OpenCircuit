@@ -24,7 +24,7 @@ namespace Vox {
 			setMinMax(min, max);
 			setOriginal();
 			MonoBehaviour.print (min);
-			apply();
+//			apply();
 		}
 		
 		

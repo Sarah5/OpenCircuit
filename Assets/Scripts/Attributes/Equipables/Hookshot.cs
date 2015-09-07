@@ -20,9 +20,8 @@ public class Hookshot : Item {
 
 		player = invoker.getPlayer();
 		RaycastHit[] hits = cast();
-		if (hits.Length < 1) {
+		if (hits.Length < 1 || !canGrapple(hits[0].collider)) {
 			breakConnection();
-			print ("huh?");
 			return;
 		}
 		attachPoint = hits[0].point;
@@ -71,19 +70,23 @@ public class Hookshot : Item {
 		player = null;
 	}
 
+	public bool canGrapple(Collider target) {
+		print(target.material.name);
+		return target.material != null && target.material.name.ToLower().StartsWith("grapple");
+	}
+
 	protected IEnumerator reelIn() {
 		while(true) {
-			print("coroutine");
 			Vector3 desiredVel = attachPoint -player.transform.position;
 			if (desiredVel.sqrMagnitude < 1) {
 				breakConnection();
-				print ("Too close " +desiredVel);
+//				print ("Too close " +desiredVel);
 				yield return null;
 			}
 			desiredVel = desiredVel.normalized *reelSpeed;
 			if (Vector3.Dot(playerRigidbody.velocity, desiredVel) /Vector3.Dot(desiredVel, desiredVel) < 0.05f) {
 				breakConnection();
-				print ("Low velocity");
+//				print ("Low velocity");
 				yield return null;
 			}
 

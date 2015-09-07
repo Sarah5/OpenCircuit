@@ -7,7 +7,8 @@ namespace Vox {
 
 		public Voxel value;
 		public Vector3 min, max;
-        public bool overwriteSubstance;
+		public bool overwriteSubstance = true;
+		public bool overwriteShape = true;
 
         public CubeModifier(VoxelTree control, Vector3 worldPosition, Vector3 worldDimensions, VoxelHolder value, bool updateMesh)
 			: base(control, updateMesh) {
@@ -16,7 +17,7 @@ namespace Vox {
 			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - dimensions /2 - Vector3.one * (control.voxelSize() / 2);
 			max = min + dimensions;
 			setMinMax(min, max);
-			apply();
+//			apply();
 		}
 
 
@@ -28,16 +29,18 @@ namespace Vox {
 			percentInside *= percentOverlapping(-x, -max.x);
 			percentInside *= percentOverlapping(-y, -max.y);
             percentInside *= percentOverlapping(-z, -max.z);
-            // MonoBehaviour.print(percentInside);
             if (percentInside <= 0.001)
 				return original;
 			if (percentInside >= 0.999)
-				return value;
+				return new Voxel(value.averageMaterialType(), overwriteShape? value.averageOpacity(): original.averageOpacity());
 			byte newOpacity = (byte)((original.averageOpacity() * (1 -percentInside) + value.averageOpacity() * (percentInside)));
+			byte newSubstance = original.averageMaterialType();
 			if (newOpacity >= 2 *original.averageOpacity() ||
 			    (overwriteSubstance && percentInside > 0.5))
-				return new Voxel(value.averageMaterialType(), newOpacity);
-			return new Voxel(original.averageMaterialType(), newOpacity);
+				newSubstance = value.averageMaterialType();
+			if (!overwriteShape)
+				newOpacity = original.averageOpacity();
+			return new Voxel(newSubstance, newOpacity);
 		}
 
         protected double percentOverlapping(double lower, double upper) {
