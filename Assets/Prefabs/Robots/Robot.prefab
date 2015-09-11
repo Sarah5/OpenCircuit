@@ -90,6 +90,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582921497bc4f4e409f73f4e601026af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locations: []
+  goals:
+  - name: self-preservation
+    priority: 1
+  - name: self-preservation
+    priority: 1
+  - name: self-preservation
+    priority: 1
 --- !u!135 &13588166
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -130,6 +138,14 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: goals.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: locations.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: m_BaseOffset
       value: 1
       objectReference: {fileID: 0}
@@ -152,6 +168,30 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Radius
       value: .400000006
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].name
+      value: offense
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].name
+      value: protection
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].priority
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

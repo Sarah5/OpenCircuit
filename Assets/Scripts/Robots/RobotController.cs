@@ -7,8 +7,10 @@ public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
+    
 	public Label[] locations;
-	public Dictionary<string, Goal> goals = new Dictionary<string, Goal>();
+    public Goal[] goals;
+	public Dictionary<string, Goal> goalMap = new Dictionary<string, Goal>();
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
@@ -22,10 +24,16 @@ public class RobotController : MonoBehaviour {
 	private bool dirty = false;
 
 	void Start() {
-		goals.Add("protection", new Goal("protection", 1));
-		goals.Add("offense", new Goal("offense", 1));
-		goals.Add ("self-preservation", new Goal ("self-preservation", 1));
-
+        /*
+		goalMap.Add("protection", new Goal("protection", 1));
+		goalMap.Add("offense", new Goal("offense", 1));
+		goalMap.Add ("self-preservation", new Goal ("self-preservation", 1));
+        */
+        foreach(Goal goal in goals) {
+            if(!goalMap.ContainsKey(goal.name)) {
+                goalMap.Add(goal.name, goal);
+            }
+        }
 		AbstractRobotComponent [] compenents = GetComponentsInChildren<AbstractRobotComponent> ();
 
 		foreach (AbstractRobotComponent component in compenents) {
@@ -111,7 +119,7 @@ public class RobotController : MonoBehaviour {
 	}
 
 	public Dictionary<string, Goal> getGoals() {
-		return goals;
+		return goalMap;
 	}
 
 	public Dictionary<System.Type, AbstractRobotComponent> getComponentMap() {
