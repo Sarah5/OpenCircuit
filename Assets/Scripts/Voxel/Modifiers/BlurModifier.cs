@@ -4,7 +4,7 @@ using System.Collections;
 namespace Vox {
 	public class BlurModifier : Modifier {
 
-		public const int blurRadius = 3;
+		public int blurRadius = 3;
 		
 		public bool overwriteSubstance;
 

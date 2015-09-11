@@ -183,6 +183,7 @@ public class VoxelEditorGUI : Editor {
 		case 2:
 			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, 100);
 			editor.smoothBrushStrength = doSliderFloatField("Strength", editor.smoothBrushStrength, 0, 5);
+			editor.smoothBrushBlurRadius = EditorGUILayout.IntField("Blur Radius", editor.smoothBrushBlurRadius);
 			break;
 		}
 
@@ -450,7 +451,9 @@ public class VoxelEditorGUI : Editor {
 			cubeMod.apply();
 			break;
 		case 2:
-			new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true).apply();
+			Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
+			blur.blurRadius = editor.smoothBrushBlurRadius;
+			blur.apply();
 			break;
 		}
 	}

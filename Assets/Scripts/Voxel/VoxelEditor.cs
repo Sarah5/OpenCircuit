@@ -39,6 +39,7 @@ namespace Vox {
 		public bool cubeSubstanceOnly = false;
 		public float smoothBrushSize = 1;
 		public float smoothBrushStrength = 1;
+		public int smoothBrushBlurRadius = 3;
 		public float ghostBrushAlpha = 0.3f;
 
 
