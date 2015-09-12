@@ -36,7 +36,7 @@ public class RoboEyes : AbstractRobotComponent {
 	}
 
 	private void lookAround() {
-		bool hasPower = powerSource.drawPower (5 * Time.deltaTime);
+		bool hasPower = powerSource != null && powerSource.drawPower (5 * Time.deltaTime);
 		foreach (Label label in Label.visibleLabels) {
 			bool targetInView = hasPower && canSee (label.transform);
 			if ((!targetMap.ContainsKey (label) || !targetMap [label]) && targetInView) {
