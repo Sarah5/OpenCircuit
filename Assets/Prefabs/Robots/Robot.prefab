@@ -92,9 +92,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   locations: []
   goals:
-  - name: self-preservation
+  - name: protection
     priority: 1
-  - name: self-preservation
+  - name: offense
     priority: 1
   - name: self-preservation
     priority: 1
@@ -171,7 +171,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goals.Array.data[0].name
-      value: self-preservation
+      value: protection
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goals.Array.data[0].priority
@@ -183,7 +183,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goals.Array.data[2].name
-      value: protection
+      value: self-preservation
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goals.Array.data[1].priority
@@ -191,6 +191,222 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: goals.Array.data[2].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[11].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[11].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[12].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[12].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[13].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[13].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[14].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[14].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[15].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[15].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[16].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[16].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[17].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[17].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[18].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[18].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[19].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[19].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[20].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[20].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[21].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[21].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[22].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[22].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[23].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[23].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[24].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[24].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[25].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[25].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[26].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[26].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[27].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[27].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[28].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[28].priority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[29].name
+      value: self-preservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[29].priority
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
