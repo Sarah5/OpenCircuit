@@ -70,6 +70,10 @@ public abstract class EndeavourFactory : InspectorListElement {
 		}
 	}
 
+	public virtual void drawGizmo() {
+
+	}
+	
 	private static string[] getTypeNames() {
 		if (typeNames == null || typeNames.Length != types.Length) {
 			typeNames = new string[types.Length];

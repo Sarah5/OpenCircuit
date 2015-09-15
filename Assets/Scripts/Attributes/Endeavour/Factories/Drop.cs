@@ -14,4 +14,11 @@ public class Drop : EndeavourFactory {
 		//Debug.Log ("get drop");
 		return new DropKickAction(controller, goals, parent);
 	}
+
+	public override void drawGizmo() {
+		Gizmos.color = Color.red;
+		Gizmos.DrawSphere(parent.transform.position, .1f);
+		Gizmos.color = Color.gray;
+		Gizmos.DrawRay(new Ray(parent.transform.position + (parent.transform.forward * .1f), parent.transform.forward));
+	}
 }

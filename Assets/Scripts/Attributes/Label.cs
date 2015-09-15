@@ -114,4 +114,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			stream.Close();
 		}
 	}
+
+	void OnDrawGizmos() {
+		foreach(EndeavourFactory factory in endeavours) {
+			factory.drawGizmo();
+		}
+	}
 }
