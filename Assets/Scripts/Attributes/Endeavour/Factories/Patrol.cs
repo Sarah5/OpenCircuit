@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class Patrol : EndeavourFactory {
 
 	[System.NonSerialized]
 	public List<Label> points = null;
-	private List<string> pointsPaths = new List<string> ();
+	//private List<string> pointsPaths;
+	private string[] pointsPaths = new string[0];
 	private bool status = false;
 	private int size = 0;
 
@@ -24,10 +27,9 @@ public class Patrol : EndeavourFactory {
 	}
 
 	public List<Label> getPoints() {
-
 		if (points == null) {
 			points = new List<Label>();
-			if (pointsPaths.Count > 0) {
+			if (pointsPaths.Length > 0) {
 				foreach (string path in pointsPaths) {
 					if (path != null) {
 						points.Add (GameObjectUtil.GetGameObject<Label> (path));
@@ -45,6 +47,30 @@ public class Patrol : EndeavourFactory {
 		if (status && getPoints() != null) {
 			//UnityEditor.EditorGUIUtility.LookLikeControls();
 			size = UnityEditor.EditorGUILayout.IntField("Size:", getPoints().Count);
+			if(size < getPoints().Count) {
+				getPoints().RemoveRange(size, getPoints().Count - size);
+				string [] temp = new string[size];
+				Array.Copy(pointsPaths, 0, temp, 0, size);
+				pointsPaths = temp;
+				//pointsPaths.RemoveRange(size, getPoints().Count - size);
+			}
+
+			if(size > getPoints().Count) {
+				string[] temp = new string[size];
+				if(pointsPaths.Length != 0) {
+					Array.Copy(pointsPaths, 0, temp, 0, size);
+				}
+				for(int i = pointsPaths.Length; i < size; i++) {
+					temp[i] = "";
+				}
+				pointsPaths = temp;
+			}
+			while(size > getPoints().Count) {
+				getPoints().Add(null);
+
+			}
+
+
 			for (int i = 0; i < points.Count; i++) {
 				getPoints()[i] = (Label)UnityEditor.EditorGUILayout.ObjectField(points[i], typeof(Label), true);
 				if (getPoints()[i] != null) {
@@ -52,14 +78,7 @@ public class Patrol : EndeavourFactory {
 					//Debug.Log(pointsPaths[i]);
 				}
 			}
-			if (size < getPoints().Count) {
-				getPoints().RemoveRange (size, getPoints().Count - size);
-				pointsPaths.RemoveRange(size, getPoints().Count - size);
-			}
-			while (size > getPoints().Count) {
-				getPoints().Add(null);
-				pointsPaths.Add(null);
-			}
+
 		}
 	}
 }

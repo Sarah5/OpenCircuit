@@ -17,12 +17,6 @@ public class HoverJet : AbstractRobotComponent {
 		this.target = target;
 	}
 
-	public string getTargetType() {
-		if (target == null) 
-			return "";
-		return target.Type;
-	}
-
 	public bool hasTarget() {
 		return target != null;
 	}

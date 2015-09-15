@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
@@ -13,9 +13,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public static readonly HashSet<Label> visibleLabels = new HashSet<Label>();
 
+	[SerializeField]
 	public byte[] serializedData;
 
-	[System.NonSerialized]
 	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
 	[System.NonSerialized]
 	public Operation[] operations = new Operation[0];
@@ -24,12 +24,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	private Dictionary<System.Type, List<Operation>> triggers = new Dictionary<System.Type, List<Operation>>();
 
 	[System.NonSerialized]
-	public string Type = "";
+	private List<Object> memberStorage = new List<Object>();
 
-	[System.NonSerialized]
+	//Properties handled by Unity serialization
 	public bool isVisible = true;
-
-	[System.NonSerialized]
 	public float threatLevel = 0;
 
 	public void Awake() {
@@ -93,8 +91,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter formatter = new BinaryFormatter();
 
-			formatter.Serialize(stream, isVisible);
-			formatter.Serialize(stream, threatLevel);
 			formatter.Serialize(stream, operations);
 			formatter.Serialize(stream, endeavours);
 
@@ -108,8 +104,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			MemoryStream stream = new MemoryStream(serializedData);
 			BinaryFormatter formatter = new BinaryFormatter();
 
-			isVisible = (bool)formatter.Deserialize(stream);
-			threatLevel = (float)formatter.Deserialize(stream);
 			operations = (Operation[]) formatter.Deserialize(stream);
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
 			foreach (EndeavourFactory factory in endeavours) {

@@ -7,15 +7,12 @@ using System.Collections.Generic;
 
 [CustomEditor(typeof(Label), true)]
 public class LabelGUI : Editor {
-	
-	private SerializedObject ob;
 
 	private bool operationsExpanded = true;
 	private bool endeavoursExpanded = true;
 	private string[] operationTypeNames;
 	
 	public void OnEnable() {
-		ob = new SerializedObject(target);
 		operationTypeNames = new string[Operation.types.Length];
 		for(int i=0; i<operationTypeNames.Length; ++i) {
 			operationTypeNames[i] = Operation.types[i].FullName;
@@ -23,14 +20,15 @@ public class LabelGUI : Editor {
 	}
 	
 	public override void OnInspectorGUI() {
+		serializedObject.Update();
 		Label label = (Label)target;
-		label.isVisible = EditorGUILayout.Toggle ("Visible", label.isVisible);
-		label.threatLevel = EditorGUILayout.FloatField ("Threat Level", label.threatLevel);
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("isVisible"));
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("threatLevel"));
 		doOperationList(label);
 		doEndeavourList(label);
 		
 		// finally, apply the changes
-		ob.ApplyModifiedProperties();
+		serializedObject.ApplyModifiedProperties();
 	}
 
 	public void doOperationList(Label label) {

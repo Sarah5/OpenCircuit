@@ -11,14 +11,11 @@ public class RobotControllerGUI : Editor {
     private int size = 0;
 
     void onEnable() {
-        RobotController controller = (RobotController)target;
-
         size = this.serializedObject.FindProperty("goals").arraySize;
     }
 
 	public override void OnInspectorGUI() {
         serializedObject.Update();
-        RobotController controller = (RobotController)target;
         SerializedProperty goals = serializedObject.FindProperty("goals");
         status = UnityEditor.EditorGUILayout.Foldout(status, "Goals");
 		if(status && goals != null) {
