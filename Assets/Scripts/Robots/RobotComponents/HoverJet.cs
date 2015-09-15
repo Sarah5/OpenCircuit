@@ -11,10 +11,13 @@ public class HoverJet : AbstractRobotComponent {
 
 	private Animation myAnimator;
 
+	private bool matchTargetRotation = false;
+
 	public float animSpeedAdjust = 1f;
 
-	public void setTarget(Label target) {
+	public void setTarget(Label target, bool matchRotation = false) {
 		this.target = target;
+		matchTargetRotation = matchRotation;
 	}
 
 	public string getTargetType() {
@@ -41,7 +44,11 @@ public class HoverJet : AbstractRobotComponent {
 			                                new Vector2(target.transform.position.x, target.transform.position.z));
 			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
 			if (xzDist < .5f && yDist < 1f) {
-				roboController.enqueueMessage (new RobotMessage ("action", "target reached", target));
+				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .000001)) {
+					roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
+				} else {
+					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.transform.forward), nav.angularSpeed * Time.deltaTime);
+				}
 			}
 
 			if (nav.enabled) {

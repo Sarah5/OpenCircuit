@@ -21,7 +21,7 @@ public class DropKickAction : Endeavour {
 	public override void execute (){
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			jet.setTarget(dropPoint);
+			jet.setTarget(dropPoint, true);
 			jet.setAvailability(false);
 		}
 	}
