@@ -12,7 +12,6 @@ public class PatrolAction : Endeavour {
 	public PatrolAction(RobotController controller, List<Goal> goals, List<Label> route) : base(controller, goals) {
 		//this.route = route;
 		this.name = "patrol";
-		this.priority = 1;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 		//this.points = route;
 		//routePoints = new List<Label> ();

@@ -9,7 +9,6 @@ public class PursueAction : Endeavour {
 	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals) {
 		this.target = target;
 		this.name = "pursue";
-		this.priority = 5;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 

@@ -8,7 +8,6 @@ public class DropKickAction : Endeavour {
 
 	public DropKickAction(RobotController controller, List<Goal> goals, Label dropPoint) : base(controller, goals) {
 		this.name = "dropKick";
-		this.priority = 10;
 		this.dropPoint = dropPoint;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}

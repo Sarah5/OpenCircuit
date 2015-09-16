@@ -12,7 +12,6 @@ public abstract class Endeavour : Prioritizable {
 	public List<Goal> goals = new List<Goal>();
 	
 	protected string name;
-	protected float priority;
 
 	protected RobotController controller;
 
