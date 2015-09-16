@@ -15,6 +15,9 @@ public class Player : MonoBehaviour {
 	public float maxOxygen = 60;
 	public float oxygenRecoveryRate = 2;
 	public float oxygen = 60;
+	public float maxSuffering = 100;
+	public float recoveryRate = 25;
+	public Texture2D sufferingOverlay;
 	public AudioClip heavyBreathingSound;
 	public AudioClip teleportSound;
 	public float whiteOutDuration;
@@ -38,8 +41,10 @@ public class Player : MonoBehaviour {
 	private static Player instance;
 	private AudioSource breathingSource;
 	private float whiteOutTime;
-	private float blackOutTime;
+	private float blackOutTime = 0;
 	private Texture2D whiteOutTexture;
+	private float suffering = 0;
+	private bool alive = true;
 
 //	public Attacher attacher { get { return myAttacher; } set { myAttacher = value; } }
 	public Attack attacker { get { return myAttacker; } set { myAttacker = value; } }
@@ -104,6 +109,15 @@ public class Player : MonoBehaviour {
 				breathingSource.Stop();
 			}
 		}
+
+		if (suffering > maxSuffering) {
+			// He's dead, Jim.
+			die();
+			//Application.Quit();
+			//UnityEditor.EditorApplication.isPlaying = false;
+		}
+		if (suffering > 0)
+			suffering = Mathf.Max(suffering -recoveryRate *Time.deltaTime, 0f);
 	}
 
 	public void physicsPickup(GameObject item) {
@@ -116,6 +130,19 @@ public class Player : MonoBehaviour {
 
 	public void fadeIn() {
 		blackOutTime = blackOutDuration;
+	}
+
+	public void hurt(float pain) {
+		suffering += pain;
+		// play sound or whatever here
+	}
+
+	public void die() {
+		if (!alive)
+			return;
+		alive = false;
+		blackOutTime = blackOutDuration;
+		Menu.menu.lose();
 	}
 
 	public void teleport(Vector3 position) {
@@ -141,6 +168,12 @@ public class Player : MonoBehaviour {
 			whiteOutTime -= Time.deltaTime;
 			if (whiteOutTime < 0)
 				whiteOutTime = 0;
+		}
+
+		if (suffering > 0) {
+			GUI.color = new Color(1, 0.2f, 0.2f, Mathf.Min(suffering, maxSuffering) / maxSuffering * 0.5f);
+			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), sufferingOverlay);
+			GUI.color = Color.white;
 		}
 
 		if (blackOutTime > 0) {

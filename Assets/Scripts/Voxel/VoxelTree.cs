@@ -32,6 +32,7 @@ namespace Vox {
 		public VoxelMask[] masks;
 		public bool createColliders = true;
 		public bool useStaticMeshes = true;
+		public bool saveMeshes = false;
 
 
 		// performance stats
@@ -199,16 +200,16 @@ namespace Vox {
 			}
 			List<Transform> children = new List<Transform>(transform.childCount);
 			foreach(Transform child in transform) {
-				if ((child.hideFlags &  HideFlags.DontSave) != 0)
+				if ((child.hideFlags & HideFlags.HideInHierarchy) != 0)
 					children.Add(child);
 			}
 			foreach(Transform child in children) {
 				GameObject.DestroyImmediate(child.gameObject);
 			}
-			foreach(MeshCollider collider in GetComponents<MeshCollider>()) {
-				if ((collider.hideFlags & HideFlags.HideInInspector) != 0)
-					GameObject.DestroyImmediate(collider);
-			}
+//			foreach(MeshCollider collider in GetComponents<MeshCollider>()) {
+//				if ((collider.hideFlags & HideFlags.HideInInspector) != 0)
+//					GameObject.DestroyImmediate(collider);
+//			}
 		}
 
 		public void generateRenderers() {

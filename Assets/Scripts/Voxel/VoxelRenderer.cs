@@ -140,24 +140,6 @@ namespace Vox {
 			if (TRIS.Length < 1 && (obs == null || obs.Length < 1))
 				return;
 
-//			// generate the collider mesh and attach it to the voxel tree's game object
-//			if (control.createColliders) {
-//				if (collider == null) {
-//					Mesh m = new Mesh();
-//					collider = control.gameObject.AddComponent<MeshCollider>();
-//					collider.sharedMesh = m;
-//					collider.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
-//				}
-//				Mesh colMesh = collider.sharedMesh;
-//				colMesh.triangles = null;
-//				colMesh.normals = null;
-//				colMesh.vertices = VERTS;
-//				colMesh.normals = NORMS;
-//				colMesh.triangles = TRIS;
-//				colMesh.RecalculateBounds();
-//				colMesh.Optimize();
-//			}
-
 			// convert the vertexSubstances structure into a more directly usable format
 			byte[] substanceToVertices = new byte[VERTS.Length];
 			foreach (int index in vertices.Keys) {
@@ -229,7 +211,8 @@ namespace Vox {
 		protected GameObject createRendererGameObject() {
 			GameObject gameObject = new GameObject("Voxel Section");
 			gameObject.isStatic = control.useStaticMeshes;
-			gameObject.hideFlags |= HideFlags.DontSave;
+			if (!control.saveMeshes)
+				gameObject.hideFlags |= HideFlags.DontSave;
 			Transform t = gameObject.transform;
 			t.parent = control.transform;
 			t.localPosition = Vector3.zero;
@@ -272,7 +255,8 @@ namespace Vox {
 			if (substanceArray.Length == 1) {
 				Material material = new Material(control.voxelSubstances[substanceArray[0]].renderMaterial);
 				material.EnableKeyword("IS_BASE");
-				material.hideFlags = HideFlags.HideAndDontSave;
+				if (!control.saveMeshes)
+					material.hideFlags = HideFlags.HideAndDontSave;
 				rend.material = material;
 				phyMat = control.voxelSubstances[substanceArray[0]].physicsMaterial;
 			} else {
@@ -280,7 +264,8 @@ namespace Vox {
 				for(int i=0; i<materials.Length; ++i) {
 					Material material = new Material(control.voxelSubstances[substanceArray[i]].blendMaterial);
 					material.renderQueue = i;
-					material.hideFlags = HideFlags.HideAndDontSave;
+					if (!control.saveMeshes)
+						material.hideFlags = HideFlags.HideAndDontSave;
 					switch(i) {
 					case 0:
 						material.EnableKeyword("IS_BASE");

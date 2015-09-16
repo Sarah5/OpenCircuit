@@ -101,6 +101,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -189,6 +190,7 @@ AudioSource:
   m_Pitch: 1
   Loop: 1
   Mute: 0
+  Spatialize: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -258,6 +260,7 @@ AudioSource:
   m_Pitch: 1
   Loop: 1
   Mute: 0
+  Spatialize: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -367,10 +370,13 @@ MonoBehaviour:
   maxOxygen: 60
   oxygenRecoveryRate: 10
   oxygen: 60
+  maxSuffering: 100
+  recoveryRate: 25
+  sufferingOverlay: {fileID: 2800000, guid: fbd0cf77b9eb98f4aab7231dd4effd24, type: 3}
   heavyBreathingSound: {fileID: 8300000, guid: 93cc1f44eb856894187e8d711f429b62, type: 3}
   teleportSound: {fileID: 0}
   whiteOutDuration: 0
-  blackOutDuration: 0
+  blackOutDuration: 20
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -398,8 +404,10 @@ MonoBehaviour:
   oxygenSprintUsage: 20
   footsteps:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
-  minimumFoostepOccurence: 1
-  foostepSpeedScale: .0799999982
+  minimumFoostepOccurence: .600000024
+  foostepSpeedScale: .0299999993
+  fallHurtSpeed: 10
+  fallDeathSpeed: 18
 --- !u!114 &11420722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -486,6 +494,34 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: Type
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fallDamageThreshold
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: blackOutDuration
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: sufferingOverlay
+      value: 
+      objectReference: {fileID: 2800000, guid: fbd0cf77b9eb98f4aab7231dd4effd24, type: 3}
+    - target: {fileID: 0}
+      propertyPath: recoveryRate
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minimumFoostepOccurence
+      value: .600000024
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: foostepSpeedScale
+      value: .0299999993
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fallDeathSpeed
+      value: 18
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -26,6 +26,8 @@ public class Movement : MonoBehaviour {
 	private int freeFallDelay = 0;
 	private bool recovering = false;
 	private bool canMove = true;
+	private Vector3 lastRelativeVelocity = Vector3.zero;
+	private int collisionCount = 0;
 
 	public float sprintMult = 2f;
 	public float walkSpeedf = 6f;
@@ -44,6 +46,8 @@ public class Movement : MonoBehaviour {
 	public AudioClip[] footsteps;
 	public float minimumFoostepOccurence;
 	public float foostepSpeedScale;
+	public float fallHurtSpeed = 10;
+	public float fallDeathSpeed = 15;
 
 	void Awake() {
 		groundNormal = Vector3.zero;
@@ -233,10 +237,13 @@ public class Movement : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collisionInfo) {
+		++collisionCount;
+		doFallDamage(collisionInfo);
 		doClimb(collisionInfo);
 	}
 
 	void OnCollisionStay(Collision collisionInfo) {
+		doFallDamage(collisionInfo);
 		foreach(ContactPoint cp in collisionInfo.contacts) {
 			if ((floor == null && cp.normal.y > 0.6f) || cp.normal.y > groundNormal.y) {
 				groundNormal = cp.normal;
@@ -251,12 +258,28 @@ public class Movement : MonoBehaviour {
 	}
 
 	void OnCollisionExit(Collision collisionInfo) {
+		--collisionCount;
 		if (collisionInfo.gameObject == floor) {
 			floor = null;
 			groundNormal = Vector3.zero;
 			groundSpeed = Vector3.zero;
 		}
+		if (collisionCount <= 0)
+			lastRelativeVelocity = Vector3.zero;
 	}
+
+	protected void doFallDamage(Collision collisionInfo) {
+		//float collisionSpeed = collisionInfo.impulse.magnitude;
+		float collisionSpeed = (collisionInfo.relativeVelocity -lastRelativeVelocity).magnitude;
+		collisionSpeed = collisionSpeed *0.75f + collisionInfo.impulse.magnitude * 0.25f;
+		//if (collisionSpeed > 5)
+		//	print(collisionSpeed);
+		if (collisionSpeed > fallHurtSpeed) {
+			float damage = (collisionSpeed -fallHurtSpeed) /(fallDeathSpeed -fallHurtSpeed);
+			myPlayer.hurt(damage *100f);
+		}
+		lastRelativeVelocity = collisionInfo.relativeVelocity;
+    }
 
 	public void setForward(float percent) {
 		if (percent > 0)

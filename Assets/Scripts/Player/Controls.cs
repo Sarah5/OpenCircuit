@@ -6,7 +6,7 @@ public class Controls : MonoBehaviour {
 
 	private Player myPlayer;
 	private bool playerControlsEnabled = true;
-	//private Menu menu;
+	private Menu menu;
 
 	public float mouseSensitivity = 1;
 	public bool invertLook = false;
@@ -14,18 +14,18 @@ public class Controls : MonoBehaviour {
 
 	void Awake () {
 		myPlayer = this.GetComponent<Player> ();
-		//menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+		menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
 	}
 
 	void Update () {
 
 		/****************MENU****************/
-		//if (Input.GetButtonDown("Menu")) {
-	//		menu.toggleInGameMenu();
-	//	}
-	//	if (menu.paused()) {
-	//		return;
-	//	 }
+		if (Input.GetButtonDown("Menu")) {
+			menu.toggleInGameMenu();
+		}
+		if (menu.paused()) {
+			return;
+		}
 
 		if (inGUI() || Time.timeScale == 0 || !playerControlsEnabled)
 			return;

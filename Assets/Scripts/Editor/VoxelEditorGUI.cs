@@ -371,6 +371,7 @@ public class VoxelEditorGUI : Editor {
 	protected void doGeneralPropertiesGUI(Vox.VoxelEditor editor) {
 		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
 		editor.useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
+		editor.saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
         // if (createColliders != editor.createColliders || useStaticMeshes != editor.useStaticMeshes) {
 		// 	editor.createColliders = createColliders;
 		// 	editor.useStaticMeshes = useStaticMeshes;

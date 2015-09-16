@@ -44,7 +44,9 @@ namespace Vox {
 
 
 		public void Awake() {
-			if (Application.isPlaying && !hasRenderers()) {
+			if (Application.isPlaying &&
+			    !hasRenderers() &&
+			    !saveMeshes) {
 				generateRenderers();
 				pauseForGeneration();
 			}

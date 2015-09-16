@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Items/Hookshot")]
 public class Hookshot : Item {
@@ -11,6 +12,7 @@ public class Hookshot : Item {
 	protected Transform playerTransform;
 	protected Rigidbody playerRigidbody;
 	protected Vector3 attachPoint;
+	protected bool targetReached;
 
     public override void invoke(Inventory invoker) {
 		if (reelingIn()) {
@@ -18,19 +20,18 @@ public class Hookshot : Item {
 			return;
 		}
 
-		player = invoker.getPlayer();
-		RaycastHit[] hits = cast();
-		if (hits.Length < 1 || !canGrapple(hits[0].collider)) {
-			breakConnection();
+		attachPoint = getTarget(invoker);
+		if ((attachPoint -invoker.transform.position).sqrMagnitude < 1) {
 			return;
 		}
-		attachPoint = hits[0].point;
+		player = invoker.getPlayer();
 		player.mover.lockMovement();
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		playerTransform = player.transform;
 		playerRigidbody.useGravity = false;
 		Vector3 desiredVel = (attachPoint -player.transform.position).normalized *reelSpeed;
 		playerRigidbody.velocity = desiredVel;
+		targetReached = false;
 
 		StartCoroutine(reelIn());
     }
@@ -79,26 +80,92 @@ public class Hookshot : Item {
 		while(true) {
 			Vector3 desiredVel = attachPoint -player.transform.position;
 			if (desiredVel.sqrMagnitude < 1) {
-				breakConnection();
-//				print ("Too close " +desiredVel);
-				yield return null;
+				//breakConnection();
+				//print ("Too close " +desiredVel);
+				targetReached = true;
+				yield return new WaitForFixedUpdate();
 			}
 			desiredVel = desiredVel.normalized *reelSpeed;
-			if (Vector3.Dot(playerRigidbody.velocity, desiredVel) /Vector3.Dot(desiredVel, desiredVel) < 0.05f) {
-				breakConnection();
-//				print ("Low velocity");
-				yield return null;
-			}
+//			if (Vector3.Dot(playerRigidbody.velocity, desiredVel) /Vector3.Dot(desiredVel, desiredVel) < 0.05f) {
+//				breakConnection();
+////				print ("Low velocity");
+//				yield return null;
+//			}
 
 			playerRigidbody.velocity = desiredVel;
 
 			yield return new WaitForFixedUpdate();
 		}
 	}
+
+	protected Vector3 getTarget(Inventory invoker) {
+		Transform camTrans = invoker.getPlayer().cam.transform;
+        RaycastHit[] hits = cast(camTrans.position, camTrans.forward, length);
+		if (hits.Length < 1 || !canGrapple(hits[0].collider)) {
+			GameObject target = getTargetObject(invoker);
+			if (target == null)
+				return invoker.transform.position;
+			print("Used grapple point point.");
+			return target.transform.position;
+		}
+		return hits[0].point;
+	}
+
+	protected GameObject getTargetObject(Inventory invoker) {
+		List<GameObject> availables = getTargetObjects(invoker);
+		print("Available: " +availables.Count);
+		GameObject selected = null;
+		float min = new Vector2(Screen.width /4, Screen.height /4).magnitude;
+		RaycastHit hit = new RaycastHit();
+		hit.distance = length + 0.5f;
+		hit.point = invoker.getPlayer().cam.transform.position + invoker.getPlayer().cam.transform.forward * hit.distance;
+		RaycastHit[] hits = Physics.RaycastAll(invoker.getPlayer().cam.transform.position, invoker.getPlayer().cam.transform.forward, length + 0.5f);
+		foreach (RaycastHit h in hits) {
+			if (!h.collider.isTrigger && hit.distance > h.distance)
+				hit = h;
+		}
+		foreach (GameObject point in availables) {
+			Vector3 center = invoker.getPlayer().cam.WorldToScreenPoint(point.transform.position);
+			Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+			Vector2 pointCenter = new Vector2(center.x, center.y);
+			float dist = (screenCenter - pointCenter).magnitude;
+			if (dist < min) {
+				min = dist;
+				selected = point;
+			}
+		}
+		//hitSpot.transform.position = hit.point;
+		return selected;
+	}
+
+	protected List<GameObject> getTargetObjects(Inventory invoker) {
+		List<GameObject> availables = new List<GameObject>();
+		GameObject[] grapplePoints = GameObject.FindGameObjectsWithTag("Grapple Point");
+		Transform camTrans = invoker.getPlayer().cam.transform;
+
+		foreach (GameObject point in grapplePoints) {
+			float distanceSqr = (point.transform.position - camTrans.position).sqrMagnitude;
+
+			//filter out objects that are too far away
+			if (distanceSqr > length * length)
+				continue;
+
+			// filter out points that are behind the camera
+			if (Vector3.Dot(camTrans.forward, point.transform.position -camTrans.position) < 0) continue;
+
+			// filter out obstructed points
+			RaycastHit[] hits = cast(camTrans.position, point.transform.position -camTrans.position, Mathf.Sqrt(distanceSqr) -0.1f);
+			if (hits.Length > 0) {
+				continue;
+			}
+
+			availables.Add(point);
+		}
+		return availables;
+	}
 	
-	protected RaycastHit[] cast() {
-		Transform cam = player.cam.transform;
-		RaycastHit[] hits = Physics.RaycastAll(cam.position, cam.forward, length);
+	protected static RaycastHit[] cast(Vector3 position, Vector3 direction, float length) {
+		RaycastHit[] hits = Physics.RaycastAll(position, direction, length);
 		if (hits.Length < 1)
 			return new RaycastHit[0];
 		RaycastHit finalHit = hits[0];
