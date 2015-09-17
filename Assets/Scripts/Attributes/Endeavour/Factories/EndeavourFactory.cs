@@ -71,7 +71,8 @@ public abstract class EndeavourFactory : InspectorListElement {
 	}
 
 	public virtual void drawGizmo() {
-
+		Gizmos.color = Color.green;
+		Gizmos.DrawSphere(parent.transform.position, .2f);
 	}
 	
 	private static string[] getTypeNames() {

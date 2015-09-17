@@ -116,6 +116,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	}
 
 	void OnDrawGizmos() {
+		if(!isVisible) {
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawSphere(transform.position, .2f);
+		}
 		foreach(EndeavourFactory factory in endeavours) {
 			factory.drawGizmo();
 		}

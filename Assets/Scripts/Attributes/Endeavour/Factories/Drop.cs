@@ -24,12 +24,11 @@ public class Drop : EndeavourFactory {
 
 	public override void drawGizmo() {
 		Gizmos.color = Color.red;
-		Gizmos.DrawSphere(parent.transform.position, .1f);
-		Gizmos.color = Color.gray;
-		//Gizmos.DrawRay(new Ray(parent.transform.position + (parent.transform.forward * .1f), parent.transform.forward));
+		float sphereSize = .2f;
+		Gizmos.DrawSphere(parent.transform.position, sphereSize);
 		for (int i = 0; i < NUM_STRIPES; i ++) {
 			Gizmos.color = i % 2 == 0 ? COLOR_ONE : COLOR_TWO;
-			Vector3 startPos = parent.transform.position + (parent.transform.forward * .1f) + ((i * (LENGTH/NUM_STRIPES))*parent.transform.forward);
+			Vector3 startPos = parent.transform.position + (parent.transform.forward * sphereSize) + ((i * (LENGTH / NUM_STRIPES)) * parent.transform.forward);
 			Vector3 endPos = startPos + (((LENGTH/NUM_STRIPES))*parent.transform.forward);
 			Gizmos.DrawLine(startPos, endPos);
 		}
