@@ -29,11 +29,15 @@ public class LabelGUI : Editor {
 		
 		// finally, apply the changes
 		label.OnBeforeSerialize();
-		SerializedProperty data = serializedObject.FindProperty("serializedData");
-		data.arraySize = label.serializedData.Length;
-		for (int i = 0; i < label.serializedData.Length; ++i) {
-			data.GetArrayElementAtIndex(i).intValue = label.serializedData[i];
-		}
+		EditorUtility.SetDirty(target);
+
+		serializedObject.Update();
+		//EditorUtility.SetDirty(label);
+		//SerializedProperty data = serializedObject.FindProperty("serializedData");
+		//data.arraySize = label.serializedData.Length;
+		//for (int i = 0; i < label.serializedData.Length; ++i) {
+		//	data.GetArrayElementAtIndex(i).intValue = label.serializedData[i];
+		//}
 		
 		serializedObject.ApplyModifiedProperties();
 	}

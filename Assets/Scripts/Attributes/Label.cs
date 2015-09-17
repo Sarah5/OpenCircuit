@@ -16,6 +16,7 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[SerializeField]
 	public byte[] serializedData;
 
+	[System.NonSerialized]
 	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
 	[System.NonSerialized]
 	public Operation[] operations = new Operation[0];
@@ -83,8 +84,11 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 	public void OnBeforeSerialize() {
 		lock(this) {
-			if (operations == null)
-				operations = new Operation[0];
+			//if (operations == null)
+			//	operations = new Operation[0];
+			//if(endeavours == null)
+			//	endeavours = new EndeavourFactory[0];
+			//print("howdy bang bang!");
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter formatter = new BinaryFormatter();
 
