@@ -60,15 +60,15 @@ public class LabelGUI : Editor {
 				label.endeavours [i] = EndeavourFactory.constructDefault (label);
 			}
 		}
-		label.endeavours = doArrayGUI(ref label.endeavours);
+		doArrayGUI(ref label.endeavours);
 	}
 
-	private T[] doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
+	private void doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
 		GUILayout.BeginHorizontal();
 		int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
 		if (newSize != array.Length) {
 			array = resize(array, newSize);
-			return array;
+			return;
 		}
 		GUILayout.EndHorizontal();
 		
@@ -104,7 +104,6 @@ public class LabelGUI : Editor {
 			array = resize(array, array.Length +1);
 		}
 		GUILayout.EndHorizontal();
-		return array;
 	}
 
 	private T[] resize<T>(T[] array, int newSize) {
