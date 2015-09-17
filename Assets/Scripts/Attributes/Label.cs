@@ -23,9 +23,6 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	private Dictionary<System.Type, List<Operation>> triggers = new Dictionary<System.Type, List<Operation>>();
 
-	[System.NonSerialized]
-	private List<Object> memberStorage = new List<Object>();
-
 	//Properties handled by Unity serialization
 	public bool isVisible = true;
 	public float threatLevel = 0;
@@ -106,10 +103,13 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 			operations = (Operation[]) formatter.Deserialize(stream);
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
+
 			foreach (EndeavourFactory factory in endeavours) {
-				factory.setParent(this);
-				if (factory.goals == null) {
-					factory.goals = new List<Goal>();
+				if(factory != null) {
+					factory.setParent(this);
+					if(factory.goals == null) {
+						factory.goals = new List<Goal>();
+					}
 				}
 			}
 			stream.Close();

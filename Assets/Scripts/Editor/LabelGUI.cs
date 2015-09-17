@@ -28,6 +28,13 @@ public class LabelGUI : Editor {
 		doEndeavourList(label);
 		
 		// finally, apply the changes
+		label.OnBeforeSerialize();
+		SerializedProperty data = serializedObject.FindProperty("serializedData");
+		data.arraySize = label.serializedData.Length;
+		for (int i = 0; i < label.serializedData.Length; ++i) {
+			data.GetArrayElementAtIndex(i).intValue = label.serializedData[i];
+		}
+		
 		serializedObject.ApplyModifiedProperties();
 	}
 
@@ -53,15 +60,15 @@ public class LabelGUI : Editor {
 				label.endeavours [i] = EndeavourFactory.constructDefault (label);
 			}
 		}
-		doArrayGUI(ref label.endeavours);
+		label.endeavours = doArrayGUI(ref label.endeavours);
 	}
 
-	private void doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
+	private T[] doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
 		GUILayout.BeginHorizontal();
 		int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
 		if (newSize != array.Length) {
 			array = resize(array, newSize);
-			return;
+			return array;
 		}
 		GUILayout.EndHorizontal();
 		
@@ -97,7 +104,7 @@ public class LabelGUI : Editor {
 			array = resize(array, array.Length +1);
 		}
 		GUILayout.EndHorizontal();
-		
+		return array;
 	}
 
 	private T[] resize<T>(T[] array, int newSize) {
