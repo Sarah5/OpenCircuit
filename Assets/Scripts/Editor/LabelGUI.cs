@@ -26,6 +26,8 @@ public class LabelGUI : Editor {
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("threatLevel"));
 		doOperationList(label);
 		doEndeavourList(label);
+		serializedObject.ApplyModifiedProperties();
+
 		
 		// finally, apply the changes
 		label.OnBeforeSerialize();
