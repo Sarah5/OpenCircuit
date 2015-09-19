@@ -42,4 +42,9 @@ public class HoldAction : Endeavour {
 
 	public override void onMessage(RobotMessage message) {
 	}
+
+	protected override float getCost() {
+		Debug.LogWarning ("Please remind CryHavoc to implement the cost function for the HoldAction!!!");
+		return 0;
+	}
 }

@@ -7,11 +7,14 @@ public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
+    
 	public Label[] locations;
-	public Dictionary<string, Goal> goals = new Dictionary<string, Goal>();
+    public Goal[] goals;
+	public Dictionary<string, Goal> goalMap = new Dictionary<string, Goal>();
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
+	private Dictionary<System.Type, AbstractRobotComponent> componentMap = new Dictionary<System.Type, AbstractRobotComponent> ();
 
 	MentalModel mentalModel = new MentalModel ();
 	MentalModel externalMentalModel = null;
@@ -21,9 +24,21 @@ public class RobotController : MonoBehaviour {
 	private bool dirty = false;
 
 	void Start() {
-		goals.Add("protection", new Goal("protection", 1));
-		goals.Add("offense", new Goal("offense", 1));
-		goals.Add ("self-preservation", new Goal ("self-preservation", 1));
+        /*
+		goalMap.Add("protection", new Goal("protection", 1));
+		goalMap.Add("offense", new Goal("offense", 1));
+		goalMap.Add ("self-preservation", new Goal ("self-preservation", 1));
+        */
+        foreach(Goal goal in goals) {
+            if(!goalMap.ContainsKey(goal.name)) {
+                goalMap.Add(goal.name, goal);
+            }
+        }
+		AbstractRobotComponent [] compenents = GetComponentsInChildren<AbstractRobotComponent> ();
+
+		foreach (AbstractRobotComponent component in compenents) {
+			componentMap[component.GetType()] = component;
+		}
 
 		foreach (Label location in locations) {
 			if (location == null) {
@@ -33,6 +48,7 @@ public class RobotController : MonoBehaviour {
 			sightingFound(location);
 			trackTarget(location);
 		}
+		InvokeRepeating ("evaluateActions", .1f, .2f);
 	}
 
 	// Update is called once per frame
@@ -60,8 +76,6 @@ public class RobotController : MonoBehaviour {
 			evaluateActions();
 		}
 	}
-
-
 
 	public void notify (EventMessage message){
 		if (message.Type.Equals ("target found")) {
@@ -105,7 +119,15 @@ public class RobotController : MonoBehaviour {
 	}
 
 	public Dictionary<string, Goal> getGoals() {
-		return goals;
+		return goalMap;
+	}
+
+	public Dictionary<System.Type, AbstractRobotComponent> getComponentMap() {
+		return componentMap;
+	}
+
+	public List<Label> getTrackedTargets() {
+		return trackedTargets;
 	}
 
 	private void evaluateActions() {
@@ -150,7 +172,7 @@ public class RobotController : MonoBehaviour {
 		//		currentAction = null;
 		//	}
 		//}
-		Dictionary<System.Type, int> componentMap = getComponentMap ();
+		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
 		while (endeavourQueue.Count > 0) {
 			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
@@ -187,20 +209,19 @@ public class RobotController : MonoBehaviour {
 		currentEndeavours = proposedEndeavours;
 	}
 
-	private Dictionary<System.Type, int> getComponentMap() {
-		Dictionary<System.Type, int> componentMap = new Dictionary<System.Type, int>();
-		AbstractRobotComponent [] components = GetComponentsInChildren<AbstractRobotComponent> ();
-		foreach (AbstractRobotComponent component in components) {
-			if (componentMap.ContainsKey(component.GetType())) {
-				int count = componentMap[component.GetType()];
+	private Dictionary<System.Type, int> getComponentUsageMap() {
+		Dictionary<System.Type, int> componentUsageMap = new Dictionary<System.Type, int>();
+		foreach (AbstractRobotComponent component in componentMap.Values) {
+			if (componentUsageMap.ContainsKey(component.GetType())) {
+				int count = componentUsageMap[component.GetType()];
 				++count;
-				componentMap[component.GetType()] = count;
+				componentUsageMap[component.GetType()] = count;
 			}
 			else {
-				componentMap[component.GetType()] = 1;
+				componentUsageMap[component.GetType()] = 1;
 			}
 		}
-		return componentMap;
+		return componentUsageMap;
 	}
 
 	private void sightingLost(Label target) {

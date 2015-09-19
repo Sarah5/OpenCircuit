@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
@@ -13,7 +13,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	public static readonly HashSet<Label> visibleLabels = new HashSet<Label>();
 
+	[SerializeField]
 	public byte[] serializedData;
+
 
 	[System.NonSerialized]
 	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
@@ -23,11 +25,14 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[System.NonSerialized]
 	private Dictionary<System.Type, List<Operation>> triggers = new Dictionary<System.Type, List<Operation>>();
 
-	[System.NonSerialized]
-	public string Type = "";
+	//Properties handled by Unity serialization
+	public bool isVisible = true;
 
 	[System.NonSerialized]
-	public bool isVisible = true;
+	public Tag[] tags = new Tag[0];
+
+	[System.NonSerialized]
+	public Dictionary<TagEnum, Tag> tagMap = new Dictionary<TagEnum, Tag>();
 
 	public void Awake() {
 		Label.labels.Add(this);
@@ -41,6 +46,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 		foreach (EndeavourFactory endeavour in endeavours) {
 			endeavour.setParent(this);
+		}
+
+		foreach(Tag tag in tags) {
+			tagMap.Add(tag.type, tag);
 		}
 	}
 
@@ -85,11 +94,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 	public void OnBeforeSerialize() {
 		lock(this) {
-			if (operations == null)
-				operations = new Operation[0];
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter formatter = new BinaryFormatter();
 
+			formatter.Serialize(stream, tags);
 			formatter.Serialize(stream, operations);
 			formatter.Serialize(stream, endeavours);
 
@@ -102,17 +110,29 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		lock(this) {
 			MemoryStream stream = new MemoryStream(serializedData);
 			BinaryFormatter formatter = new BinaryFormatter();
-			
+
+			tags = (Tag[])formatter.Deserialize(stream);
 			operations = (Operation[]) formatter.Deserialize(stream);
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
+
 			foreach (EndeavourFactory factory in endeavours) {
-				factory.setParent(this);
-				if (factory.goals == null) {
-					factory.goals = new List<Goal>();
+				if(factory != null) {
+					factory.setParent(this);
+					if(factory.goals == null) {
+						factory.goals = new List<Goal>();
+					}
 				}
 			}
 			stream.Close();
 		}
+	}
+
+	public bool hasTag(TagEnum tagName) {
+		return tagMap.ContainsKey(tagName);
+	}
+
+	public Tag getTag(TagEnum tagName) {
+		return tagMap[tagName];
 	}
 
 	void OnDrawGizmos() {

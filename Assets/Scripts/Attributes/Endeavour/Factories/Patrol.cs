@@ -1,64 +1,78 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class Patrol : EndeavourFactory {
 
 	[System.NonSerialized]
 	public List<Label> points = null;
-	private List<string> pointsPaths = new List<string> ();
+	private string[] pointsPaths = new string[0];
 	private bool status = false;
 	private int size = 0;
 
 	public override Endeavour constructEndeavour (RobotController controller) {
-		if (getPoints() == null) {
-			Debug.Log ("points null");
-		}
 		if (parent == null || getPoints() == null) {
 			return null;
 		}
-		//Goal[] goals = new Goal[1];
-		//goals [0] = new Goal ("protection", 1);
 		return new PatrolAction(controller, goals, getPoints());
 	}
 
 	public List<Label> getPoints() {
-
-		if (points == null) {
+		if (points == null || points.Count < getPointsPaths().Length) {
 			points = new List<Label>();
-			if (pointsPaths.Count > 0) {
-				foreach (string path in pointsPaths) {
-					if (path != null) {
-						points.Add (GameObjectUtil.GetGameObject<Label> (path));
-					}
+			foreach (string path in getPointsPaths()) {
+				if (path != null && !path.Equals("")) {
+					points.Add (GameObjectUtil.GetGameObject<Label> (path));
+				} else {
+					points.Add(null);
 				}
 			}
 		}
 		return points;
  	}
 
+	private string[] getPointsPaths() {
+		if(pointsPaths == null) {
+			pointsPaths = new string[0];
+		}
+		return pointsPaths;
+	}
+
 	public override void doGUI() {
 		base.doGUI ();
 		status = UnityEditor.EditorGUILayout.Foldout (status, "Points");
 
-		if (status && getPoints() != null) {
-			//UnityEditor.EditorGUIUtility.LookLikeControls();
+		if (status) {
 			size = UnityEditor.EditorGUILayout.IntField("Size:", getPoints().Count);
-			for (int i = 0; i < points.Count; i++) {
-				getPoints()[i] = (Label)UnityEditor.EditorGUILayout.ObjectField(points[i], typeof(Label), true);
-				if (getPoints()[i] != null) {
-					pointsPaths[i] = GameObjectUtil.GetPath(getPoints()[i]);
-					//Debug.Log(pointsPaths[i]);
+			if(size < getPoints().Count) {
+				getPoints().RemoveRange(size, getPoints().Count - size);
+				string [] temp = new string[size];
+				Array.Copy(pointsPaths, 0, temp, 0, size);
+				pointsPaths = temp;
+			}
+
+			else if(size > getPoints().Count) {
+				while(size > getPoints().Count) {
+					getPoints().Add(null);
 				}
+				string[] temp = new string[size];
+				if(pointsPaths.Length != 0) {
+					Array.Copy(pointsPaths, 0, temp, 0, pointsPaths.Length - 1);
+				}
+				for(int i = pointsPaths.Length; i < size; i++) {
+					temp[i] = null;
+				}
+				pointsPaths = temp;
 			}
-			if (size < getPoints().Count) {
-				getPoints().RemoveRange (size, getPoints().Count - size);
-				pointsPaths.RemoveRange(size, getPoints().Count - size);
-			}
-			while (size > getPoints().Count) {
-				getPoints().Add(null);
-				pointsPaths.Add(null);
+
+			for (int i = 0; i < getPoints().Count; i++) {
+				getPoints()[i] = (Label)UnityEditor.EditorGUILayout.ObjectField(getPoints()[i], typeof(Label), true);
+				if (getPoints()[i] != null) {
+					getPointsPaths()[i] = GameObjectUtil.GetPath(getPoints()[i]);
+				}
 			}
 		}
 	}

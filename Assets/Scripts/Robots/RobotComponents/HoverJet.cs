@@ -8,7 +8,6 @@ public class HoverJet : AbstractRobotComponent {
 
 	private NavMeshAgent nav;
 	
-
 	private Animation myAnimator;
 
 	private bool matchTargetRotation = false;
@@ -18,12 +17,6 @@ public class HoverJet : AbstractRobotComponent {
 	public void setTarget(Label target, bool matchRotation = false) {
 		this.target = target;
 		matchTargetRotation = matchRotation;
-	}
-
-	public string getTargetType() {
-		if (target == null) 
-			return "";
-		return target.Type;
 	}
 
 	public bool hasTarget() {
@@ -65,7 +58,38 @@ public class HoverJet : AbstractRobotComponent {
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
 			nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
 		//}
-
 		}
+	}
+
+	public float calculatePathCost(Label target) {
+		//Debug.Log ("evaluating path cost");
+
+		float cost = 0;
+		NavMeshPath path = new NavMeshPath ();
+		if (nav.enabled) {
+			nav.CalculatePath (target.transform.position, path);
+		}
+
+		foreach (Label item in roboController.getTrackedTargets()) {
+			if(item.hasTag(TagEnum.Threat)) {
+				//print ("checking path cost against item: " + item.name);
+				//print ("target threatLevel " + item.threatLevel);
+				float threatLevel = item.getTag(TagEnum.Threat).severity;
+				float minDist = -1;
+				foreach(Vector3 vertex in path.corners) {
+					float curDist = Vector3.Distance(vertex, item.transform.position);
+					if(minDist == -1) {
+						minDist = curDist;
+					} else if(curDist < minDist) {
+						minDist = curDist;
+					}
+				}
+				cost += threatLevel / minDist;
+			}
+		}
+		//if (cost > 0) {
+		//	print ("path cost: " + cost);
+		//}
+		return cost;	
 	}
 }

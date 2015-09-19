@@ -71,4 +71,12 @@ public class PatrolAction : Endeavour {
 		}
 		return index;
 	}
+
+	protected override float getCost() {
+		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
+		if (jet != null) {
+			return jet.calculatePathCost(routePoints[currentDestination]);
+		}
+		return 0;
+	}
 }

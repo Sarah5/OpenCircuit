@@ -7,15 +7,13 @@ using System.Collections.Generic;
 
 [CustomEditor(typeof(Label), true)]
 public class LabelGUI : Editor {
-	
-	private SerializedObject ob;
 
+	private bool tagsExpanded = true;
 	private bool operationsExpanded = true;
 	private bool endeavoursExpanded = true;
 	private string[] operationTypeNames;
 	
 	public void OnEnable() {
-		ob = new SerializedObject(target);
 		operationTypeNames = new string[Operation.types.Length];
 		for(int i=0; i<operationTypeNames.Length; ++i) {
 			operationTypeNames[i] = Operation.types[i].FullName;
@@ -23,13 +21,62 @@ public class LabelGUI : Editor {
 	}
 	
 	public override void OnInspectorGUI() {
+		serializedObject.Update();
 		Label label = (Label)target;
-		label.isVisible = EditorGUILayout.Toggle ("Visible", label.isVisible);
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("isVisible"));
+		doTagList(label);
 		doOperationList(label);
 		doEndeavourList(label);
+		serializedObject.ApplyModifiedProperties();
+
 		
 		// finally, apply the changes
-		ob.ApplyModifiedProperties();
+		label.OnBeforeSerialize();
+		EditorUtility.SetDirty(target);
+		serializedObject.Update();	
+		serializedObject.ApplyModifiedProperties();
+	}
+
+	public void doTagList(Label label) {
+
+		tagsExpanded = EditorGUILayout.Foldout(tagsExpanded, "Tags");
+		if(!tagsExpanded) {
+			return;
+		}
+
+		for(int i = 0; i < label.tags.Length; ++i)
+			if(label.tags[i] == null)
+				label.tags[i] = Tag.constructDefault();
+		doArrayGUI(ref label.tags);
+		/*
+		int newSize = UnityEditor.EditorGUILayout.IntField("Size:", label.tags.Length);
+			if(newSize != label.tags.Length) {
+				if(newSize < label.tags.Length) {
+					//shrink tags array
+					Tag[] temp = new Tag[newSize];
+					Array.Copy(label.tags, 0, temp, 0, newSize);
+					label.tags = temp;
+				} else if(newSize > label.tags.Length) {
+					//grow tags array
+					Tag[] temp = new Tag[newSize];
+					if(label.tags.Length != 0) {
+						Array.Copy(label.tags, 0, temp, 0, label.tags.Length - 1);
+					}
+					for(int i = label.tags.Length; i < newSize; i++) {
+						temp[i] = new Tag();
+					}
+					label.tags = temp;
+				}
+			}
+			EditorGUILayout.Separator();
+
+			for(int i = 0; i < label.tags.Length; ++i) {
+				int newSelectedType = EditorGUILayout.Popup(0, Enum.GetNames(typeof(TagEnum)));
+				label.tags[i].type = (TagEnum)Enum.GetValues(typeof(TagEnum)).GetValue(i);
+				//label.tags[i].name = EditorGUILayout.TextField("Name: ", label.tags[i].name);
+				label.tags[i].severity = EditorGUILayout.FloatField("Severity: ", label.tags[i].severity);
+				EditorGUILayout.Separator();
+			}*/
 	}
 
 	public void doOperationList(Label label) {
@@ -98,7 +145,6 @@ public class LabelGUI : Editor {
 			array = resize(array, array.Length +1);
 		}
 		GUILayout.EndHorizontal();
-		
 	}
 
 	private T[] resize<T>(T[] array, int newSize) {
