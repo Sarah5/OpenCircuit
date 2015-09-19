@@ -8,7 +8,6 @@ public class HoverJet : AbstractRobotComponent {
 
 	private NavMeshAgent nav;
 	
-
 	private Animation myAnimator;
 
 	public float animSpeedAdjust = 1f;
@@ -63,21 +62,22 @@ public class HoverJet : AbstractRobotComponent {
 		if (nav.enabled) {
 			nav.CalculatePath (target.transform.position, path);
 		}
+
 		foreach (Label item in roboController.getTrackedTargets()) {
-			//print ("checking path cost against item: " + item.name);
-			if (Mathf.Abs(item.threatLevel) > .001) {
+			if(item.hasTag(TagEnum.Threat)) {
+				//print ("checking path cost against item: " + item.name);
 				//print ("target threatLevel " + item.threatLevel);
+				float threatLevel = item.getTag(TagEnum.Threat).severity;
 				float minDist = -1;
-				foreach (Vector3 vertex in path.corners) {
+				foreach(Vector3 vertex in path.corners) {
 					float curDist = Vector3.Distance(vertex, item.transform.position);
-					if (minDist == -1) {
+					if(minDist == -1) {
 						minDist = curDist;
-					}
-					else if (curDist < minDist) {
+					} else if(curDist < minDist) {
 						minDist = curDist;
 					}
 				}
-				cost +=  item.threatLevel/minDist;
+				cost += threatLevel / minDist;
 			}
 		}
 		//if (cost > 0) {

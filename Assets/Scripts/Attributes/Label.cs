@@ -16,6 +16,7 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	[SerializeField]
 	public byte[] serializedData;
 
+
 	[System.NonSerialized]
 	public EndeavourFactory[] endeavours = new EndeavourFactory[0];
 	[System.NonSerialized]
@@ -26,7 +27,12 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 	//Properties handled by Unity serialization
 	public bool isVisible = true;
-	public float threatLevel = 0;
+
+	[System.NonSerialized]
+	public Tag[] tags = new Tag[0];
+
+	[System.NonSerialized]
+	public Dictionary<TagEnum, Tag> tagMap = new Dictionary<TagEnum, Tag>();
 
 	public void Awake() {
 		Label.labels.Add(this);
@@ -40,6 +46,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 		foreach (EndeavourFactory endeavour in endeavours) {
 			endeavour.setParent(this);
+		}
+
+		foreach(Tag tag in tags) {
+			tagMap.Add(tag.type, tag);
 		}
 	}
 
@@ -84,14 +94,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 
 	public void OnBeforeSerialize() {
 		lock(this) {
-			//if (operations == null)
-			//	operations = new Operation[0];
-			//if(endeavours == null)
-			//	endeavours = new EndeavourFactory[0];
-			//print("howdy bang bang!");
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter formatter = new BinaryFormatter();
 
+			formatter.Serialize(stream, tags);
 			formatter.Serialize(stream, operations);
 			formatter.Serialize(stream, endeavours);
 
@@ -105,6 +111,7 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			MemoryStream stream = new MemoryStream(serializedData);
 			BinaryFormatter formatter = new BinaryFormatter();
 
+			tags = (Tag[])formatter.Deserialize(stream);
 			operations = (Operation[]) formatter.Deserialize(stream);
 			endeavours = (EndeavourFactory[]) formatter.Deserialize(stream);
 
@@ -118,5 +125,13 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 			}
 			stream.Close();
 		}
+	}
+
+	public bool hasTag(TagEnum tagName) {
+		return tagMap.ContainsKey(tagName);
+	}
+
+	public Tag getTag(TagEnum tagName) {
+		return tagMap[tagName];
 	}
 }
