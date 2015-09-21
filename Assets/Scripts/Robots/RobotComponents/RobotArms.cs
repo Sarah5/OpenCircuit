@@ -5,6 +5,8 @@ using System.Collections;
 public class RobotArms : AbstractRobotComponent {
 	public AudioClip pickUp;
 	public AudioClip drop;
+
+	public Vector3 throwForce = new Vector3(0, 150, 300);
 	
 
 	private AudioSource footstepEmitter;
@@ -60,8 +62,8 @@ public class RobotArms : AbstractRobotComponent {
 			if (rigidbody != null) {
 				rigidbody.isKinematic = false;
 				rigidbody.useGravity = true;
-				rigidbody.AddForce(transform.forward * 50);
-				rigidbody.AddForce(transform.up * 30);
+				rigidbody.AddForce(transform.forward * throwForce.z);
+				rigidbody.AddForce(transform.up * throwForce.y);
 			}
 			target.transform.parent = null;
 			roboController.enqueueMessage(new RobotMessage("action", "target dropped", target));
