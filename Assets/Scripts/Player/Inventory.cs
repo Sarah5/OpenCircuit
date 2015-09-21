@@ -26,6 +26,10 @@ public class Inventory : MonoBehaviour {
         selecting = -1;
         unselectedItems = new List<System.Type>();
 		player = GetComponent<Player>();
+
+		foreach (Item item in GetComponentsInChildren<Item>())
+			if (!contains(item))
+				take(item);
     }
 
     public void OnGUI() {
@@ -117,6 +121,14 @@ public class Inventory : MonoBehaviour {
     public bool isSelecting() {
         return selecting >= 0;
     }
+
+	public bool contains(System.Type itemType) {
+		return items.ContainsKey(itemType);
+	}
+
+	public bool contains(Item item) {
+		return getItemList(item.GetType()).Contains(item);
+	}
 
     protected void showSlottedItems() {
         float offset = (Screen.width / 2f) - (iconDimensions.x * 1.5f + iconSpacing);

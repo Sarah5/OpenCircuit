@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Player/Movement")]
 public class Movement : MonoBehaviour {
@@ -28,6 +29,10 @@ public class Movement : MonoBehaviour {
 	private bool canMove = true;
 	private Vector3 lastRelativeVelocity = Vector3.zero;
 	private int collisionCount = 0;
+	private List<float> pastForces = new List<float>();
+	private List<int> pastForcesAddedCount = new List<int>();
+	private int pastForceCount = 5;
+	private int lastForceCount = 0;
 
 	public float sprintMult = 2f;
 	public float walkSpeedf = 6f;
@@ -62,6 +67,7 @@ public class Movement : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
+		// change collider height
 		float desiredHeight = crouching? crouchHeight: normHeight;
 		if (col.height < desiredHeight) {
 			if (freeFallDelay == 0)
@@ -75,6 +81,18 @@ public class Movement : MonoBehaviour {
 			if (col.height < desiredHeight)
 				setColliderHeight(desiredHeight);
 		}
+
+		// update past forces
+		int newForceCount = pastForces.Count -lastForceCount;
+		pastForcesAddedCount.Add(newForceCount);
+		if (pastForcesAddedCount.Count > pastForceCount) {
+			int forcesToRemove = pastForcesAddedCount[0];
+			pastForcesAddedCount.RemoveAt(0);
+			pastForces.RemoveRange(0, forcesToRemove);
+		}
+		for (int i = 0; i < pastForces.Count; ++i)
+			pastForces[i] *= 0.8f;
+		lastForceCount = pastForces.Count;
 
 		// move the player
 		if (freeFallDelay < 0) {
@@ -117,7 +135,7 @@ public class Movement : MonoBehaviour {
 
 		// handle the maximum acceleration
 		Vector3 force = desiredVel -GetComponent<Rigidbody>().velocity +groundSpeed;
-		float maxAccel = Mathf.Max(acceleration *force.magnitude, acceleration /3);
+		float maxAccel = Mathf.Min(Mathf.Max(acceleration *force.magnitude, acceleration /3), acceleration *2);
 		if (force.magnitude > maxAccel) {
 			force.Normalize();
 			force *= maxAccel;
@@ -264,21 +282,42 @@ public class Movement : MonoBehaviour {
 			groundNormal = Vector3.zero;
 			groundSpeed = Vector3.zero;
 		}
-		if (collisionCount <= 0)
-			lastRelativeVelocity = Vector3.zero;
+		//if (collisionCount <= 0)
+		//	lastRelativeVelocity = Vector3.zero;
+		
 	}
 
 	protected void doFallDamage(Collision collisionInfo) {
 		//float collisionSpeed = collisionInfo.impulse.magnitude;
-		float collisionSpeed = (collisionInfo.relativeVelocity -lastRelativeVelocity).magnitude;
-		collisionSpeed = collisionSpeed *0.75f + collisionInfo.impulse.magnitude * 0.25f;
-		//if (collisionSpeed > 5)
-		//	print(collisionSpeed);
-		if (collisionSpeed > fallHurtSpeed) {
-			float damage = (collisionSpeed -fallHurtSpeed) /(fallDeathSpeed -fallHurtSpeed);
-			myPlayer.hurt(damage *100f);
+		Vector3 relativeVelocity = collisionInfo.relativeVelocity - lastRelativeVelocity;
+		float relativeSpeed = Mathf.Max(relativeVelocity.magnitude, 0.01f);
+		//collisionSpeed = collisionSpeed * 0.75f + collisionInfo.impulse.magnitude * 0.25f;
+		float impulse = Mathf.Max(collisionInfo.impulse.magnitude, 0.01f);
+		float collisionSpeed = Mathf.Sqrt(relativeSpeed * impulse * (1 - Mathf.Abs(Vector3.Dot(relativeVelocity / relativeSpeed, collisionInfo.impulse / impulse)))) + impulse;
+		//if (relativeSpeed > 5 || impulse > 3) {
+		//}
+		if (collisionSpeed > fallHurtSpeed / 8f) {
+			print("Speed: " + relativeSpeed +", Impulse: " + impulse +", Combined: " + collisionSpeed);
+			pastForces.Add(collisionSpeed);
+
+			float forceSum = 0;
+			for (int i = 0; i < pastForces.Count; ++i) {
+				forceSum += pastForces[i];
+				//pastForces[i] *= 0.9f;
+			}
+			float averageForce = forceSum + collisionSpeed;
+			if (averageForce > 5)
+				print("Force: " + averageForce);
+			if (averageForce > fallHurtSpeed && collisionSpeed > fallHurtSpeed / 2f) {
+				float damage = (averageForce - fallHurtSpeed) / (fallDeathSpeed - fallHurtSpeed);
+				myPlayer.hurt(damage * myPlayer.maxSuffering);
+				//pastForces[pastForces.Count - 1] *= 0.5f;
+			}
 		}
 		lastRelativeVelocity = collisionInfo.relativeVelocity;
+		lastRelativeVelocity.y = Mathf.Clamp(lastRelativeVelocity.y, -walkSpeedf, walkSpeedf); // to represent that the player can't run on walls.
+		lastRelativeVelocity.z = Mathf.Clamp(lastRelativeVelocity.z, -walkSpeedf *sprintMult, walkSpeedf * sprintMult); // to represent that the player can't run on walls.
+		lastRelativeVelocity.x = Mathf.Clamp(lastRelativeVelocity.x, -walkSpeedf * sprintMult, walkSpeedf * sprintMult); // to represent that the player can't run on walls.
     }
 
 	public void setForward(float percent) {

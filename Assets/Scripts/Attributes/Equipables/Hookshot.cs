@@ -7,6 +7,7 @@ public class Hookshot : Item {
 
 	public float length = 20;
 	public float reelSpeed = 10;
+	public float acceleration = 2;
 
 	protected Player player;
 	protected Transform playerTransform;
@@ -29,8 +30,8 @@ public class Hookshot : Item {
 		playerRigidbody = player.GetComponent<Rigidbody>();
 		playerTransform = player.transform;
 		playerRigidbody.useGravity = false;
-		Vector3 desiredVel = (attachPoint -player.transform.position).normalized *reelSpeed;
-		playerRigidbody.velocity = desiredVel;
+		//Vector3 desiredVel = (attachPoint -player.transform.position).normalized *reelSpeed;
+		//playerRigidbody.velocity = desiredVel;
 		targetReached = false;
 
 		StartCoroutine(reelIn());
@@ -92,7 +93,7 @@ public class Hookshot : Item {
 //				yield return null;
 //			}
 
-			playerRigidbody.velocity = desiredVel;
+			playerRigidbody.velocity = lerpVector3(playerRigidbody.velocity, desiredVel, acceleration);
 
 			yield return new WaitForFixedUpdate();
 		}
@@ -174,5 +175,9 @@ public class Hookshot : Item {
 				finalHit = hit;
 		}
 		return new RaycastHit[] {finalHit};
+	}
+
+	protected Vector3 lerpVector3(Vector3 start, Vector3 end, float ammount) {
+		return start + (end - start).normalized * ammount;
 	}
 }
