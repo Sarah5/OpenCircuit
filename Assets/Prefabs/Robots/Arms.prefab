@@ -854,6 +854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickUp: {fileID: 8300000, guid: 2bdff90b90901024abd17cb55589c24d, type: 3}
   drop: {fileID: 8300000, guid: b130ee49dcdf2224fae649258e8ec3d9, type: 3}
+  throwForce: {x: 0, y: 120, z: 200}
 --- !u!135 &13503410
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -1029,6 +1030,14 @@ Prefab:
       propertyPath: drop
       value: 
       objectReference: {fileID: 8300000, guid: b130ee49dcdf2224fae649258e8ec3d9, type: 3}
+    - target: {fileID: 0}
+      propertyPath: throwForce.y
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: throwForce.z
+      value: 200
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 139970}

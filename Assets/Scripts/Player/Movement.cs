@@ -115,7 +115,7 @@ public class Movement : MonoBehaviour {
 			forwardSpeed = 0;
 		}
 		desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
-		float speed = desiredVel.magnitude * (sprinting ? sprintMult : 1) *(crouching? crouchSpeedMultiplier: 1);
+		float speed = desiredVel.magnitude * (sprinting ? calculateSprintMultiplier() : 1) *(crouching? crouchSpeedMultiplier: 1);
 		desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
 		desiredVel.y = 0;
 		desiredVel.Normalize();
@@ -159,13 +159,15 @@ public class Movement : MonoBehaviour {
 
 
 		// update sprinting
-		if (desiredVel.sqrMagnitude > 0.1f) {
+		if (desiredVel.sqrMagnitude > 0.1f && sprinting) {
+			print(calculateSprintMultiplier());
 			if (myPlayer.oxygen < oxygenStopSprint) {
-				sprinting = false;
-				recovering = true;
+				//sprinting = false;
+				myPlayer.oxygen -= myPlayer.oxygenRecoveryRate *Time.deltaTime;
+				//recovering = true;
 			} else if (crouching) {
 				sprinting = false;
-			} else if (sprinting) {
+			} else {
 				myPlayer.oxygen -= oxygenSprintUsage * Time.deltaTime;
 			}
 		}
@@ -179,6 +181,12 @@ public class Movement : MonoBehaviour {
 		// check for no more floor, in case it was deleted
 		//if (floor == null)
 			groundNormal = Vector3.zero;
+	}
+
+	protected float calculateSprintMultiplier() {
+		if (myPlayer.oxygen < oxygenStopSprint)
+			return (sprintMult -1) *(myPlayer.oxygenRecoveryRate /oxygenSprintUsage) + 1;
+		return sprintMult;
 	}
 
 	private void playFootstep(float volume) {
@@ -335,8 +343,8 @@ public class Movement : MonoBehaviour {
 	}
 
 	public void setSprinting(bool sprint) {
-		if (recovering && myPlayer.oxygen < oxygenBeginSprint)
-			return;
+		//if (recovering && myPlayer.oxygen < oxygenBeginSprint)
+		//	return;
 		recovering = false;
 		sprinting = sprint;
 	}

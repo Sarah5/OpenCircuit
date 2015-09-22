@@ -389,12 +389,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33069f5e53c33334ba68331482dce891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprintMult: 2
+  sprintMult: 1.75
   walkSpeedf: 4
   walkSpeedb: 3
   walkSpeedr: 3
   walkSpeedl: 3
-  acceleration: .5
+  acceleration: .400000006
   climbRate: .200000003
   crouchSpeedMultiplier: .5
   minCrouchHeight: 1
@@ -407,8 +407,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
   minimumFoostepOccurence: .600000024
   foostepSpeedScale: .0299999993
-  fallHurtSpeed: 10
-  fallDeathSpeed: 18
+  fallHurtSpeed: 15
+  fallDeathSpeed: 25
 --- !u!114 &11420722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -535,7 +535,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: fallDeathSpeed
-      value: 18
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fallHurtSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: acceleration
+      value: .400000006
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: sprintMult
+      value: 1.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
