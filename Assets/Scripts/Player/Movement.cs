@@ -160,16 +160,12 @@ public class Movement : MonoBehaviour {
 
 		// update sprinting
 		if (desiredVel.sqrMagnitude > 0.1f && sprinting) {
-			print(calculateSprintMultiplier());
-			if (myPlayer.oxygen < oxygenStopSprint) {
-				//sprinting = false;
+			if (myPlayer.oxygen < oxygenStopSprint)
 				myPlayer.oxygen -= myPlayer.oxygenRecoveryRate *Time.deltaTime;
-				//recovering = true;
-			} else if (crouching) {
+			else if (crouching)
 				sprinting = false;
-			} else {
+			else
 				myPlayer.oxygen -= oxygenSprintUsage * Time.deltaTime;
-			}
 		}
 
 
@@ -305,7 +301,7 @@ public class Movement : MonoBehaviour {
 		//if (relativeSpeed > 5 || impulse > 3) {
 		//}
 		if (collisionSpeed > fallHurtSpeed / 8f) {
-			print("Speed: " + relativeSpeed +", Impulse: " + impulse +", Combined: " + collisionSpeed);
+			//print("Speed: " + relativeSpeed +", Impulse: " + impulse +", Combined: " + collisionSpeed);
 			pastForces.Add(collisionSpeed);
 
 			float forceSum = 0;
@@ -315,7 +311,7 @@ public class Movement : MonoBehaviour {
 			}
 			float averageForce = forceSum + collisionSpeed;
 			if (averageForce > 5)
-				print("Force: " + averageForce);
+				//print("Force: " + averageForce);
 			if (averageForce > fallHurtSpeed && collisionSpeed > fallHurtSpeed / 2f) {
 				float damage = (averageForce - fallHurtSpeed) / (fallDeathSpeed - fallHurtSpeed);
 				myPlayer.hurt(damage * myPlayer.maxSuffering);
