@@ -10,7 +10,7 @@ public class RobotController : MonoBehaviour {
     
 	public Label[] locations;
     public Goal[] goals;
-	public Dictionary<string, Goal> goalMap = new Dictionary<string, Goal>();
+	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
@@ -30,8 +30,8 @@ public class RobotController : MonoBehaviour {
 		goalMap.Add ("self-preservation", new Goal ("self-preservation", 1));
         */
         foreach(Goal goal in goals) {
-            if(!goalMap.ContainsKey(goal.name)) {
-                goalMap.Add(goal.name, goal);
+            if(!goalMap.ContainsKey(goal.type)) {
+                goalMap.Add(goal.type, goal);
             }
         }
 		AbstractRobotComponent [] compenents = GetComponentsInChildren<AbstractRobotComponent> ();
@@ -118,7 +118,7 @@ public class RobotController : MonoBehaviour {
 		messageQueue.Enqueue (message);
 	}
 
-	public Dictionary<string, Goal> getGoals() {
+	public Dictionary<GoalEnum, Goal> getGoals() {
 		return goalMap;
 	}
 

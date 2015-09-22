@@ -36,7 +36,7 @@ public class RobotControllerGUI : Editor {
 				EditorGUILayout.Separator();
 
 				for(int i = 0; i < goals.arraySize; i++) {
-					EditorGUILayout.PropertyField(goals.GetArrayElementAtIndex(i).FindPropertyRelative("name"));
+					EditorGUILayout.PropertyField(goals.GetArrayElementAtIndex(i).FindPropertyRelative("type"));
 					EditorGUILayout.PropertyField(goals.GetArrayElementAtIndex(i).FindPropertyRelative("priority"));
 					EditorGUILayout.Separator();
 				}

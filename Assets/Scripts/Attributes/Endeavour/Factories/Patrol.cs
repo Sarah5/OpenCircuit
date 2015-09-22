@@ -76,4 +76,30 @@ public class Patrol : EndeavourFactory {
 			}
 		}
 	}
+
+	public override void drawGizmo() {
+		Color COLOR_ONE = Color.black;
+		Color COLOR_TWO = Color.green;
+
+		for(int i = 0; i < getPoints().Count; ++i) {
+			int NUM_STRIPES = 8;
+			Label current = getPoints()[i];
+			Label next = (i == getPoints().Count -1 ) ? getPoints()[0] : getPoints()[i+1] ;
+			float LENGTH = Vector3.Distance(current.transform.position, next.transform.position);
+			Vector3 dir = next.transform.position - current.transform.position;
+			dir.Normalize();
+			for(int j = 0; j < NUM_STRIPES * LENGTH; j = j + 2) {
+				Gizmos.color = j % 2 == 0 ? COLOR_ONE : COLOR_TWO;
+				Vector3 startPos = current.transform.position + (j * dir/NUM_STRIPES);				
+				Vector3 endPos = startPos + dir/NUM_STRIPES;
+				if(Vector3.Distance(current.transform.position, endPos) > LENGTH) {
+					endPos = next.transform.position;
+				}
+				Gizmos.DrawLine(startPos, endPos);
+			}
+		}
+		
+		//Gizmos.DrawMesh();
+	}
+
 }

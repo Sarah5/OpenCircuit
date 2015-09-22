@@ -4,11 +4,11 @@ using System.Collections;
 [System.Serializable]
 public class Goal {
 
-	public string name = "";
+	public GoalEnum type;
 	public float priority = 1;
 
-	public Goal(string name, float priority) {
-		this.name = name;
+	public Goal(GoalEnum type, float priority) {
+		this.type = type;
 		this.priority = priority;
 	}
 }

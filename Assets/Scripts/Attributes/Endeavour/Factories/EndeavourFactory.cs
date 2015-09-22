@@ -2,6 +2,8 @@
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+
 
 [System.Serializable]
 public abstract class EndeavourFactory : InspectorListElement {
@@ -20,6 +22,17 @@ public abstract class EndeavourFactory : InspectorListElement {
 		typeof(Pursue),
 		typeof(Drop)
 	};
+
+	public static readonly GoalEnum[] goalEnums;
+
+	static EndeavourFactory() {
+		Array values = Enum.GetValues(typeof(GoalEnum));
+		List<GoalEnum> typeList = new List<GoalEnum>();
+		foreach(object obj in values) {
+			typeList.Add((GoalEnum)obj);
+		}
+		goalEnums = typeList.ToArray();
+	}
 
 	public void setParent(Label parent) {
 		this.parent = parent;
@@ -52,7 +65,9 @@ public abstract class EndeavourFactory : InspectorListElement {
 			EditorGUILayout.Separator();
 
 			foreach (Goal goal in goals) {
-				goal.name = EditorGUILayout.TextField("Name", goal.name);
+				//goal.name = EditorGUILayout.TextField("Name", goal.name);
+				int selectedType = System.Array.FindIndex(goalEnums, OP => OP == goal.type);
+				int newSelectedType = EditorGUILayout.Popup(selectedType, Enum.GetNames(typeof(GoalEnum)));
 				goal.priority = EditorGUILayout.FloatField("Priority", goal.priority);
 				EditorGUILayout.Separator();
 			}
@@ -60,7 +75,7 @@ public abstract class EndeavourFactory : InspectorListElement {
 				goals.RemoveRange (size, goals.Count - size);
 			}
 			while (size > goals.Count) {
-				goals.Add(new Goal("", 0));
+				goals.Add(new Goal((GoalEnum)Enum.GetValues(typeof(GoalEnum)).GetValue(0), 0));
 			}
 		}
 	}

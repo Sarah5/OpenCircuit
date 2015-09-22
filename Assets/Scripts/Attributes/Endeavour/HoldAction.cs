@@ -6,7 +6,7 @@ public class HoldAction : Endeavour {
 
 	Label target;
 
-	public HoldAction(RobotController controller, Label target) : base(controller, new List<Goal>{new Goal("offense", 3), new Goal("protection", 3)} ) {
+	public HoldAction(RobotController controller, Label target) : base(controller, new List<Goal>{new Goal(GoalEnum.Offense, 3), new Goal(GoalEnum.Protection, 3)} ) {
 		this.target = target;
 		this.name = "grab";
 		requiredComponents = new System.Type[] {typeof(RobotArms)};

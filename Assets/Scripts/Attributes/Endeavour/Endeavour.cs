@@ -46,9 +46,9 @@ public abstract class Endeavour : Prioritizable {
 	public float getPriority() {
 		float finalPriority = 0;
 		foreach (Goal goal in goals) {
-			Dictionary<string, Goal> robotGoals = controller.getGoals ();
-			if (robotGoals.ContainsKey(goal.name)) {
-				finalPriority += goal.priority * robotGoals[goal.name].priority;
+			Dictionary<GoalEnum, Goal> robotGoals = controller.getGoals ();
+			if (robotGoals.ContainsKey(goal.type)) {
+				finalPriority += goal.priority * robotGoals[goal.type].priority;
 			}
 		}
 		float cost = getCost ();
