@@ -6,6 +6,8 @@ public class HoldAction : Endeavour {
 
 	Label target;
 
+	bool hasComplained = false;
+
 	public HoldAction(RobotController controller, Label target) : base(controller, new List<Goal>{new Goal(GoalEnum.Offense, 3), new Goal(GoalEnum.Protection, 3)} ) {
 		this.target = target;
 		this.name = "grab";
@@ -44,7 +46,10 @@ public class HoldAction : Endeavour {
 	}
 
 	protected override float getCost() {
-		Debug.LogWarning ("Please remind CryHavoc to implement the cost function for the HoldAction!!!");
+		if(!hasComplained) { 
+			Debug.LogWarning ("Please remind CryHavoc to implement the cost function for the HoldAction!!!");
+			hasComplained = true;
+		}
 		return 0;
 	}
 }

@@ -14,7 +14,10 @@ public class Patrol : EndeavourFactory {
 	private int size = 0;
 
 	public override Endeavour constructEndeavour (RobotController controller) {
-		if (parent == null || getPoints() == null) {
+		if (parent == null || getPoints() == null || getPoints().Count == 0) {
+			if(getPoints().Count == 0) {
+				Debug.LogWarning("Patrol route '"+parent.name+"' has no route points");
+			}
 			return null;
 		}
 		return new PatrolAction(controller, goals, getPoints());
@@ -85,6 +88,9 @@ public class Patrol : EndeavourFactory {
 			int NUM_STRIPES = 8;
 			Label current = getPoints()[i];
 			Label next = (i == getPoints().Count -1 ) ? getPoints()[0] : getPoints()[i+1] ;
+			if(next == null || current == null) {
+				return;
+			}
 			float LENGTH = Vector3.Distance(current.transform.position, next.transform.position);
 			Vector3 dir = next.transform.position - current.transform.position;
 			dir.Normalize();
@@ -98,8 +104,5 @@ public class Patrol : EndeavourFactory {
 				Gizmos.DrawLine(startPos, endPos);
 			}
 		}
-		
-		//Gizmos.DrawMesh();
 	}
-
 }

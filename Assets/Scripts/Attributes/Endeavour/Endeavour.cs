@@ -52,9 +52,6 @@ public abstract class Endeavour : Prioritizable {
 			}
 		}
 		float cost = getCost ();
-		//if (cost > 0 || cost < 0) {
-		//	Debug.Log("cost is: " + cost + " for " + name);
-		//}
 		return finalPriority - cost;
 	}
 
