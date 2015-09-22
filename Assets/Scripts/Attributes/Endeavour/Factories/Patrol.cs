@@ -102,6 +102,10 @@ public class Patrol : EndeavourFactory {
 					endPos = next.transform.position;
 				}
 				Gizmos.DrawLine(startPos, endPos);
+				if(j % 8 == 0) {
+					Handles.color = Color.white;
+					Handles.ConeCap(0, startPos, Quaternion.LookRotation(dir), .15f);
+				}
 			}
 		}
 	}
