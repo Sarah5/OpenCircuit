@@ -49,7 +49,12 @@ public class PatrolAction : Endeavour {
 				if (currentDestination == routePoints.Count) {
 					currentDestination = 0;
 				}
-				jet.setTarget (routePoints [currentDestination]);
+				if(routePoints[currentDestination] == null) {
+					Debug.LogWarning("Robot '" + controller.name + "' has detected a missing patrol route point. ");
+					Debug.LogWarning("Robot '" + controller.name + "' halted. ");
+				} else {
+					jet.setTarget(routePoints[currentDestination]);
+				}
 			}
 		}
 	}
@@ -63,6 +68,10 @@ public class PatrolAction : Endeavour {
 		int index = 0;
 		minDist = Vector3.Distance(position, routePoints[0].transform.position);
 		for (int i = 0; i < routePoints.Count; i++) {
+			if(routePoints[i] == null) {
+				Debug.LogWarning("Robot '"+controller.name+"' has detected a missing patrol route point!!!");
+				continue;
+			}
 			float curDist = Vector3.Distance(position, routePoints[i].transform.position);
 			if (curDist < minDist) {
 				minDist = curDist;
