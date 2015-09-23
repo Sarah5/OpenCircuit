@@ -19,9 +19,14 @@ public class GameObjectUtil {
 		if (path == null) {
 			return null;
 		}
-		T test = GameObject.Find(path).GetComponent<T> ();
+        GameObject ob = GameObject.Find(path);
+        if (ob == null) {
+            Debug.LogError("Broken object pointer: " + path);
+            return null;
+        }
+        T test = ob.GetComponent<T> ();
 		if (test == null) {
-			Debug.Log("null object");
+			Debug.LogError("Broken object pointer: " +path);
 		}
 		return test;
 		//return (Label)GameObject.Find (path);
