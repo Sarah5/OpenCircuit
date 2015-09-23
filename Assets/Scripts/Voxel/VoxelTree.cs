@@ -104,7 +104,7 @@ namespace Vox {
 							} else
 								curLodDetail += 0.1f;
 						}
-						updateLocalCamPosition();
+//						updateLocalCamPosition();
 					}
 					if (updateCheckJobs < 1)
 						enqueueCheck(new UpdateCheckJob(head, this, 0));
@@ -155,17 +155,18 @@ namespace Vox {
 			return head;
 		}
 
-		public void updateLocalCamPosition() {
-			lock(this) {
-				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-			}
-			localCamPosition = transform.TransformPoint(cam.transform.position);
-		}
+//		public void updateLocalCamPosition() {
+//			lock(this) {
+//				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+//			}
+//			localCamPosition = transform.TransformPoint(cam.transform.position);
+//		}
 
 		public Vector3 getLocalCamPosition() {
-			lock(this) {
-				return localCamPosition;
-			}
+//			lock(this) {
+//				return localCamPosition;
+//			}
+			return Vector3.zero;
 		}
 
 		public VoxelUpdateInfo getBaseUpdateInfo() {
@@ -214,7 +215,7 @@ namespace Vox {
 
 		public void generateRenderers() {
 			clearRenderers();
-			updateLocalCamPosition();
+			//updateLocalCamPosition();
 			enqueueCheck(new UpdateCheckJob(head, this, 0));
 		}
 
