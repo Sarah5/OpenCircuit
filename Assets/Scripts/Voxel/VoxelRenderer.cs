@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -220,7 +219,9 @@ namespace Vox {
 			MeshRenderer rend = gameObject.AddComponent<MeshRenderer>();
 			rend.enabled = false;
 			rend.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.BlendProbesAndSkybox;
-			EditorUtility.SetSelectedWireframeHidden(rend, true);
+#if UNITY_EDITOR
+			UnityEditor.EditorUtility.SetSelectedWireframeHidden(rend, true);
+#endif
 			gameObject.AddComponent<MeshFilter>().sharedMesh = new Mesh();
 			return gameObject;
 		}
@@ -306,11 +307,13 @@ namespace Vox {
 		}
 
 		public void setupMeshes() {
+#if UNITY_EDITOR
 			foreach(GameObject ob in obs) {
 				foreach(Renderer rend in ob.GetComponents<Renderer>()) {
-					EditorUtility.SetSelectedWireframeHidden(rend, true);
+					UnityEditor.EditorUtility.SetSelectedWireframeHidden(rend, true);
 				}
 			}
+#endif
 		}
 
 		public float getSize() {

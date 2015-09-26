@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -31,10 +30,11 @@ public class  Tag : InspectorListElement {
 		this.severity = severity;
 	}
 
+#if UNITY_EDITOR
 	InspectorListElement InspectorListElement.doListElementGUI() {
 
 		int selectedType = System.Array.FindIndex(tagEnums, OP => OP == type);
-		int newSelectedType = EditorGUILayout.Popup(selectedType, Enum.GetNames(typeof(TagEnum)));
+		int newSelectedType = UnityEditor.EditorGUILayout.Popup(selectedType, Enum.GetNames(typeof(TagEnum)));
 
 		if(newSelectedType != selectedType) {
 			return (EndeavourFactory)EndeavourFactory.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
@@ -45,6 +45,7 @@ public class  Tag : InspectorListElement {
 	}
 
 	private void doGUI() {
-		severity = EditorGUILayout.FloatField("Severity: ", severity);
+		severity = UnityEditor.EditorGUILayout.FloatField("Severity: ", severity);
 	}
+#endif
 }

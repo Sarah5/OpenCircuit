@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -26,12 +25,11 @@ public class Patrol : EndeavourFactory {
 	public List<Label> getPoints() {
 		if (points == null || points.Count < getPointsPaths().Length) {
 			points = new List<Label>();
-			foreach (string path in getPointsPaths()) {
-				if (path != null && !path.Equals("")) {
-					points.Add (GameObjectUtil.GetGameObject<Label> (path));
-				} else {
+			foreach (string id in getPointsPaths()) {
+				if (id == null)
 					points.Add(null);
-				}
+				else
+					points.Add(ObjectReferenceManager.get().fetchReference<Label>(id));
 			}
 		}
 		return points;
@@ -44,6 +42,7 @@ public class Patrol : EndeavourFactory {
 		return pointsPaths;
 	}
 
+#if UNITY_EDITOR
 	public override void doGUI() {
 		base.doGUI ();
 		status = UnityEditor.EditorGUILayout.Foldout (status, "Points");
@@ -52,7 +51,7 @@ public class Patrol : EndeavourFactory {
 			size = UnityEditor.EditorGUILayout.IntField("Size:", getPoints().Count);
 			if(size < getPoints().Count) {
 				getPoints().RemoveRange(size, getPoints().Count - size);
-				string [] temp = new string[size];
+				string[] temp = new string[size];
 				Array.Copy(pointsPaths, 0, temp, 0, size);
 				pointsPaths = temp;
 			}
@@ -74,7 +73,8 @@ public class Patrol : EndeavourFactory {
 			for (int i = 0; i < getPoints().Count; i++) {
 				getPoints()[i] = (Label)UnityEditor.EditorGUILayout.ObjectField(getPoints()[i], typeof(Label), true);
 				if (getPoints()[i] != null) {
-					getPointsPaths()[i] = GameObjectUtil.GetPath(getPoints()[i]);
+					ObjectReferenceManager.get().deleteReference(getPointsPaths()[i]);
+					getPointsPaths()[i] = ObjectReferenceManager.get().addReference(getPoints()[i]);
 				}
 			}
 		}
@@ -103,10 +103,11 @@ public class Patrol : EndeavourFactory {
 				}
 				Gizmos.DrawLine(startPos, endPos);
 				if(j % 8 == 0) {
-					Handles.color = Color.white;
-					Handles.ConeCap(0, startPos, Quaternion.LookRotation(dir), .15f);
+					UnityEditor.Handles.color = Color.white;
+					UnityEditor.Handles.ConeCap(0, startPos, Quaternion.LookRotation(dir), .15f);
 				}
 			}
 		}
 	}
+#endif
 }

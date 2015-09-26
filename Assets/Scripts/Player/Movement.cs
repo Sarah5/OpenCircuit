@@ -292,14 +292,10 @@ public class Movement : MonoBehaviour {
 	}
 
 	protected void doFallDamage(Collision collisionInfo) {
-		//float collisionSpeed = collisionInfo.impulse.magnitude;
 		Vector3 relativeVelocity = collisionInfo.relativeVelocity - lastRelativeVelocity;
 		float relativeSpeed = Mathf.Max(relativeVelocity.magnitude, 0.01f);
-		//collisionSpeed = collisionSpeed * 0.75f + collisionInfo.impulse.magnitude * 0.25f;
 		float impulse = Mathf.Max(collisionInfo.impulse.magnitude, 0.01f);
 		float collisionSpeed = Mathf.Sqrt(relativeSpeed * impulse * (1 - Mathf.Abs(Vector3.Dot(relativeVelocity / relativeSpeed, collisionInfo.impulse / impulse)))) + impulse;
-		//if (relativeSpeed > 5 || impulse > 3) {
-		//}
 		if (collisionSpeed > fallHurtSpeed / 8f) {
 			//print("Speed: " + relativeSpeed +", Impulse: " + impulse +", Combined: " + collisionSpeed);
 			pastForces.Add(collisionSpeed);

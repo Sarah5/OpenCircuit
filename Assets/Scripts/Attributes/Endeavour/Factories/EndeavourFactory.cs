@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -40,44 +39,10 @@ public abstract class EndeavourFactory : InspectorListElement {
 
 	public abstract Endeavour constructEndeavour (RobotController controller);
 
-	InspectorListElement InspectorListElement.doListElementGUI() {
-		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
-		int newSelectedType = EditorGUILayout.Popup(selectedType, getTypeNames());
-		if (newSelectedType != selectedType) {
-			return (EndeavourFactory) EndeavourFactory.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
-		}
-		
-		doGUI();
-		return this;
-	}
-
 	public static EndeavourFactory constructDefault(Label parent) {
 		EndeavourFactory factory = (EndeavourFactory) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 		factory.goals = new List<Goal> ();
 		return factory;
-	}
-
-	public virtual void doGUI () {
-		status = UnityEditor.EditorGUILayout.Foldout (status, "Goals");
-		
-		if (status && goals != null) {
-			size = UnityEditor.EditorGUILayout.IntField ("Size:", goals.Count);
-			EditorGUILayout.Separator();
-
-			foreach (Goal goal in goals) {
-				//goal.name = EditorGUILayout.TextField("Name", goal.name);
-				int selectedType = System.Array.FindIndex(goalEnums, OP => OP == goal.type);
-				int newSelectedType = EditorGUILayout.Popup(selectedType, Enum.GetNames(typeof(GoalEnum)));
-				goal.priority = EditorGUILayout.FloatField("Priority", goal.priority);
-				EditorGUILayout.Separator();
-			}
-			if (size < goals.Count) {
-				goals.RemoveRange (size, goals.Count - size);
-			}
-			while (size > goals.Count) {
-				goals.Add(new Goal((GoalEnum)Enum.GetValues(typeof(GoalEnum)).GetValue(0), 0));
-			}
-		}
 	}
 
 	public virtual void drawGizmo() {
@@ -94,4 +59,40 @@ public abstract class EndeavourFactory : InspectorListElement {
 		}
 		return typeNames;
 	}
+
+#if UNITY_EDITOR
+	InspectorListElement InspectorListElement.doListElementGUI() {
+		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
+		int newSelectedType = UnityEditor.EditorGUILayout.Popup(selectedType, getTypeNames());
+		if (newSelectedType != selectedType) {
+			return (EndeavourFactory)EndeavourFactory.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
+		}
+
+		doGUI();
+		return this;
+	}
+
+	public virtual void doGUI() {
+		status = UnityEditor.EditorGUILayout.Foldout(status, "Goals");
+
+		if (status && goals != null) {
+			size = UnityEditor.EditorGUILayout.IntField("Size:", goals.Count);
+			UnityEditor.EditorGUILayout.Separator();
+
+			foreach (Goal goal in goals) {
+				//goal.name = EditorGUILayout.TextField("Name", goal.name);
+				//int selectedType = (int) goal.type; // System.Array.FindIndex(goalEnums, OP => OP == goal.type);
+				goal.type = (GoalEnum) UnityEditor.EditorGUILayout.Popup((int) goal.type, Enum.GetNames(typeof(GoalEnum)));
+				goal.priority = UnityEditor.EditorGUILayout.FloatField("Priority", goal.priority);
+				UnityEditor.EditorGUILayout.Separator();
+			}
+			if (size < goals.Count) {
+				goals.RemoveRange(size, goals.Count - size);
+			}
+			while (size > goals.Count) {
+				goals.Add(new Goal((GoalEnum)Enum.GetValues(typeof(GoalEnum)).GetValue(0), 0));
+			}
+		}
+	}
+#endif
 }

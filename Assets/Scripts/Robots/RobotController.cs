@@ -45,7 +45,7 @@ public class RobotController : MonoBehaviour {
 				Debug.LogWarning("Null location attached to AI with name: " + gameObject.name);
 				continue;
 			}
-			sightingFound(location);
+			mentalModel.addSighting(location);
 			trackTarget(location);
 		}
 		InvokeRepeating ("evaluateActions", .1f, .2f);

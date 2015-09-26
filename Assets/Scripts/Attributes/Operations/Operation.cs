@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -31,17 +30,6 @@ public abstract class Operation: InspectorListElement {
 		this.parent = label;
 	}
 
-	InspectorListElement InspectorListElement.doListElementGUI() {
-		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
-		int newSelectedType = EditorGUILayout.Popup(selectedType, getTypeNames());
-		if (newSelectedType != selectedType) {
-			return (Operation) Operation.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
-		}
-
-		doGUI();
-		return this;
-	}
-
 	public static Operation constructDefault() {
 		return (Operation) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 	}
@@ -55,4 +43,17 @@ public abstract class Operation: InspectorListElement {
 		}
 		return typeNames;
 	}
+
+#if UNITY_EDITOR
+	InspectorListElement InspectorListElement.doListElementGUI() {
+		int selectedType = System.Array.FindIndex(types, OP => OP == GetType());
+		int newSelectedType = UnityEditor.EditorGUILayout.Popup(selectedType, getTypeNames());
+		if (newSelectedType != selectedType) {
+			return (Operation)Operation.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
+		}
+
+		doGUI();
+		return this;
+	}
+#endif
 }

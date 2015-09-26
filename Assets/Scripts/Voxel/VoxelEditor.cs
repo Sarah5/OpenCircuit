@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -162,36 +161,6 @@ namespace Vox {
 			}
 		}
 
-		public void OnDrawGizmosSelected() {
-			if (selectedMode == 0)
-				return;
-			if (ghostBrushAlpha > 0 && selectedMode == 1) {
-				Ray mouseRay = HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
-				brushGhostColor.a = ghostBrushAlpha;
-				Gizmos.color = brushGhostColor;
-				switch(selectedBrush) {
-				case 0:
-					Gizmos.DrawSphere(getBrushPoint(mouseRay), sphereBrushSize);
-					break;
-				case 1:
-					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
-					break;
-				case 2:
-					Gizmos.DrawSphere(getBrushPoint(mouseRay), smoothBrushSize);
-					break;
-				}
-			}
-			if (maskDisplayAlpha > 0 && masks != null) {
-				Gizmos.color = new Color(1, 0, 0, maskDisplayAlpha);
-				foreach(VoxelMask mask in masks) {
-					if (!mask.active)
-						continue;
-					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize /2, mask.yPosition /voxelSize(), baseSize /2));
-				}
-				Gizmos.color = Color.gray;
-			}
-		}
-
 		public static RaycastHit getRayCollision(Ray ray) {
 			RaycastHit firstHit = new RaycastHit();
 			firstHit.distance = float.PositiveInfinity;
@@ -249,18 +218,50 @@ namespace Vox {
 			return mesh;
 		}
 
+#if UNITY_EDITOR
 		public static VoxelEditor createEmpty() {
 			GameObject ob = new GameObject();
 			ob.name = "Voxel Object";
 			VoxelEditor editor = ob.AddComponent<VoxelEditor>();
 			editor.voxelSubstances = new VoxelSubstance[1];
 			VoxelSubstance sub = new VoxelSubstance("Base",
-				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_MATERIAL_PATH),
-				AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH),
-				AssetDatabase.LoadAssetAtPath<PhysicMaterial>(DEFAULT_PHYSICS_MATERIAL_PATH));
+				UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_MATERIAL_PATH),
+				UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(DEFAULT_BLEND_MATERIAL_PATH),
+				UnityEditor.AssetDatabase.LoadAssetAtPath<PhysicMaterial>(DEFAULT_PHYSICS_MATERIAL_PATH));
 			editor.voxelSubstances[0] = sub;
 			return editor;
 		}
+
+		public void OnDrawGizmosSelected() {
+			if (selectedMode == 0)
+				return;
+			if (ghostBrushAlpha > 0 && selectedMode == 1) {
+				Ray mouseRay = UnityEditor.HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
+				brushGhostColor.a = ghostBrushAlpha;
+				Gizmos.color = brushGhostColor;
+				switch (selectedBrush) {
+					case 0:
+						Gizmos.DrawSphere(getBrushPoint(mouseRay), sphereBrushSize);
+						break;
+					case 1:
+						Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
+						break;
+					case 2:
+						Gizmos.DrawSphere(getBrushPoint(mouseRay), smoothBrushSize);
+						break;
+				}
+			}
+			if (maskDisplayAlpha > 0 && masks != null) {
+				Gizmos.color = new Color(1, 0, 0, maskDisplayAlpha);
+				foreach (VoxelMask mask in masks) {
+					if (!mask.active)
+						continue;
+					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize / 2, mask.yPosition / voxelSize(), baseSize / 2));
+				}
+				Gizmos.color = Color.gray;
+			}
+		}
+#endif
 
 	}
 }
