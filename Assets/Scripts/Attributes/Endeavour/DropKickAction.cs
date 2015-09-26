@@ -6,7 +6,7 @@ public class DropKickAction : Endeavour {
 
 	Label dropPoint;
 
-	public DropKickAction(RobotController controller, List<Goal> goals, Label dropPoint) : base(controller, goals) {
+	public DropKickAction(RobotController controller, List<Goal> goals, Label dropPoint) : base(controller, goals, dropPoint.getGameObject()) {
 		this.name = "dropKick";
 		this.dropPoint = dropPoint;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};

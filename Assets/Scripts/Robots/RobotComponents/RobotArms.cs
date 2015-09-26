@@ -16,7 +16,7 @@ public class RobotArms : AbstractRobotComponent {
 
 	
 	void Start() {
-		action = new HoldAction (roboController, null);
+		action = new HoldAction (roboController, null, gameObject);
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
 		footstepEmitter.enabled = true;
 		footstepEmitter.loop = false;
@@ -45,7 +45,7 @@ public class RobotArms : AbstractRobotComponent {
 	}
 
 	void OnTriggerExit(Collider collision) {
-		if (target != null) {
+		if (target != null &&  target == collision.gameObject) {
 			action.setTarget (null);
 			target = null;
 		}
