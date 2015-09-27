@@ -128,8 +128,7 @@ public class Menu : MonoBehaviour {
 		}
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
-			Application.Quit();
-			UnityEditor.EditorApplication.isPlaying = false;
+            quit();
 		}
 		int width = 200;
 		int height = 50;
@@ -150,8 +149,7 @@ public class Menu : MonoBehaviour {
 		}
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
-			Application.Quit();
-			UnityEditor.EditorApplication.isPlaying = false;
+            quit();
 		}
 		int width = 200;
 		int height = 50;
@@ -171,8 +169,7 @@ public class Menu : MonoBehaviour {
 		}
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
-			Application.Quit();
-			UnityEditor.EditorApplication.isPlaying = false;
+            quit();
 		}
 		adjustFontSize(skin.button, optionsRect.height);
 		if (GUI.Button(convertRect(optionsRect, false), "Options", skin.button)) {
@@ -188,8 +185,7 @@ public class Menu : MonoBehaviour {
 		}
 		adjustFontSize(skin.button, exitRect.height);
 		if (GUI.Button(convertRect(exitRect, false), "Quit", skin.button)) {
-			Application.Quit();
-			UnityEditor.EditorApplication.isPlaying = false;
+            quit();
 		}
 		adjustFontSize(skin.button, optionsRect.height);
 		if (GUI.Button(convertRect(optionsRect, false), "Options", skin.button)) {
@@ -248,4 +244,11 @@ public class Menu : MonoBehaviour {
 		Time.timeScale = 1;
 		Cursor.lockState = CursorLockMode.Locked;
 	}
+
+    private void quit() {
+        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
 }

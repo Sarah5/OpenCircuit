@@ -25,7 +25,6 @@ public class Movement : MonoBehaviour {
 	//private float minLedgeWidth = 0.25f;
 	private float normHeight;
 	private int freeFallDelay = 0;
-	private bool recovering = false;
 	private bool canMove = true;
 	private Vector3 lastRelativeVelocity = Vector3.zero;
 	private int collisionCount = 0;
@@ -337,7 +336,6 @@ public class Movement : MonoBehaviour {
 	public void setSprinting(bool sprint) {
 		//if (recovering && myPlayer.oxygen < oxygenBeginSprint)
 		//	return;
-		recovering = false;
 		sprinting = sprint;
 	}
 

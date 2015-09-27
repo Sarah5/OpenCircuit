@@ -26,8 +26,10 @@ public class EMPOp : Operation {
 		}
 	}
 
-	public override void doGUI () {
+#if UNITY_EDITOR
+    public override void doGUI () {
 		range = UnityEditor.EditorGUILayout.FloatField ("Range", range);
 		time = UnityEditor.EditorGUILayout.FloatField ("Duration (s)", time);
 	}
+#endif
 }

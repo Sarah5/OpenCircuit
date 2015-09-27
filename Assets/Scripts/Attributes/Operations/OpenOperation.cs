@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.IO;
 
 [System.Serializable]
 public class OpenOperation : Operation {
@@ -19,7 +17,9 @@ public class OpenOperation : Operation {
 
 	}
 
-	public override void doGUI() {
+#if UNITY_EDITOR
+    public override void doGUI() {
 		locked = UnityEditor.EditorGUILayout.Toggle("Locked", locked);
 	}
+#endif
 }

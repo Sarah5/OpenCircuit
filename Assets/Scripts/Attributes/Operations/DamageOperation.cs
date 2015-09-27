@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.IO;
 
 [System.Serializable]
 public class DamageOperation : Operation {
@@ -19,9 +17,11 @@ public class DamageOperation : Operation {
 	public override void perform(GameObject instigator, Trigger trig) {
 		
 	}
-	
-	public override void doGUI() {
+
+#if UNITY_EDITOR
+    public override void doGUI() {
 		damageType = UnityEditor.EditorGUILayout.TextField("Type", damageType);
 		damageAmount = UnityEditor.EditorGUILayout.FloatField("Amount", damageAmount); 
 	}
+#endif
 }

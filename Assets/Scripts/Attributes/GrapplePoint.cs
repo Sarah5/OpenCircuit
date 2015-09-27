@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("Scripts/Items/GrapplePoint")]
 public class GrapplePoint : MonoBehaviour {

@@ -114,14 +114,13 @@ namespace Vox {
 			applyQueuedMeshes();
 			if (generationPaused) {
 				if (VoxelThread.getJobCount() < 1 && jobQueue.Count < 1) {
-					if (!rebakedLighting) {
-//						print ("howdy!");
-						UnityEditor.Lightmapping.Bake();
-						rebakedLighting = true;
-					} else if (!UnityEditor.Lightmapping.isRunning) {
+					//if (!rebakedLighting) {
+					//	UnityEditor.Lightmapping.Bake();
+					//	rebakedLighting = true;
+					//} else if (!UnityEditor.Lightmapping.isRunning) {
 						generationPaused = false;
 						Time.timeScale = 1;
-					}
+					//}
 				}
 			}
 		}
