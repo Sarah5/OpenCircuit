@@ -137,6 +137,10 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		return tagMap[tagName];
 	}
 
+	public GameObject getGameObject() {
+		return gameObject;
+	}
+
 	void OnDrawGizmos() {
 		if(!isVisible) {
 			Gizmos.color = Color.green;

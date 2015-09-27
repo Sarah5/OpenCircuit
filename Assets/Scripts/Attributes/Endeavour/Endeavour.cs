@@ -17,9 +17,12 @@ public abstract class Endeavour : Prioritizable {
 
 	protected System.Type[] requiredComponents;
 
-	public Endeavour(RobotController controller, List<Goal> goals) {
+	protected GameObject parent;
+
+	public Endeavour(RobotController controller, List<Goal> goals, GameObject parent) {
 		this.controller = controller;
 		this.goals = goals;
+		this.parent = parent;
 	}
 
 	public abstract bool isStale();
@@ -63,6 +66,10 @@ public abstract class Endeavour : Prioritizable {
 	
 	public RobotController getController() {
 		return controller;
+	}
+
+	public GameObject getParent() {
+		return parent;
 	}
 	
 	public bool Equals(Endeavour endeavour) {

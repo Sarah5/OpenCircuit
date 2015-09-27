@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Robot/Hover Jet")]
 public class HoverJet : AbstractRobotComponent {
+
+	public float distanceCost = 1;
 
 	private Label target = null;
 
@@ -69,14 +72,22 @@ public class HoverJet : AbstractRobotComponent {
 		if (nav.enabled) {
 			nav.CalculatePath (target.transform.position, path);
 		}
-
+		List<Vector3> corners = new List<Vector3>(path.corners);
+		corners.Add(target.transform.position);
+		//corners
+		float pathLength = 0;
 		foreach (Label item in roboController.getTrackedTargets()) {
-			if(item.hasTag(TagEnum.Threat)) {
 				//print ("checking path cost against item: " + item.name);
 				//print ("target threatLevel " + item.threatLevel);
-				float threatLevel = item.getTag(TagEnum.Threat).severity;
 				float minDist = -1;
-				foreach(Vector3 vertex in path.corners) {
+				//Vector3 prevVertex;
+				//Debug.Log("numCorners: " + corners.Count);
+				for(int i = 0; i < corners.Count; i++) {
+					Vector3 vertex = corners[i];
+					if(i > 0) {
+						//Debug.Log("adding path length");
+						pathLength += Vector3.Distance(corners[i - 1], vertex);
+					}
 					float curDist = Vector3.Distance(vertex, item.transform.position);
 					if(minDist == -1) {
 						minDist = curDist;
@@ -84,12 +95,15 @@ public class HoverJet : AbstractRobotComponent {
 						minDist = curDist;
 					}
 				}
-				cost += threatLevel / minDist;
-			}
+				if(item.hasTag(TagEnum.Threat)) {
+					float threatLevel = item.getTag(TagEnum.Threat).severity;
+					cost += threatLevel / minDist;
+				}
 		}
 		//if (cost > 0) {
 		//	print ("path cost: " + cost);
 		//}
-		return cost;	
+		//Debug.Log("cost for target '" + target.name + "': " + (cost + (pathLength * distanceCost)));
+		return cost + (pathLength * distanceCost);	
 	}
 }

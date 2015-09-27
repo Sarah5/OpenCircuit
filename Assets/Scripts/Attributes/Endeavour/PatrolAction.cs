@@ -9,7 +9,7 @@ public class PatrolAction : Endeavour {
 	private List<Label> routePoints;
 	private int currentDestination;
 
-	public PatrolAction(RobotController controller, List<Goal> goals, List<Label> route) : base(controller, goals) {
+	public PatrolAction(RobotController controller, List<Goal> goals, List<Label> route, Label target) : base(controller, goals, target.gameObject) {
 		//this.route = route;
 		this.name = "patrol";
 		requiredComponents = new System.Type[] {typeof(HoverJet)};

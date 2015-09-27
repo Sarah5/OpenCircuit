@@ -12,7 +12,7 @@ public class EndeavourComparer : IEqualityComparer<Endeavour> {
 	public int GetHashCode(Endeavour a) {
 		int hash = 17;
 		hash = hash * 31 + a.getName ().GetHashCode ();
-		hash = hash * 31 + a.getController ().GetHashCode ();
+		hash = hash * 31 + a.getParent ().GetHashCode ();
 		return hash;
 	}
 }

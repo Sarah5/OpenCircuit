@@ -8,7 +8,7 @@ public class HoldAction : Endeavour {
 
 	bool hasComplained = false;
 
-	public HoldAction(RobotController controller, Label target) : base(controller, new List<Goal>{new Goal(GoalEnum.Offense, 3), new Goal(GoalEnum.Protection, 3)} ) {
+	public HoldAction(RobotController controller, Label target, GameObject source) : base(controller, new List<Goal>{new Goal(GoalEnum.Offense, 3), new Goal(GoalEnum.Protection, 3)}, source ) {
 		this.target = target;
 		this.name = "grab";
 		requiredComponents = new System.Type[] {typeof(RobotArms)};
