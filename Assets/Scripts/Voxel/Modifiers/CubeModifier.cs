@@ -14,7 +14,7 @@ namespace Vox {
 			: base(control, updateMesh) {
 			this.value = value.toVoxel();
 			Vector3 dimensions = worldDimensions / control.voxelSize();
-			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - dimensions /2 - Vector3.one * (control.voxelSize() / 2);
+			min = control.transform.InverseTransformPoint(worldPosition) / control.voxelSize() - dimensions /2 -Vector3.one *0.5f;
 			max = min + dimensions;
 			setMinMax(min, max);
 //			apply();
