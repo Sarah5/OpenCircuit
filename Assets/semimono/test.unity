@@ -37,6 +37,9 @@ RenderSettings:
   m_ReflectionIntensity: 0
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+--- !u!127 &3
+LevelGameManager:
+  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -65,7 +68,6 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
-    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 112000000, guid: b438bf77bc407e643808fd54953b0d1d,
     type: 2}
   m_RuntimeCPUUsage: 25
@@ -431,7 +433,6 @@ MonoBehaviour:
     active: 1
   createColliders: 1
   useStaticMeshes: 1
-  saveMeshes: 0
   sizes:
   - 128
   - 64
