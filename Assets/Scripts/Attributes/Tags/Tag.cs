@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-
 [System.Serializable]
 public class  Tag : InspectorListElement {
 
@@ -12,15 +11,6 @@ public class  Tag : InspectorListElement {
 	}
 
 	public static readonly TagEnum[] tagEnums;
-
-	static Tag() {
-		Array values = Enum.GetValues(typeof(TagEnum));
-		List<TagEnum> typeList = new List<TagEnum>();
-		foreach(object obj in values) {
-			typeList.Add((TagEnum)obj);
-		}
-		tagEnums = typeList.ToArray();
-	}
 
 	public TagEnum type;
 	public float severity;
@@ -32,13 +22,7 @@ public class  Tag : InspectorListElement {
 
 #if UNITY_EDITOR
 	InspectorListElement InspectorListElement.doListElementGUI() {
-
-		int selectedType = System.Array.FindIndex(tagEnums, OP => OP == type);
-		int newSelectedType = UnityEditor.EditorGUILayout.Popup(selectedType, Enum.GetNames(typeof(TagEnum)));
-
-		if(newSelectedType != selectedType) {
-			return (EndeavourFactory)EndeavourFactory.types[newSelectedType].GetConstructor(new System.Type[0]).Invoke(new object[0]);
-		}
+		type = (TagEnum)UnityEditor.EditorGUILayout.Popup((int)type, Enum.GetNames(typeof(TagEnum)));
 
 		doGUI();
 		return this;

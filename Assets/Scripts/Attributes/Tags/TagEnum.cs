@@ -2,5 +2,5 @@
 using System.Collections;
 
 public enum TagEnum {
-	Threat
+	Threat, GrabTarget
 }
