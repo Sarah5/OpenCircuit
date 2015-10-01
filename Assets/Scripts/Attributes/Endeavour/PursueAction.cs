@@ -11,7 +11,7 @@ public class PursueAction : Endeavour {
 	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.gameObject) {
 		this.target = target;
 		this.name = "pursue";
-		requiredComponents = new System.Type[] {typeof(HoverJet), typeof(RobotArms)};
+		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
 	/*public override bool canExecute() {

@@ -7,7 +7,6 @@ public class RobotArms : AbstractRobotComponent {
 	public AudioClip drop;
 
 	public Vector3 throwForce = new Vector3(0, 150, 300);
-	
 
 	private AudioSource footstepEmitter;
 
@@ -35,8 +34,9 @@ public class RobotArms : AbstractRobotComponent {
 
 	void OnTriggerEnter(Collider collision) {
 		if (target == null) {
-			target = collision.gameObject.GetComponent<Label> ();
-			if (target != null) {
+			Label label = collision.gameObject.GetComponent<Label> ();
+			if (label != null && label.hasTag(TagEnum.GrabTarget)) {
+				target = label;
 				footstepEmitter.PlayOneShot (pickUp, 1);
 				action.setTarget(target);
 				roboController.addEndeavour(action);

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public abstract class Endeavour : Prioritizable {
 
+	public const float BENEFIT_CONSTANT_TERM = 20f;
+
 	public List<Goal> goals = new List<Goal>();
 	
 	protected string name;
@@ -51,7 +53,8 @@ public abstract class Endeavour : Prioritizable {
 		foreach (Goal goal in goals) {
 			Dictionary<GoalEnum, Goal> robotGoals = controller.getGoals ();
 			if (robotGoals.ContainsKey(goal.type)) {
-				finalPriority += goal.priority * robotGoals[goal.type].priority;
+				float priorityCubed = (goal.priority * goal.priority * goal.priority) + BENEFIT_CONSTANT_TERM;
+				finalPriority += priorityCubed * robotGoals[goal.type].priority;
 			}
 		}
 		float cost = getCost ();

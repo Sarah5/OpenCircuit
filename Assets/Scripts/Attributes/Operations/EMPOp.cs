@@ -19,9 +19,14 @@ public class EMPOp : Operation {
 	public override void perform(GameObject instigator, Trigger trig) {
 		//parent.GetComponent<RobotController>().enabled = false;
 		//AbstractPowerSource [] powerSources = GameObject.FindObjectsOfType<AbstractPowerSource> ();
+		AudioSource audioSource = parent.GetComponent<AudioSource>();
+		if(audioSource != null) {
+			audioSource.PlayOneShot(audioSource.clip);
+		}
 		foreach (AbstractPowerSource source in AbstractPowerSource.powerSources) {
 			if (Vector3.Distance(parent.transform.position, source.transform.position) < range) {
 				source.disable(time);
+
 			}
 		}
 	}
@@ -30,6 +35,7 @@ public class EMPOp : Operation {
     public override void doGUI () {
 		range = UnityEditor.EditorGUILayout.FloatField ("Range", range);
 		time = UnityEditor.EditorGUILayout.FloatField ("Duration (s)", time);
+
 	}
 #endif
 }

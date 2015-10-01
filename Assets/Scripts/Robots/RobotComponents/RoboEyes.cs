@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [AddComponentMenu("Scripts/Robot/Robo Eyes")]
 public class RoboEyes : AbstractRobotComponent {
 
-	public float fieldOfViewAngle = 140f;           // Number of degrees, centered on forward, for the enemy sight.
+	public float fieldOfViewAngle = 170f;           // Number of degrees, centered on forward, for the enemy sight.
 	public float sightDistance = 30.0f;
 
 	private Dictionary<Label, bool> targetMap = new Dictionary<Label, bool>();
@@ -29,7 +29,9 @@ public class RoboEyes : AbstractRobotComponent {
 				Physics.Raycast (transform.position, dir, out hit, sightDistance);
 				if (hit.transform == obj ) {//&& Vector3.Dot (transform.forward.normalized, (objPos - transform.position).normalized) > 0) {
 					result = true;
-				}
+				} //else {
+					//print("lost: " + obj.gameObject.name + "obscured by: " + hit.transform.gameObject.name);
+				//}
 			}
 		}
 		return result;
@@ -40,9 +42,11 @@ public class RoboEyes : AbstractRobotComponent {
 		foreach (Label label in Label.visibleLabels) {
 			bool targetInView = hasPower && canSee (label.transform);
 			if ((!targetMap.ContainsKey (label) || !targetMap [label]) && targetInView) {
+				//print("target sighted: " + label.name);
 				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label));
 			}
 			else if (targetMap.ContainsKey(label) && targetMap [label] && !targetInView) {
+				//print("target lost: " + label.name);
 				roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label));
 			}
 			targetMap [label] = targetInView;
