@@ -26,7 +26,6 @@ Shader "Voxel/Normal" {
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
-		sampler2D _MainTex;
 		sampler2D _TexWallDif;
 		sampler2D _TexFlrDif;
 		sampler2D _TexCeilDif;
