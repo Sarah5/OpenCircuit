@@ -54,22 +54,33 @@ Shader "Voxel/GrassExperiment" {
 			input.normal = normalize(input.normal);
 			float3 pos = input.pos;
 			pos.y = 1;
-			float amountSame = -dot(normalize(viewDir.xz), input.normal.xz);
+			float amountSame = abs(dot(normalize(viewDir.xz), input.normal.xz));
 			viewDir.y -= amountSame / input.normal.y;
-			float3 diff = viewDir / abs(viewDir.z);
-			float mod = viewDir.z < 0 ?
-				myMod(pos.z, _Spacing) :
-				_Spacing -myMod(pos.z, _Spacing);
-			pos += abs(mod) *diff;
-			for (int i = 0; i < 10; ++i) {
+			float3 diffz = viewDir / abs(viewDir.z);
+			float3 diffx = viewDir / abs(viewDir.x);
+			for (int i = 0; i < 8; ++i) {
+				float modz = 0.01f +abs(viewDir.z < 0 ?
+					myMod(pos.z, _Spacing) :
+					_Spacing - myMod(pos.z, _Spacing));
+				float modx = 0.01f +abs(viewDir.x < 0 ?
+					myMod(pos.x, _Spacing) :
+					_Spacing - myMod(pos.x, _Spacing));
+				float2 uv;
+				if (modx /abs(viewDir.x) < modz /abs(viewDir.z)) {
+					pos += modx *diffx;
+					uv = float2(pos.z, pos.y);
+					uv.x += pos.x*pos.x;
+				} else {
+					pos += modz *diffz;
+					uv = float2(pos.x, pos.y);
+					uv.x += pos.z*pos.z;
+				}
+
 				if (pos.y < 1 -_Depth)
 					break;
-				float2 uv = pos.xy;
-				uv.x += pos.z*pos.z;
 				fixed4 color = tex2D(_TexGrassDif, TRANSFORM_TEX(uv, _TexGrassDif));
 				if (color.a > 0.5)
 					return color;
-				pos += _Spacing *diff;
 			}
 			return tex2D(_TexGroundDif, TRANSFORM_TEX(input.pos.xz -(viewDir.xz *(_Depth /viewDir.y)), _TexGroundDif));
 		}
