@@ -21,7 +21,9 @@ public class PursueAction : Endeavour {
 
 	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		//Debug.Log ("pursue action knows target: " + controller.knowsTarget (target));
-		return !targetCaught && controller.knowsTarget (target) && base.canExecute (availableComponents);//jet != null && !jet.isAvailable () && controller.knowsTarget(target);
+		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
+		//Debug.Log("pursue: " + can);
+		return !targetCaught && controller.knowsTarget(target) && base.canExecute(availableComponents) && jet != null && jet.canReach(target);;
 	}
 
 	public override void execute() {

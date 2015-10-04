@@ -106,4 +106,28 @@ public class HoverJet : AbstractRobotComponent {
 		//Debug.Log("cost for target '" + target.name + "': " + (cost + (pathLength * distanceCost)));
 		return cost + (pathLength * distanceCost);	
 	}
+
+	public bool canReach(Label target) {
+		if(nav.enabled) {
+			//Debug.Log("got here");
+			NavMeshPath path = new NavMeshPath ();
+
+			nav.CalculatePath(target.transform.position, path);
+			List<Vector3> corners = new List<Vector3>(path.corners);
+			corners.Add(target.transform.position);
+			for(int i = 0; i < corners.Count-1; i++) {
+				//Debug.Log("in the loop");
+				NavMeshHit hit = new NavMeshHit();
+				
+				if (NavMesh.Raycast(corners[i], corners[i+1], out hit, NavMesh.AllAreas)) {
+					//Debug.Log("Raycast hit mask: " + hit.mask);
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+		return true;
+	}
 }
