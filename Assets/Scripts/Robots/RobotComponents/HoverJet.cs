@@ -40,7 +40,7 @@ public class HoverJet : AbstractRobotComponent {
 			                                new Vector2(target.transform.position.x, target.transform.position.z));
 			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
 			if (xzDist < .5f && yDist < 1f) {
-				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .000001)) {
+				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .0001f)) {
 					roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
 				} else {
 					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.transform.forward), nav.angularSpeed * Time.deltaTime);
