@@ -10,8 +10,17 @@ public abstract class AbstractRobotComponent : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		roboController = GetComponentInParent<RobotController> ();
-		powerSource = roboController.GetComponentInChildren<AbstractPowerSource> ();
-	}
+        if (roboController == null) {
+            Debug.LogWarning("Robot component '" + name + "' is not attached to a robot controller!");
+        } else {
+            powerSource = roboController.GetComponentInChildren<AbstractPowerSource>();
+
+        }
+        if (roboController == null) {
+            Debug.LogWarning("Robot component '" + name + "' has no power source!");
+        }
+
+    }
 
 	public RobotController getController() {
 		return roboController;

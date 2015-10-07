@@ -128,6 +128,5 @@ public class HoverJet : AbstractRobotComponent {
 		} else {
 			return false;
 		}
-		return true;
 	}
 }
