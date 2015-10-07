@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Robot/Robot Arms")]
 public class RobotArms : AbstractRobotComponent {
-	public AudioClip pickUp;
+
+    public static Vector3 HOLD_POSITION = new Vector3(0, .5f, .85f);
+
+    public AudioClip pickUp;
 	public AudioClip drop;
 
 	public Vector3 throwForce = new Vector3(0, 150, 300);
@@ -11,11 +15,12 @@ public class RobotArms : AbstractRobotComponent {
 	private AudioSource footstepEmitter;
 
 	private Label target = null;
-	private HoldAction action;
+    private Label proposedTarget = null;
+
+    private bool proposedTargetStatus = false;
 
 	
 	void Start() {
-		action = new HoldAction (roboController, null, gameObject);
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
 		footstepEmitter.enabled = true;
 		footstepEmitter.loop = false;
@@ -32,25 +37,42 @@ public class RobotArms : AbstractRobotComponent {
 		}
 	}
 
-	void OnTriggerEnter(Collider collision) {
-		if (target == null) {
-			Label label = collision.gameObject.GetComponent<Label> ();
-			if (label != null && label.hasTag(TagEnum.GrabTarget)) {
-				target = label;
-				footstepEmitter.PlayOneShot (pickUp, 1);
-				action.setTarget(target);
-				roboController.addEndeavour(action);
-			}
-		}
-	}
+    void FixedUpdate() {
+        if (proposedTarget == null && target == null) {
+            return;
+        }
+        if (proposedTarget != null && !proposedTargetStatus) {
+            proposedTarget = null;
+        }
 
-	void OnTriggerExit(Collider collision) {
-		if (target != null &&  target == collision.gameObject) {
-			action.setTarget (null);
-			target = null;
-		}
+        if (target != null) {
+            if (Vector3.Distance(target.transform.localPosition, HOLD_POSITION) > .0001f) {
+                target = null;
+            }
+        }
 
-	}
+        proposedTargetStatus = false;
+        
+    }
+
+   void OnTriggerEnter(Collider collision) {
+        if (target == null) {
+            proposedTarget = collision.gameObject.GetComponent<Label>();
+            proposedTargetStatus = true;
+            if (proposedTarget != null && proposedTarget.hasTag(TagEnum.GrabTarget)) {
+
+                footstepEmitter.PlayOneShot(pickUp, 1);
+                roboController.addEndeavour(new HoldAction(roboController, proposedTarget, gameObject));
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider collision) {
+       Label label = collision.gameObject.GetComponent<Label>();
+       if (label == proposedTarget) {
+            proposedTargetStatus = true;
+        }
+    }
 
 	public bool hasTarget() {
 		return target != null;
@@ -70,20 +92,25 @@ public class RobotArms : AbstractRobotComponent {
 			footstepEmitter.PlayOneShot (drop, 1);
 
 			target = null;
-			//target.transform.localPosition = new Vector3(0, .5f, .85f);
 		}
 	}
 
-	public void attachTarget(Label obj) {
-		Rigidbody rigidbody = obj.GetComponent<Rigidbody> ();
-		if (rigidbody != null) {
-			rigidbody.isKinematic = true;
-			rigidbody.useGravity = false;
-			rigidbody.velocity = new Vector3(0,0,0);
-		}
-		target.transform.parent = transform;
-		target.transform.localPosition = new Vector3(0, .5f, .85f);
-		roboController.enqueueMessage(new RobotMessage("action", "target grabbed", target));
-	}
+    public void attachTarget(Label obj) {
+        if (target == null) {
+            target = obj;
+            Rigidbody rigidbody = obj.GetComponent<Rigidbody>();
+            if (rigidbody != null) {
+                rigidbody.isKinematic = true;
+                rigidbody.useGravity = false;
+                rigidbody.velocity = new Vector3(0, 0, 0);
+            }
+            target.transform.parent = transform;
+            target.transform.localPosition = HOLD_POSITION;//new Vector3(0, .5f, .85f);
+            roboController.enqueueMessage(new RobotMessage("action", "target grabbed", target));
+        }
+    }
 
+    public Label getProposedTarget() {
+        return proposedTarget;
+    }
 }

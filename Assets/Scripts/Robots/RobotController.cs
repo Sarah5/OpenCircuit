@@ -134,7 +134,6 @@ public class RobotController : MonoBehaviour {
 					endeavourQueue.Enqueue (action);
 				}
 			}
-			
 		}
 		foreach (Endeavour action in availableEndeavours) {
 			if (!action.isStale()) {

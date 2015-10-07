@@ -6,24 +6,16 @@ public class PursueAction : Endeavour {
 
 	private Label target;
 
-	private bool targetCaught = false;
-
 	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.gameObject) {
 		this.target = target;
 		this.name = "pursue";
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
-	/*public override bool canExecute() {
-		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-		return jet != null && !jet.isAvailable () && controller.knowsTarget(target);
-	}*/
-
 	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
-		//Debug.Log ("pursue action knows target: " + controller.knowsTarget (target));
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-		//Debug.Log("pursue: " + can);
-		return !targetCaught && controller.knowsTarget(target) && base.canExecute(availableComponents) && jet != null && jet.canReach(target);;
+        RobotArms arms = controller.GetComponentInChildren<RobotArms>();
+        return !arms.hasTarget() && controller.knowsTarget(target) && base.canExecute(availableComponents) && jet != null && jet.canReach(target);;
 	}
 
 	public override void execute() {
@@ -47,11 +39,7 @@ public class PursueAction : Endeavour {
 	}
 
 	public override void onMessage(RobotMessage message) {
-		if(message.Message.Equals("target grabbed") && message.Target == target) {
-			targetCaught = true;
-		} else if (message.Message.Equals("target dropped")) {
-			targetCaught = false;
-		}
+
 	}
 
 	protected override float getCost() {

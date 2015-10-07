@@ -35,7 +35,9 @@ public class HoldAction : Endeavour {
 	}
 
 	public override bool isStale() {
-		return target == null;
+        RobotArms arms = controller.GetComponentInChildren<RobotArms>();
+
+        return target == null || arms == null || (arms.getProposedTarget() != target && !arms.hasTarget());
 	}
 
 	public void setTarget(Label target) {
