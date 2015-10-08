@@ -34,15 +34,16 @@ public abstract class Endeavour : Prioritizable {
 
 	public virtual bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		foreach (System.Type type in requiredComponents) {
-			if (availableComponents.ContainsKey(type)) {
-				int numAvailable = availableComponents[type];
-				if (numAvailable > 0) {
-					--numAvailable;
-					availableComponents[type] = numAvailable;
-				}
-				else {
-					return false;
-				}
+			if (!availableComponents.ContainsKey(type)) {
+				return false;
+			}
+		}
+
+		foreach(System.Type type in requiredComponents) {
+			int numAvailable = availableComponents[type];
+			if(numAvailable > 0) {
+				--numAvailable;
+				availableComponents[type] = numAvailable;
 			}
 		}
 		return true;

@@ -123,23 +123,28 @@ public class RobotController : MonoBehaviour {
 	}
 
 	private void evaluateActions() {
+		//print("**************EVALUATE**************");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
+		//print("\tCurrent Endeavours");
 		foreach (Endeavour action in currentEndeavours) {
-			if (action != null) {
-				if (action.isStale ()) {
-					action.stopExecution ();
-					staleEndeavours.Add (action);	
-				} else {
-					endeavourQueue.Enqueue (action);
-				}
+			if (action.isStale ()) {
+				//print("\t\t--" + action.getName());
+				action.stopExecution ();
+				staleEndeavours.Add (action);	
+			} else {
+				//print("\t\t++" + action.getName());
+				endeavourQueue.Enqueue (action);
 			}
 		}
+		//print("\tAvailable Endeavours");
 		foreach (Endeavour action in availableEndeavours) {
 			if (!action.isStale()) {
+				//print("\t\t++" + action.getName());
 				endeavourQueue.Enqueue(action);
 			}
 			else {
+				//print("\t\t--" + action.getName());
 				staleEndeavours.Add(action);
 			}
 		}
@@ -152,13 +157,16 @@ public class RobotController : MonoBehaviour {
 		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
 		
 		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
+		//print("\tEvaluate actions");
 		while (endeavourQueue.Count > 0) {
 			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
+				//print("\t\t++" + action.getName());
 				proposedEndeavours.Add(action);
 			}
 			else {
-				endeavourQueue.Dequeue();
+				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
+				//print("\t\t--" + action.getName());
 			}
 		}
 		
