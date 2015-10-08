@@ -227,9 +227,14 @@ namespace Vox {
 		}
 
 		protected void assignMesh(GameObject meshObject, SubstanceCollection substances, Dictionary<int, int> vertices, List<int> triangles, byte[] MATS) {
-			Vector3[] verts = new Vector3[vertices.Count];
-			Vector3[] norms = new Vector3[vertices.Count];
-			Vector2[] uvs = new Vector2[vertices.Count];
+			byte[] substanceArray = substances.getSubstances();
+			bool hasGrass = substanceArray.Length == 1 && control.voxelSubstances[substanceArray[0]].grassMaterial != null;
+			int vertexCount = vertices.Count;
+			if (hasGrass)
+				vertexCount *= 2;
+			Vector3[] verts = new Vector3[vertexCount];
+			Vector3[] norms = new Vector3[vertexCount];
+			Vector2[] uvs = new Vector2[vertexCount];
 
 			// create the vertex, normal, and uv arrays
 			foreach (int index in vertices.Keys) {
@@ -248,17 +253,29 @@ namespace Vox {
 					break;
 				}
 			}
+			if (hasGrass) {
+				VoxelSubstance substance = control.voxelSubstances[substanceArray[0]];
+				for (int i = vertices.Count; i<vertexCount; ++i) {
+					int index = i -vertices.Count;
+					norms[i] = norms[index];
+					verts[i] = verts[index];
+					if (norms[i].y > 0)
+						verts[i].y += substance.grassHeight;
+				}
+			}
 
 			// apply the render materials to the renderer
 			MeshRenderer rend = meshObject.GetComponent<MeshRenderer>();
 			PhysicMaterial phyMat = null;
-			byte[] substanceArray = substances.getSubstances();
 			if (substanceArray.Length == 1) {
-				Material material = new Material(control.voxelSubstances[substanceArray[0]].renderMaterial);
-				material.EnableKeyword("IS_BASE");
-				if (!control.saveMeshes)
-					material.hideFlags = HideFlags.HideAndDontSave;
-				rend.material = material;
+				Material[] materials = new Material[1];
+                if (hasGrass) {
+					materials = new Material[2];
+					materials[1] = control.voxelSubstances[substanceArray[0]].grassMaterial;
+                }
+				materials[0] = control.voxelSubstances[substanceArray[0]].renderMaterial;
+				materials[0].EnableKeyword("IS_BASE");
+				rend.sharedMaterials = materials;
 				phyMat = control.voxelSubstances[substanceArray[0]].physicsMaterial;
 			} else {
 				Material[] materials = new Material[substanceArray.Length];
@@ -285,14 +302,22 @@ namespace Vox {
 			}
 			
 			Mesh m = meshObject.GetComponent<MeshFilter>().sharedMesh;
-			m.triangles = null;
-			m.normals = null;
-			m.uv = null;
-			m.vertices = null;
+			m.Clear();
 			m.vertices = verts;
 			m.normals = norms;
 			m.uv = uvs;
-			m.triangles = triangles.ToArray();
+
+			if (hasGrass) {
+				m.subMeshCount = 2;
+				int[] grassTriangles = new int[triangles.Count];
+				for (int i = 0; i<grassTriangles.Length; ++i)
+					grassTriangles[i] = triangles[i] +vertices.Count;
+				m.SetTriangles(grassTriangles, 1);
+			} else {
+				m.subMeshCount = 1;
+			}
+
+			m.SetTriangles(triangles, 0);
 			m.RecalculateBounds();
 			m.Optimize();
 			rend.enabled = true;
@@ -300,8 +325,22 @@ namespace Vox {
 			// add a collider for the mesh
 			if (control.createColliders) {
 				MeshCollider collider = meshObject.AddComponent<MeshCollider>();
-				collider.sharedMesh = m;
 				collider.material = phyMat;
+				if (hasGrass) {
+					Mesh mesh = new Mesh();
+					Vector3[] colVerts = new Vector3[vertices.Count];
+					Vector3[] colNorms = new Vector3[vertices.Count];
+					Array.Copy(verts, colVerts, colVerts.Length);
+					Array.Copy(norms, colNorms, colNorms.Length);
+					mesh.vertices = colVerts;
+					mesh.normals = colNorms;
+					mesh.SetTriangles(triangles, 0);
+					mesh.RecalculateBounds();
+					mesh.Optimize();
+					collider.sharedMesh = mesh;
+				} else {
+					collider.sharedMesh = m;
+				}
 //				collider.hideFlags = /*HideFlags.HideInInspector | */HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 			}
 		}
