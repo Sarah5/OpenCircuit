@@ -4,6 +4,8 @@ using System.Collections;
 [AddComponentMenu("Scripts/Player/Interact")]
 public class Interact : MonoBehaviour {
 
+	public Material highlightMaterial;
+
 	private Player myPlayer;
 	private const float grabDistance = 2.5f;
 	private Camera playerCam;
@@ -21,15 +23,14 @@ public class Interact : MonoBehaviour {
 	}
 
 	private void updateTarget() {
-		GameObject trgt = null;
-		trgt = reach();
+		GameObject trgt = reach();
 		if(trgt != null && Vector3.Distance(trgt.GetComponent<Collider>().ClosestPointOnBounds(transform.position), transform.position) >= 1.5f) {
 			trgt = null;
 		}
 
 		if(target == trgt) return;
 
-		if(target != null) {
+		if(target != null && hasInteractable(target)) {
 			unHighlight();
 		}
 
@@ -40,14 +41,24 @@ public class Interact : MonoBehaviour {
 	}
 
 	private void highlight() {
-		if(target.GetComponent<Renderer>() == null) return;
-		prevColor = target.GetComponent<Renderer>().material.color;
-		target.GetComponent<Renderer>().material.color = Color.green;
+		Renderer rend = target.GetComponent<Renderer>();
+		if(rend == null) return;
+		Material[] mats = rend.materials;
+		Material[] newMats = new Material[mats.Length * 2];
+		System.Array.Copy(mats, newMats, mats.Length);
+		for(int i = mats.Length; i < newMats.Length; ++i) {
+			newMats[i] = highlightMaterial;
+		}
+		rend.materials = newMats;
 	}
 
 	private void unHighlight() {
-		if(target.GetComponent<Renderer>() == null) return;
-		target.GetComponent<Renderer>().material.color = prevColor;
+		Renderer rend = target.GetComponent<Renderer>();
+		if(rend == null) return;
+		Material[] mats = rend.materials;
+		Material[] newMats = new Material[mats.Length / 2];
+		System.Array.Copy(mats, newMats, newMats.Length);
+		rend.materials = newMats;
 	}
 
 	public void interact() {
