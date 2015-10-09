@@ -7,7 +7,7 @@ public class Interact : MonoBehaviour {
 	private Player myPlayer;
 	private const float grabDistance = 2.5f;
 	private Camera playerCam;
-//	private GameObject target;
+	private GameObject target;
 	private Color prevColor;
 
 	// Use this for initialization
@@ -16,41 +16,39 @@ public class Interact : MonoBehaviour {
 		playerCam = myPlayer.cam;
 	}
 
-//	void Update() {
-//		updateTarget();
-//	}
+	void Update() {
+		updateTarget();
+	}
 
-//	private void updateTarget() {
-//		GameObject trgt = null;
-//		if (!myPlayer.focus.isFocused) {
-//			trgt = reach();
-//		}
-//		if (trgt != null && Vector3.Distance(trgt.GetComponent<Collider>().ClosestPointOnBounds(transform.position), transform.position) >= 1.5f) {
-//			trgt = null;
-//		}
-//
-//		if (target == trgt) return;
-//
-//		if (target != null) {
-//			unHighlight();
-//		}
-//
-//		target = trgt;
-//		if (trgt != null) {
-//			highlight();
-//		}
-//	}
+	private void updateTarget() {
+		GameObject trgt = null;
+		trgt = reach();
+		if(trgt != null && Vector3.Distance(trgt.GetComponent<Collider>().ClosestPointOnBounds(transform.position), transform.position) >= 1.5f) {
+			trgt = null;
+		}
 
-//	private void highlight() {
-//		if (target.GetComponent<Renderer>() == null) return;
-//		prevColor = target.GetComponent<Renderer>().material.color;
-//		target.GetComponent<Renderer>().material.color = Color.green;
-//	}
-//
-//	private void unHighlight() {
-//		if (target.GetComponent<Renderer>() == null) return;
-//		target.GetComponent<Renderer>().material.color = prevColor;
-//	}
+		if(target == trgt) return;
+
+		if(target != null) {
+			unHighlight();
+		}
+
+		target = trgt;
+		if(trgt != null && hasInteractable(trgt)) {
+			highlight();
+		}
+	}
+
+	private void highlight() {
+		if(target.GetComponent<Renderer>() == null) return;
+		prevColor = target.GetComponent<Renderer>().material.color;
+		target.GetComponent<Renderer>().material.color = Color.green;
+	}
+
+	private void unHighlight() {
+		if(target.GetComponent<Renderer>() == null) return;
+		target.GetComponent<Renderer>().material.color = prevColor;
+	}
 
 	public void interact() {
 		Grab grabber = myPlayer.grabber;
@@ -61,17 +59,32 @@ public class Interact : MonoBehaviour {
 			Vector3 point;
 			GameObject nearest = reach (out point);
 			if (nearest != null && !inventory.take(nearest)) {
-                Label item = nearest.GetComponent<Label>();
-                bool hasInteractable = false;
-                if (item != null) {
-                    InteractTrigger trig = new InteractTrigger();
-                    trig.setPoint(point);
-                    hasInteractable = item.sendTrigger(gameObject, trig);
-                }
-                if (!hasInteractable)
-                    grabber.GrabObject(nearest, point);
+				Label trgt;
+				bool canInteract = hasInteractable(nearest, out trgt);
+				if(canInteract) {
+					InteractTrigger trig = new InteractTrigger();
+					trig.setPoint(point);
+					trgt.sendTrigger(nearest, trig);
+				} else {
+					grabber.GrabObject(nearest, point);
+				}
             }
 		}
+	}
+
+	private bool hasInteractable(GameObject obj, out Label target) {
+		Label item = obj.GetComponent<Label>();
+		if(item != null) {
+			target = item;
+			return item.hasOperationType(typeof(InteractTrigger));
+		}
+		target = null;
+		return false;
+	}
+
+	private bool hasInteractable(GameObject obj) {
+		Label output;
+		return hasInteractable(obj, out output);
 	}
 
 	private GameObject reach() {Vector3 fake; return reach(out fake); }
