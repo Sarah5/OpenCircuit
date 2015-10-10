@@ -82,7 +82,8 @@ Shader "Voxel/GrassExperiment" {
 				if (color.a > 0.5)
 					return color;
 			}
-			return tex2D(_TexGroundDif, TRANSFORM_TEX(input.pos.xz -(viewDir.xz *(_Depth /viewDir.y)), _TexGroundDif));
+			return fixed4(0, 0, 0, 0);
+			//return tex2D(_TexGroundDif, TRANSFORM_TEX(input.pos.xz -(viewDir.xz *(_Depth /viewDir.y)), _TexGroundDif));
 		}
 		
 		void vertexFunc(inout appdata_full v, out Input o) {
@@ -93,7 +94,9 @@ Shader "Voxel/GrassExperiment" {
 
 		void surfaceFunc(Input IN, inout SurfaceOutputStandard o) {
 			float3 viewDir = -normalize(ObjSpaceViewDir(IN.pos));
-			fixed4 dif = getColor(IN, viewDir);
+			fixed4 dif = fixed4(0, 0, 0, 0);
+			if (IN.normal.y > 0.3f)
+				dif = getColor(IN, viewDir);
 			
 			o.Albedo = dif.rgb;
 			o.Metallic = _Metallic;

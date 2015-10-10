@@ -554,14 +554,12 @@ namespace Vox {
 
 				List<int> newTriangles = new List<int>(TRIS);
 				List<Vector3> newVertices = new List<Vector3>(VERTS);
-				List<Vector3> newNorms = new List<Vector3>(NORMS);
 				int tri = 0;
 				while (triangleSet.Count > 0) {
 					int[] triangleList = triangleSet.Dequeue();
 					for (int i = 0; i < triangleList.Length; ++i) {
 						if (vertices[triangleList[i]].GetType() == typeof(Vector3)) {
 							newVertices.Add((Vector3)vertices[triangleList[i]]);
-							newNorms.Add(Vector3.zero);
 							vertices[triangleList[i]] = newVertices.Count - 1;
 						}
 						newTriangles.Add((int)vertices[triangleList[i]]);
@@ -569,7 +567,7 @@ namespace Vox {
 					tri += triangleList.Length;
 				}
 
-				Vector3[] finalNorms = new Vector3[newNorms.Count];
+				Vector3[] finalNorms = new Vector3[newVertices.Count];
 				Array.Copy(NORMS, finalNorms, NORMS.Length);
 				int oldNormCount = NORMS.Length;
 
