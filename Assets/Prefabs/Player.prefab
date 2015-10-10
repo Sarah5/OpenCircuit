@@ -420,6 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f61df2edd022dd94f9be508ccb680e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightMaterial: {fileID: 2100000, guid: 75e3c3d48bf4fd64b8dac1330cf8cd73, type: 2}
 --- !u!114 &11465136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -549,6 +550,10 @@ Prefab:
       propertyPath: sprintMult
       value: 1.75
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: highlightMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 75e3c3d48bf4fd64b8dac1330cf8cd73, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100002}
