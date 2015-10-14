@@ -19,7 +19,8 @@ public abstract class EndeavourFactory : InspectorListElement {
 	public static readonly System.Type[] types = new System.Type[] {
 		typeof(Patrol),
 		typeof(Pursue),
-		typeof(Drop)
+		typeof(Drop),
+        typeof(Recharge)
 	};
 
 	public static readonly GoalEnum[] goalEnums;
