@@ -8,9 +8,9 @@ using System.Collections.Generic;
 [CustomEditor(typeof(Label), true)]
 public class LabelGUI : Editor {
 
-	private bool tagsExpanded = true;
-	private bool operationsExpanded = true;
-	private bool endeavoursExpanded = true;
+	private bool tagsExpanded = false;
+	private bool operationsExpanded = false;
+	private bool endeavoursExpanded = false;
 	private string[] operationTypeNames;
 	
 	public void OnEnable() {
@@ -38,9 +38,8 @@ public class LabelGUI : Editor {
 	}
 
 	public void doTagList(Label label) {
-
-		tagsExpanded = EditorGUILayout.Foldout(tagsExpanded, "Tags");
-		if(!tagsExpanded) {
+		listFoldout(ref tagsExpanded, ref label.tags, "Tags");
+		if (!tagsExpanded) {
 			return;
 		}
 
@@ -80,8 +79,8 @@ public class LabelGUI : Editor {
 	}
 
 	public void doOperationList(Label label) {
-		operationsExpanded = EditorGUILayout.Foldout (operationsExpanded, "Operations");
-		if (!operationsExpanded)
+		listFoldout(ref operationsExpanded, ref label.operations, "Operations");
+        if (!operationsExpanded)
 			return;
 		
 		for(int i=0; i<label.operations.Length; ++i)
@@ -91,7 +90,7 @@ public class LabelGUI : Editor {
 	}
 	
 	public void doEndeavourList(Label label) {
-		endeavoursExpanded = EditorGUILayout.Foldout(endeavoursExpanded, "Endeavours");
+		listFoldout(ref endeavoursExpanded, ref label.endeavours, "Endeavours");
 		if (!endeavoursExpanded) {
 			return;
 		}
@@ -104,14 +103,14 @@ public class LabelGUI : Editor {
 		doArrayGUI(ref label.endeavours);
 	}
 
-	private void doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
-		GUILayout.BeginHorizontal();
-		int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
-		if (newSize != array.Length) {
-			array = resize(array, newSize);
-			return;
-		}
-		GUILayout.EndHorizontal();
+	private static void doArrayGUI<T>(ref T[] array) where T:InspectorListElement {
+		//GUILayout.BeginHorizontal();
+		//int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
+		//if (newSize != array.Length) {
+		//	array = resize(array, newSize);
+		//	return;
+		//}
+		//GUILayout.EndHorizontal();
 		
 		// draw list
 		for(int i=0; i<array.Length; ++i) {
@@ -147,7 +146,7 @@ public class LabelGUI : Editor {
 		GUILayout.EndHorizontal();
 	}
 
-	private T[] resize<T>(T[] array, int newSize) {
+	private static T[] resize<T>(T[] array, int newSize) {
 		if (newSize == array.Length)
 			return array;
 		T[] newArray = new T[newSize];
@@ -155,16 +154,25 @@ public class LabelGUI : Editor {
 		return newArray;
 	}
 
-	private T[] remove<T>(T[] array, int indexToRemove) {
+	private static T[] remove<T>(T[] array, int indexToRemove) {
 		T[] newArray = new T[array.Length -1];
 		Array.Copy(array, newArray, indexToRemove);
 		Array.Copy(array, indexToRemove +1, newArray, indexToRemove, newArray.Length -indexToRemove);
 		return newArray;
 	}
 
-	private void moveDown<T>(ref T[] array, int index) {
+	private static void moveDown<T>(ref T[] array, int index) {
 		T temp = array[index];
 		array[index] = array[index +1];
 		array[index +1] = temp;
+	}
+
+	private static void listFoldout<T>(ref bool expanded, ref T[] array, string label) {
+		GUILayout.BeginHorizontal();
+		expanded = EditorGUILayout.Foldout(expanded, label);
+		int newSize = Math.Max(EditorGUILayout.IntField(array.Length), 0);
+		if (newSize != array.Length)
+			array = resize(array, newSize);
+		GUILayout.EndHorizontal();
 	}
 }
