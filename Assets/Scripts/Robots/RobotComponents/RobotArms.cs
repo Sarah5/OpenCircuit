@@ -18,7 +18,6 @@ public class RobotArms : AbstractRobotComponent {
     private Label proposedTarget = null;
 
     private bool proposedTargetStatus = false;
-
 	
 	void Start() {
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
@@ -28,7 +27,7 @@ public class RobotArms : AbstractRobotComponent {
 
 	void Update () {
 		BoxCollider collider = GetComponent<BoxCollider> ();
-		if (powerSource == null || !powerSource.drawPower (5 * Time.deltaTime)) {
+		if (powerSource == null || !powerSource.drawPower (powerDrawRate * Time.deltaTime)) {
 			collider.enabled = false;
 			dropTarget ();
 		}
@@ -38,6 +37,7 @@ public class RobotArms : AbstractRobotComponent {
 	}
 
     void FixedUpdate() {
+
         if (proposedTarget == null && target == null) {
             return;
         }

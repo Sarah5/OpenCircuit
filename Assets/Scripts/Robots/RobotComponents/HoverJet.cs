@@ -59,7 +59,7 @@ public class HoverJet : AbstractRobotComponent {
 			}
 
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
-			nav.enabled = powerSource.drawPower (5 * Time.deltaTime);
+			nav.enabled = powerSource.drawPower (powerDrawRate * Time.deltaTime);
 		//}
 		}
 	}
