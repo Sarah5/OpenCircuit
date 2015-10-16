@@ -6,11 +6,13 @@ using System;
 public class RechargeAction : Endeavour {
 
     private Label powerStation;
+	private Battery battery;
 
-    public RechargeAction(RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.gameObject) {
+    public RechargeAction(RobotController controller, List<Goal> goals, Label target, Battery battery) : base(controller, goals, target.gameObject) {
         powerStation = target;
         this.name = "recharge";
         requiredComponents = new System.Type[] { typeof(HoverJet) };
+		this.battery = battery;
     }
 
     public override void execute() {
@@ -39,7 +41,17 @@ public class RechargeAction : Endeavour {
         }
     }
 
+	public override float getPriority() {
+		float batteryPercent = ((battery.currentCapacity / battery.maximumCapacity)+.2f);
+		Debug.Log(batteryPercent);
+		return base.getPriority() / batteryPercent;
+	}
+
     protected override float getCost() {
+		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
+		if(jet != null) {
+			jet.calculatePathCost(powerStation);
+		}
         return 0f;
     }
 }

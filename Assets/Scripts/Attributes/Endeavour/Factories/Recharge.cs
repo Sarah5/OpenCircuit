@@ -5,9 +5,11 @@ using System;
 [System.Serializable]
 public class Recharge : EndeavourFactory {
     public override Endeavour constructEndeavour(RobotController controller) {
-        if (parent == null) {
+		Battery battery = controller.GetComponentInChildren<Battery>();
+		if (parent == null || battery == null) {
             return null;
         }
-        return new RechargeAction(controller, goals, parent);
+		
+        return new RechargeAction(controller, goals, parent, battery);
     }
 }

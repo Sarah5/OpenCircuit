@@ -44,7 +44,7 @@ public abstract class Endeavour : Prioritizable {
 
 	public virtual bool canExecute (Dictionary<System.Type, int> availableComponents) {
 		foreach (System.Type type in requiredComponents) {
-			if (!availableComponents.ContainsKey(type)) {
+			if (!availableComponents.ContainsKey(type) || availableComponents[type] < 1) {
 				return false;
 			}
 		}
@@ -59,7 +59,7 @@ public abstract class Endeavour : Prioritizable {
 		return true;
 	}
 
-	public float getPriority() {
+	public virtual float getPriority() {
 		float finalPriority = 0;
 		foreach (Goal goal in goals) {
 			Dictionary<GoalEnum, Goal> robotGoals = controller.getGoals ();
