@@ -12,6 +12,8 @@ public class RobotController : MonoBehaviour {
     public Goal[] goals;
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
+    public float reliability = 5f;
+
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
 	private Dictionary<System.Type, AbstractRobotComponent> componentMap = new Dictionary<System.Type, AbstractRobotComponent> ();

@@ -19,6 +19,7 @@ public class HoldAction : Endeavour {
 	}
 
 	public override void execute (){
+        base.execute();
 		RobotArms arms = controller.GetComponentInChildren<RobotArms> ();
 		if (arms != null) {
 			arms.attachTarget(target);
@@ -27,6 +28,7 @@ public class HoldAction : Endeavour {
 	}
 
 	public override void stopExecution(){
+        base.stopExecution();
 		RobotArms arms = controller.GetComponentInChildren<RobotArms> ();
 		if (arms != null) {
 			arms.setAvailability(true);

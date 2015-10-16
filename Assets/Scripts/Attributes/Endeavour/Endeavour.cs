@@ -11,6 +11,8 @@ public abstract class Endeavour : Prioritizable {
 
 	public const float BENEFIT_CONSTANT_TERM = 20f;
 
+    public float momentum = 1f;
+
 	public List<Goal> goals = new List<Goal>();
 	
 	protected string name;
@@ -21,6 +23,8 @@ public abstract class Endeavour : Prioritizable {
 
 	protected GameObject parent;
 
+    protected bool active = false;
+
 	public Endeavour(RobotController controller, List<Goal> goals, GameObject parent) {
 		this.controller = controller;
 		this.goals = goals;
@@ -28,8 +32,14 @@ public abstract class Endeavour : Prioritizable {
 	}
 
 	public abstract bool isStale();
-	public abstract void execute ();
-	public abstract void stopExecution();
+
+	public virtual void execute () {
+        active = true;
+    }
+
+    public virtual void stopExecution() {
+        active = false;
+    }
 	public abstract void onMessage(RobotMessage message);
 
 	public virtual bool canExecute (Dictionary<System.Type, int> availableComponents) {
@@ -59,6 +69,9 @@ public abstract class Endeavour : Prioritizable {
 			}
 		}
 		float cost = getCost ();
+        if (active) {
+            finalPriority += controller.reliability * momentum;
+        }
 		return finalPriority - cost + BENEFIT_CONSTANT_TERM;
 	}
 

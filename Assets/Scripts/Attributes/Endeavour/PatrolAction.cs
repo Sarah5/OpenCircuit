@@ -25,6 +25,7 @@ public class PatrolAction : Endeavour {
 	}
 
 	public override void execute (){
+        base.execute();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			currentDestination = getNearest(controller.transform.position);
@@ -34,6 +35,7 @@ public class PatrolAction : Endeavour {
 	}
 
 	public override void stopExecution(){
+        base.stopExecution();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			jet.setAvailability(true);
