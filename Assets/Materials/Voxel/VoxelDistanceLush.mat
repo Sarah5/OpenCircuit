@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: VoxelDistanceLush
   m_Shader: {fileID: 4800000, guid: 7f79771678d1c9b4d8202740c6c4f2fc, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: IS_BASE
   m_LightmapFlags: 5
   m_CustomRenderQueue: 2000
   stringTagMap: {}

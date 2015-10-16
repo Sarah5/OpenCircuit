@@ -12,6 +12,7 @@ namespace Vox {
 		public PhysicMaterial physicsMaterial;
         public Material grassMaterial;
         public float grassHeight = 0.2f;
+        public float grassMinFlatness = 0.4f;
 
 		// physics
 //		public float strength = 10;

@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: grassTest
   m_Shader: {fileID: 4800000, guid: 0710b86f3b8ff8c4aa762182f32355f3, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: IS_BASE
   m_LightmapFlags: 5
   m_CustomRenderQueue: 2000
   stringTagMap: {}
@@ -34,27 +34,6 @@ Material:
           name: _DetailNormalMap
         second:
           m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _TexGroundDif
-        second:
-          m_Texture: {fileID: 2800000, guid: 3b29f85268582524698735fec5a547d0, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _TexGrassDif
-        second:
-          m_Texture: {fileID: 2800000, guid: e2a05c2f6fdf50b44bcd7fa954862623, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: .800000012}
-      data:
-        first:
-          name: _TexWallDif
-        second:
-          m_Texture: {fileID: 2800000, guid: 3b29f85268582524698735fec5a547d0, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -99,6 +78,27 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexWallDif
+        second:
+          m_Texture: {fileID: 2800000, guid: 3b29f85268582524698735fec5a547d0, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexGroundDif
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _TexGrassDif
+        second:
+          m_Texture: {fileID: 2800000, guid: e2a05c2f6fdf50b44bcd7fa954862623, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: .800000012}
     m_Floats:
       data:
         first:
@@ -119,22 +119,10 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: .219999999
-      data:
-        first:
-          name: _Metallic
         second: 0
       data:
         first:
-          name: _Spacing
-        second: .200000003
-      data:
-        first:
-          name: _Depth
-        second: .800000012
-      data:
-        first:
-          name: _CutoffLevel
+          name: _Metallic
         second: 0
       data:
         first:
@@ -163,6 +151,22 @@ Material:
       data:
         first:
           name: _Mode
+        second: 0
+      data:
+        first:
+          name: _CutoffLevel
+        second: .5
+      data:
+        first:
+          name: _Spacing
+        second: 1
+      data:
+        first:
+          name: _Depth
+        second: .800000012
+      data:
+        first:
+          name: _ActualCutoffLevel
         second: 0
     m_Colors:
       data:

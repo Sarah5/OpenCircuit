@@ -259,8 +259,12 @@ namespace Vox {
 					int index = i -vertices.Count;
 					norms[i] = norms[index];
 					verts[i] = verts[index];
-					if (norms[i].y > 0)
+					if (norms[i].y > substance.grassMinFlatness) {
 						verts[i].y += substance.grassHeight;
+						uvs[i] = Vector2.zero;
+					} else {
+						uvs[i] = Vector2.up;
+					}
 				}
 			}
 
