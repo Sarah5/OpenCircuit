@@ -407,8 +407,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
   minimumFoostepOccurence: .600000024
   foostepSpeedScale: .0299999993
-  fallHurtSpeed: 15
-  fallDeathSpeed: 25
+  fallHurtSpeed: 12
+  fallDeathSpeed: 30
 --- !u!114 &11420722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -421,6 +421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightMaterial: {fileID: 2100000, guid: 75e3c3d48bf4fd64b8dac1330cf8cd73, type: 2}
+  grabDistance: 2.5
 --- !u!114 &11465136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -536,11 +537,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: fallDeathSpeed
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: fallHurtSpeed
-      value: 15
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: acceleration

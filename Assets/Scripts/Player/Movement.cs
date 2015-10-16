@@ -291,6 +291,10 @@ public class Movement : MonoBehaviour {
 	}
 
 	protected void doFallDamage(Collision collisionInfo) {
+		lastRelativeVelocity = collisionInfo.relativeVelocity;
+		lastRelativeVelocity.y = Mathf.Clamp(lastRelativeVelocity.y, -walkSpeedf, walkSpeedf); // to represent that the player can't run on walls.
+		lastRelativeVelocity.z = Mathf.Clamp(lastRelativeVelocity.z, -walkSpeedf *sprintMult *2, walkSpeedf * sprintMult *2); // to represent that the player can't run on walls.
+		lastRelativeVelocity.x = Mathf.Clamp(lastRelativeVelocity.x, -walkSpeedf * sprintMult *2, walkSpeedf * sprintMult *2); // to represent that the player can't run on walls.
 		Vector3 relativeVelocity = collisionInfo.relativeVelocity - lastRelativeVelocity;
 		float relativeSpeed = Mathf.Max(relativeVelocity.magnitude, 0.01f);
 		float impulse = Mathf.Max(collisionInfo.impulse.magnitude, 0.01f);
@@ -313,10 +317,6 @@ public class Movement : MonoBehaviour {
 				//pastForces[pastForces.Count - 1] *= 0.5f;
 			}
 		}
-		lastRelativeVelocity = collisionInfo.relativeVelocity;
-		lastRelativeVelocity.y = Mathf.Clamp(lastRelativeVelocity.y, -walkSpeedf, walkSpeedf); // to represent that the player can't run on walls.
-		lastRelativeVelocity.z = Mathf.Clamp(lastRelativeVelocity.z, -walkSpeedf *sprintMult, walkSpeedf * sprintMult); // to represent that the player can't run on walls.
-		lastRelativeVelocity.x = Mathf.Clamp(lastRelativeVelocity.x, -walkSpeedf * sprintMult, walkSpeedf * sprintMult); // to represent that the player can't run on walls.
     }
 
 	public void setForward(float percent) {

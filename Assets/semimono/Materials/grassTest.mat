@@ -89,7 +89,7 @@ Material:
         first:
           name: _TexGroundDif
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: df164a979dcbfa14b8d6926045dc15c7, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -159,7 +159,7 @@ Material:
       data:
         first:
           name: _Spacing
-        second: 1
+        second: .200000003
       data:
         first:
           name: _Depth
@@ -168,6 +168,10 @@ Material:
         first:
           name: _ActualCutoffLevel
         second: 0
+      data:
+        first:
+          name: _MinFullFlatness
+        second: .699999988
     m_Colors:
       data:
         first:
