@@ -136,7 +136,8 @@ public class RobotController : MonoBehaviour {
 				staleEndeavours.Add (action);	
 			} else {
 				//print("\t\t++" + action.getName());
-				endeavourQueue.Enqueue (action);
+				//endeavourQueue.Enqueue (action);
+				availableEndeavours.Add(action);
 			}
 		}
 		//print("\tAvailable Endeavours");
@@ -165,6 +166,7 @@ public class RobotController : MonoBehaviour {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t++" + action.getName());
 				proposedEndeavours.Add(action);
+				availableEndeavours.Remove(action);
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();

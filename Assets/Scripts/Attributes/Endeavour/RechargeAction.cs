@@ -42,15 +42,14 @@ public class RechargeAction : Endeavour {
     }
 
 	public override float getPriority() {
-		float batteryPercent = ((battery.currentCapacity / battery.maximumCapacity)+.2f);
-		Debug.Log(batteryPercent);
-		return base.getPriority() / batteryPercent;
+		float batteryDrained = 2 - ((battery.currentCapacity / battery.maximumCapacity)*2f);
+		return base.getPriority() * batteryDrained;
 	}
 
     protected override float getCost() {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(jet != null) {
-			jet.calculatePathCost(powerStation);
+			return jet.calculatePathCost(powerStation);
 		}
         return 0f;
     }
