@@ -17,14 +17,19 @@ public class Grab : MonoBehaviour {
 		myPlayer = this.GetComponent<Player> ();
 	}
 
-	public bool GrabObject(GameObject obj, Vector3 holdPoint) {
+	public bool grabObject(GameObject obj, Vector3 holdPoint) {
+		if (!canGrabObject(obj))
+			return false;
+		holdObject(obj, holdPoint);
+		return true;
+	}
+
+	public bool canGrabObject(GameObject obj) {
 		if (grabbed != null) {
 			return false;
 		}
-		if (obj != null) {
-			return holdObject(obj, holdPoint);
-		}
-		else return false;
+		Rigidbody rb = obj.GetComponent<Rigidbody>();
+        return rb != null && !rb.isKinematic;
 	}
 
 //	public void pocketObject(GameObject obj) {
@@ -59,9 +64,7 @@ public class Grab : MonoBehaviour {
 		grabbed = null;
 	}
 
-	public bool holdObject(GameObject obj, Vector3 holdPoint) {
-		if (obj.GetComponent<Rigidbody>() == null)
-			return false;
+	protected void holdObject(GameObject obj, Vector3 holdPoint) {
 		grabbed = obj;
 
 		Physics.IgnoreCollision(GetComponent<Collider>(), grabbed.GetComponent<Collider>(), true);
@@ -88,7 +91,6 @@ public class Grab : MonoBehaviour {
 		holdJoint.projectionAngle = 0;
 		holdJoint.xDrive = holdJoint.yDrive = holdJoint.zDrive = holdJoint.slerpDrive = driver;
 		holdJoint.targetPosition = Vector3.zero;
-		return true;
 	}
 
 	public bool hasObject() {

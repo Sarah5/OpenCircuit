@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Highlight
-  m_Shader: {fileID: 4800000, guid: 1dfe3f87c098b5646a27400b3a60dccf, type: 3}
+  m_Shader: {fileID: 4800000, guid: 42285bf8c93089548a29f33cb3cbdc4e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -131,6 +131,14 @@ Material:
         first:
           name: _CutoffLevel
         second: .800000012
+      data:
+        first:
+          name: _Outline
+        second: .00700000022
+      data:
+        first:
+          name: _OutlineWidth
+        second: .00499999989
     m_Colors:
       data:
         first:
@@ -140,3 +148,11 @@ Material:
         first:
           name: _Color
         second: {r: 0, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _OutlineColor
+        second: {r: 0, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _FillColor
+        second: {r: 1, g: .99290061, b: .742647052, a: .0627451017}

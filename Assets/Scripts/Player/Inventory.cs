@@ -56,6 +56,10 @@ public class Inventory : MonoBehaviour {
         return true;
     }
 
+	public bool canTake(GameObject itemObject) {
+		return itemObject.GetComponent<Item>() != null;
+	}
+
     public void drop(Item item) {
         removeItem(item);
         item.onDrop(this);
