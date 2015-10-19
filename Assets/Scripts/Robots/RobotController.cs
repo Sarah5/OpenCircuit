@@ -164,13 +164,13 @@ public class RobotController : MonoBehaviour {
 		while (endeavourQueue.Count > 0) {
 			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
-				//print("\t\t++" + action.getName());
+				//print("\t\t++" + action.getName() + "->" + action.getPriority());
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
-				//print("\t\t--" + action.getName());
+				//print("\t\t--" + action.getName() + "->" + action.getPriority());
 			}
 		}
 		

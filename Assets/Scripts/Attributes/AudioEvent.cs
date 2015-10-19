@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AudioEvent {
+public class AudioEvent : RobotMessage {
 
     private Vector3 source;
     private Tag descriptor;
-
-    public AudioEvent(Vector3 source, Tag descriptor) {
+    
+    public AudioEvent(Vector3 source, Tag descriptor) : base("audioEvent", "sound heard", null) {
         this.source = source;
         this.descriptor = descriptor;
+    }
+
+    public void broadcast(float volume) {
+        foreach (AudioSensor sensor in AudioSensor.sensors) {
+           // Debug.Log(30f * volume);
+            if (Vector3.Distance(sensor.transform.position, source) < (30f * volume)) {
+                sensor.processAudioEvent(this);
+            }
+        }
     }
 
     public Tag getTag() {
@@ -18,5 +27,4 @@ public class AudioEvent {
     public Vector3 getSourcePosition() {
         return source;
     }
-
 }
