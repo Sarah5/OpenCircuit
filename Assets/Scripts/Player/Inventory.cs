@@ -12,17 +12,19 @@ public class Inventory : MonoBehaviour {
 
 	protected Player player;
     protected Dictionary<System.Type, List<Item>> items;
-    protected Item equipped;
+	protected Item equipped;
     protected System.Type[] slots;
     protected int selecting;
     protected int highlighted;
     protected List<System.Type> unselectedItems;
     protected Vector2 mousePos;
+	protected List<System.Type> contextStack;
 
     void Start () {
         items = new Dictionary<System.Type, List<Item>>();
-        slots = new System.Type[3];
-        equipped = null;
+		slots = new System.Type[3];
+		contextStack = new List<System.Type>();
+		equipped = null;
         selecting = -1;
         unselectedItems = new List<System.Type>();
 		player = GetComponent<Player>();
@@ -90,6 +92,10 @@ public class Inventory : MonoBehaviour {
     }
 
     public void useEquipped() {
+		if (inContext()) {
+			getItem(contextStack[0]).invoke(this);
+			return;
+		}
         if (selecting >= 0) {
             slots[selecting] = (highlighted < 0)? null: unselectedItems[highlighted];
             mousePos = Vector3.zero;
@@ -99,6 +105,16 @@ public class Inventory : MonoBehaviour {
             return;
         equipped.invoke(this);
     }
+
+	public void pushContext(System.Type contextItem) {
+		contextStack.Insert(0, contextItem);
+		selecting = -1;
+    }
+
+	public void popContext(System.Type contextItem) {
+		if (contextStack.Count > 0 && contextStack[0] == contextItem)
+			contextStack.RemoveAt(0);
+	}
 
     public void doSelect(int slot) {
         if (selecting != slot) {
@@ -110,7 +126,9 @@ public class Inventory : MonoBehaviour {
         if (selecting < 0)
             return;
         unselectedItems.Clear();
-        unselectedItems.AddRange(items.Keys);
+		foreach(System.Type type in items.Keys)
+			if (!type.IsAssignableFrom(typeof(ContextItem)))
+				unselectedItems.Add(type);
         foreach(System.Type type in slots)
             if (type != null)
                 unselectedItems.Remove(type);
@@ -133,6 +151,10 @@ public class Inventory : MonoBehaviour {
 	public bool contains(Item item) {
 		return getItemList(item.GetType()).Contains(item);
 	}
+
+	public bool inContext() {
+		return contextStack.Count > 0;
+    }
 
     protected void showSlottedItems() {
         float offset = (Screen.width / 2f) - (iconDimensions.x * 1.5f + iconSpacing);

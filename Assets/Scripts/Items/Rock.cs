@@ -25,6 +25,8 @@ public class Rock : MonoBehaviour {
 		source = GetComponent<AudioSource>();
 		if (source == null)
 			source = gameObject.AddComponent<AudioSource>();
+		source.maxDistance = 30;
+		source.spatialBlend = 1;
 	}
 
 	public void OnDestroy() {
@@ -33,7 +35,11 @@ public class Rock : MonoBehaviour {
 
 	public void OnCollisionEnter(Collision col) {
 		float volume = col.impulse.magnitude *this.volume;
-		if (volume > volumeThreshold)
-			source.PlayOneShot(clip, volume);
+		if (volume > volumeThreshold) {
+			source.volume = volume;
+			if (source.clip == null)
+				source.clip = clip;
+			source.Play(0);
+		}
 	}
 }

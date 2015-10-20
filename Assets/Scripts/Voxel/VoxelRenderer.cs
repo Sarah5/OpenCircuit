@@ -260,8 +260,9 @@ namespace Vox {
 					norms[i] = norms[index];
 					verts[i] = verts[index];
 					if (norms[i].y > substance.grassMinFlatness) {
-						verts[i].y += substance.grassHeight;
-						uvs[i] = Vector2.zero;
+						float factor = (norms[i].y -substance.grassMinFlatness +0.1f) /(1 - substance.grassMinFlatness +0.1f);
+						verts[i].y += substance.grassHeight *factor;
+						uvs[i] = new Vector2(0, 1 -factor);
 					} else {
 						uvs[i] = Vector2.up;
 					}
