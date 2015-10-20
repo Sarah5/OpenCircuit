@@ -15,7 +15,6 @@ public class RobotController : MonoBehaviour {
     public float reliability = 5f;
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
-	private List<Endeavour> staleEndeavours = new List<Endeavour> ();
 	private Dictionary<System.Type, AbstractRobotComponent> componentMap = new Dictionary<System.Type, AbstractRobotComponent> ();
 
 	MentalModel mentalModel = new MentalModel ();
@@ -128,6 +127,7 @@ public class RobotController : MonoBehaviour {
 		//print("**************EVALUATE**************");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
+		List<Endeavour> staleEndeavours = new List<Endeavour>();
 		//print("\tCurrent Endeavours");
 		foreach (Endeavour action in currentEndeavours) {
 			if (action.isStale ()) {
@@ -142,13 +142,12 @@ public class RobotController : MonoBehaviour {
 		}
 		//print("\tAvailable Endeavours");
 		foreach (Endeavour action in availableEndeavours) {
-			if (!action.isStale()) {
-				//print("\t\t++" + action.getName());
-				endeavourQueue.Enqueue(action);
-			}
-			else {
+			if (action.isStale()) {
 				//print("\t\t--" + action.getName());
 				staleEndeavours.Add(action);
+			} else {
+				//print("\t\t++" + action.getName());
+				endeavourQueue.Enqueue(action);
 			}
 		}
 		
@@ -156,7 +155,6 @@ public class RobotController : MonoBehaviour {
 			availableEndeavours.Remove(action);
 			currentEndeavours.Remove(action);
 		}
-		staleEndeavours.Clear ();
 		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
 		
 		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
