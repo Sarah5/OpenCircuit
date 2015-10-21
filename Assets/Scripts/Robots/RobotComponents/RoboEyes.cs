@@ -95,7 +95,7 @@ public class RoboEyes : AbstractRobotComponent {
 
 	private void drawCircle() {
 		Vector3 pos;
-		print("angle: " + Vector3.Angle(transform.forward, Vector3.forward));
+		//print("angle: " + Vector3.Angle(transform.forward, Vector3.forward));
 		float theta = 0f;
 		float radius = sightDistance;
 

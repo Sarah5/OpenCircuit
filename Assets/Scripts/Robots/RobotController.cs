@@ -164,6 +164,31 @@ public class RobotController : MonoBehaviour {
 			//Rect rectangle = new Rect(pos.x - 100, Screen.height - pos.y - ((lines.Count + 1) * lineHeight), 200, lineHeight * (lines.Count + 1));
 			Rect rectangle = new Rect(pos.x - size.x /2, Screen.height - pos.y -size.y, size.x, size.y);
 			GUI.TextArea(rectangle, buffer, debugStyle);
+			
+
+			Battery battery = GetComponentInChildren<Battery>();
+			if (battery != null) {
+				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
+
+				Texture2D red = new Texture2D(1, 1);
+				red.SetPixel(0, 0, Color.red);
+				red.Apply();
+
+				Texture2D green = new Texture2D(1, 1);
+				green.SetPixel(0, 0, Color.green);
+				green.Apply();
+
+				//Texture2D temp = GUI.skin.box.normal.background;
+				GUI.skin.box.normal.background = red;
+				GUI.Box(progressBar, GUIContent.none);
+				//GUI.skin.box.normal.background = temp;
+
+				GUI.skin.box.normal.background = green;
+
+				Rect progressBarFull = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x * (battery.currentCapacity/battery.maximumCapacity), 20);
+				GUI.Box(progressBarFull, GUIContent.none);
+			}
+
 			//GUI.Label(rectangle, buffer);
 		}
 	}
