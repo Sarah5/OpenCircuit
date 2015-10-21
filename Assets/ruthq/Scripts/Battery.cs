@@ -7,7 +7,7 @@ public class Battery : AbstractPowerSource {
 	public float maximumCapacity = 100;
 	public float currentCapacity = 100;
 
-	public override bool drawPower (float amount){
+	public override bool hasPower(float amount){
 		if (currentCapacity < amount){
 			return false;
 		}
