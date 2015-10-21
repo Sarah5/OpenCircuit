@@ -130,6 +130,8 @@ public class RobotController : MonoBehaviour {
 	}*/
 
 	List<string> lines = new List<string>();
+
+#if UNITY_EDITOR
 	void OnGUI() {
 		if(debug) {
 			Camera cam = Camera.current;
@@ -153,15 +155,19 @@ public class RobotController : MonoBehaviour {
 			for(int i = 0; i < lines.Count; i++) {
 				buffer += lines[i].Trim() + "\n";//.PadRight(22);
 			}
-			int lineHeight = 13;
-
-			Font font = Resources.GetBuiltinResource<Font>("Courier.ttf");
-			GUI.skin.font = font;
-			Rect rectangle = new Rect(pos.x - 50, Screen.height - pos.y - ((lines.Count + 1) * lineHeight), 160, lineHeight * (lines.Count + 1));
-			GUI.TextArea(rectangle, buffer);
+			
+			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
+			debugStyle.font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+			debugStyle.fontSize = 14;
+			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
+			size.y -= debugStyle.lineHeight;
+			//Rect rectangle = new Rect(pos.x - 100, Screen.height - pos.y - ((lines.Count + 1) * lineHeight), 200, lineHeight * (lines.Count + 1));
+			Rect rectangle = new Rect(pos.x - size.x /2, Screen.height - pos.y -size.y, size.x, size.y);
+			GUI.TextArea(rectangle, buffer, debugStyle);
 			//GUI.Label(rectangle, buffer);
 		}
 	}
+#endif
 
 	private void evaluateActions() {
 		List<string> debugText = new List<string>();
