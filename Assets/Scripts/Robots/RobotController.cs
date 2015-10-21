@@ -7,7 +7,9 @@ public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
-    
+
+	public bool debug = false;
+
 	public Label[] locations;
     public Goal[] goals;
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
@@ -123,8 +125,71 @@ public class RobotController : MonoBehaviour {
 		return trackedTargets;
 	}
 
+	List<string> lines = new List<string>();
+
+#if UNITY_EDITOR
+	void OnGUI() {
+		if(debug) {
+			Camera cam = Camera.current;
+			Vector3 pos;
+			if(cam != null) {
+				Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
+				pos = cam.WorldToScreenPoint(worldTextPos);
+				if(Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
+					return;
+				}
+			} else {
+				return;
+			}
+
+			while(lines.Count > 8) {
+				lines.RemoveAt(0);
+			}
+
+			GUI.enabled = true;
+			string buffer = "";
+			for(int i = 0; i < lines.Count; i++) {
+				buffer += lines[i].Trim() + "\n";
+			}
+			
+			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
+			debugStyle.font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+			debugStyle.fontSize = 14;
+			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
+			size.y -= debugStyle.lineHeight;
+			Rect rectangle = new Rect(pos.x - size.x /2, Screen.height - pos.y -size.y, size.x, size.y);
+			GUI.TextArea(rectangle, buffer, debugStyle);
+			
+
+			Battery battery = GetComponentInChildren<Battery>();
+			if (battery != null) {
+				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
+
+				Texture2D red = new Texture2D(1, 1);
+				red.SetPixel(0, 0, Color.red);
+				red.Apply();
+
+				Texture2D green = new Texture2D(1, 1);
+				green.SetPixel(0, 0, Color.green);
+				green.Apply();
+
+				GUI.skin.box.normal.background = red;
+				GUI.Box(progressBar, GUIContent.none);
+
+				GUI.skin.box.normal.background = green;
+
+				Rect progressBarFull = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x * (battery.currentCapacity/battery.maximumCapacity), 20);
+				GUI.Box(progressBarFull, GUIContent.none);
+			}
+		}
+	}
+#endif
+
 	private void evaluateActions() {
+		List<string> debugText = new List<string>();
 		//print("**************EVALUATE**************");
+		//drawText("****EVALUATE****");
+		debugText.Add("****EVALUATE****");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
 		List<Endeavour> staleEndeavours = new List<Endeavour>();
@@ -132,10 +197,12 @@ public class RobotController : MonoBehaviour {
 		foreach (Endeavour action in currentEndeavours) {
 			if (action.isStale ()) {
 				//print("\t\t--" + action.getName());
+				//drawText("\t\t--" + action.getName());
 				action.stopExecution ();
 				staleEndeavours.Add (action);	
 			} else {
 				//print("\t\t++" + action.getName());
+				//drawText("\t\t++" + action.getName());
 				//endeavourQueue.Enqueue (action);
 				availableEndeavours.Add(action);
 			}
@@ -163,12 +230,18 @@ public class RobotController : MonoBehaviour {
 			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t++" + action.getName() + "->" + action.getPriority());
+				//drawText("\t\t++" + action.getName() + "->" + action.getPriority());
+				debugText.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t--" + action.getName() + "->" + action.getPriority());
+				//drawText("\t\t--" + action.getName() + "->" + action.getPriority());
+				string number = action.getPriority().ToString("0.0##");
+				debugText.Add("-" + action.getName().PadRight(12) + "->" + number);
+
 			}
 		}
 		
@@ -191,6 +264,8 @@ public class RobotController : MonoBehaviour {
 			action.execute();
 		}
 		currentEndeavours = proposedEndeavours;
+		if (debug)
+		lines = debugText;
 	}
 
 	private Dictionary<System.Type, int> getComponentUsageMap() {
