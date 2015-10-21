@@ -131,33 +131,36 @@ public class RobotController : MonoBehaviour {
 
 	List<string> lines = new List<string>();
 	void OnGUI() {
-		Camera cam = Camera.current;
-		Vector3 pos;
-		if(cam != null) {
-			Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
-			pos = cam.WorldToScreenPoint(worldTextPos);
-			if (Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
+		if(debug) {
+			Camera cam = Camera.current;
+			Vector3 pos;
+			if(cam != null) {
+				Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
+				pos = cam.WorldToScreenPoint(worldTextPos);
+				if(Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
+					return;
+				}
+			} else {
 				return;
 			}
-		} else {
-			return;
+
+			while(lines.Count > 8) {
+				lines.RemoveAt(0);
+			}
+
+			GUI.enabled = true;
+			string buffer = "";
+			for(int i = 0; i < lines.Count; i++) {
+				buffer += lines[i].Trim() + "\n";//.PadRight(22);
+			}
+			int lineHeight = 13;
+
+			Font font = Resources.GetBuiltinResource<Font>("Courier.ttf");
+			GUI.skin.font = font;
+			Rect rectangle = new Rect(pos.x - 50, Screen.height - pos.y - ((lines.Count + 1) * lineHeight), 160, lineHeight * (lines.Count + 1));
+			GUI.TextArea(rectangle, buffer);
+			//GUI.Label(rectangle, buffer);
 		}
-
-		while(lines.Count > 8) {
-			lines.RemoveAt(0);
-		}
-
-		GUI.enabled = true;
-		string buffer = "";
-		for (int i = 0; i < lines.Count; i++) {
-			buffer += lines[i].Trim() + "\n";//.PadRight(22);
-		}
-		int lineHeight = 15;
-
-		Font font = Resources.GetBuiltinResource<Font>("Courier.ttf");
-		GUI.skin.font = font;
-		GUI.Label(new Rect(pos.x - 50, Screen.height - pos.y -(lines.Count * lineHeight), 160, 130), buffer);
-
 	}
 
 	private void evaluateActions() {
