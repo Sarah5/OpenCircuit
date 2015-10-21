@@ -161,10 +161,10 @@ public class RobotController : MonoBehaviour {
 	}
 
 	private void evaluateActions() {
-		List<string> debug = new List<string>();
+		List<string> debugText = new List<string>();
 		//print("**************EVALUATE**************");
 		//drawText("****EVALUATE****");
-		debug.Add("****EVALUATE****");
+		debugText.Add("****EVALUATE****");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
 		List<Endeavour> staleEndeavours = new List<Endeavour>();
@@ -206,7 +206,7 @@ public class RobotController : MonoBehaviour {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t++" + action.getName() + "->" + action.getPriority());
 				//drawText("\t\t++" + action.getName() + "->" + action.getPriority());
-				debug.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
+				debugText.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
 			}
@@ -215,7 +215,7 @@ public class RobotController : MonoBehaviour {
 				//print("\t\t--" + action.getName() + "->" + action.getPriority());
 				//drawText("\t\t--" + action.getName() + "->" + action.getPriority());
 				string number = action.getPriority().ToString("0.0##");
-				debug.Add("-" + action.getName().PadRight(12) + "->" + number);
+				debugText.Add("-" + action.getName().PadRight(12) + "->" + number);
 
 			}
 		}
@@ -239,7 +239,8 @@ public class RobotController : MonoBehaviour {
 			action.execute();
 		}
 		currentEndeavours = proposedEndeavours;
-		lines = debug;
+		if (debug)
+		lines = debugText;
 	}
 
 	private Dictionary<System.Type, int> getComponentUsageMap() {
