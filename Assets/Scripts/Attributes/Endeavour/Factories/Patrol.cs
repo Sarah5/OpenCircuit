@@ -83,7 +83,6 @@ public class Patrol : EndeavourFactory {
 	public override void drawGizmo() {
         //Color COLOR_ONE = Color.black;
         //Color COLOR_TWO = Color.green;
-		Color prevColor = Gizmos.color;
         Gizmos.color = Color.black;
 
 		for(int i = 0; i < getPoints().Count; ++i) {
@@ -113,7 +112,6 @@ public class Patrol : EndeavourFactory {
                 }
             }
         }
-		Gizmos.color = prevColor;
 	}
 #endif
 }
