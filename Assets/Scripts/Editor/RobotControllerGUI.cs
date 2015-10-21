@@ -16,6 +16,7 @@ public class RobotControllerGUI : Editor {
 
 	public override void OnInspectorGUI() {
         serializedObject.Update();
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("debug"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("reliability"));
         SerializedProperty goals = serializedObject.FindProperty("goals");
         status = UnityEditor.EditorGUILayout.Foldout(status, "Goals");

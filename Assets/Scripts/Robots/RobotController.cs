@@ -7,7 +7,9 @@ public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
-    
+
+	public bool debug = false;
+
 	public Label[] locations;
     public Goal[] goals;
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
@@ -123,8 +125,46 @@ public class RobotController : MonoBehaviour {
 		return trackedTargets;
 	}
 
+	/*public void drawText(string text) {
+		lines.Add(text);
+	}*/
+
+	List<string> lines = new List<string>();
+	void OnGUI() {
+		Camera cam = Camera.current;
+		Vector3 pos;
+		if(cam != null) {
+			Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
+			pos = cam.WorldToScreenPoint(worldTextPos);
+			if (Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
+				return;
+			}
+		} else {
+			return;
+		}
+
+		while(lines.Count > 8) {
+			lines.RemoveAt(0);
+		}
+
+		GUI.enabled = true;
+		string buffer = "";
+		for (int i = 0; i < lines.Count; i++) {
+			buffer += lines[i].Trim() + "\n";//.PadRight(22);
+		}
+		int lineHeight = 15;
+
+		Font font = Resources.GetBuiltinResource<Font>("Courier.ttf");
+		GUI.skin.font = font;
+		GUI.Label(new Rect(pos.x - 50, Screen.height - pos.y -(lines.Count * lineHeight), 160, 130), buffer);
+
+	}
+
 	private void evaluateActions() {
+		List<string> debug = new List<string>();
 		//print("**************EVALUATE**************");
+		//drawText("****EVALUATE****");
+		debug.Add("****EVALUATE****");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
 		List<Endeavour> staleEndeavours = new List<Endeavour>();
@@ -132,10 +172,12 @@ public class RobotController : MonoBehaviour {
 		foreach (Endeavour action in currentEndeavours) {
 			if (action.isStale ()) {
 				//print("\t\t--" + action.getName());
+				//drawText("\t\t--" + action.getName());
 				action.stopExecution ();
 				staleEndeavours.Add (action);	
 			} else {
 				//print("\t\t++" + action.getName());
+				//drawText("\t\t++" + action.getName());
 				//endeavourQueue.Enqueue (action);
 				availableEndeavours.Add(action);
 			}
@@ -163,12 +205,18 @@ public class RobotController : MonoBehaviour {
 			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t++" + action.getName() + "->" + action.getPriority());
+				//drawText("\t\t++" + action.getName() + "->" + action.getPriority());
+				debug.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
 				//print("\t\t--" + action.getName() + "->" + action.getPriority());
+				//drawText("\t\t--" + action.getName() + "->" + action.getPriority());
+				string number = action.getPriority().ToString("0.0##");
+				debug.Add("-" + action.getName().PadRight(12) + "->" + number);
+
 			}
 		}
 		
@@ -191,6 +239,7 @@ public class RobotController : MonoBehaviour {
 			action.execute();
 		}
 		currentEndeavours = proposedEndeavours;
+		lines = debug;
 	}
 
 	private Dictionary<System.Type, int> getComponentUsageMap() {
