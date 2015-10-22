@@ -43,7 +43,7 @@ namespace Vox {
 						control.renderers.Remove(index);
 						if (control.getHead() != null) {
 							VoxelHolder block = control.getHead().get(index);
-							if (block.GetType() == typeof(VoxelBlock))
+							if (block.GetType() == typeof(VoxelBlock) && ((VoxelBlock)block).renderer == this)
 								((VoxelBlock)block).renderer = null;
 						}
 					}

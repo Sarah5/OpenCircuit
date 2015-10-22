@@ -14,7 +14,7 @@ public class VoxelEditorGUI : Editor {
 	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle"), new GUIContent("Smooth")};
 	protected static readonly GUIContent[] generationModes = {new GUIContent("Flat"), new GUIContent("Sphere"), new GUIContent("Procedural"), new GUIContent("Heightmaps")};
 
-	private SerializedObject ob;
+	//private SerializedObject ob;
 	private GUIStyle labelBigFont = null;
 	private GUIStyle foldoutBigFont = null;
 	private GUIStyle buttonBigFont = null;
@@ -35,7 +35,7 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public void OnEnable() {
-		ob = new SerializedObject(target);
+		//ob = new SerializedObject(target);
 		setupGeneration = false;
 		showSubstances = false;
 		showMasks = true;
@@ -55,8 +55,9 @@ public class VoxelEditorGUI : Editor {
 		tabsBigFont = new GUIStyle(GUI.skin.button);
 		tabsBigFont.fixedHeight = 30;
 
+		serializedObject.Update();
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		ob.UpdateIfDirtyOrScript();
+		serializedObject.UpdateIfDirtyOrScript();
 
 		if (editor.generating()) {
 			GUILayout.Label("Generating...", labelBigFont);
@@ -86,7 +87,7 @@ public class VoxelEditorGUI : Editor {
 		}
 
 		// finally, apply the changes
-		ob.ApplyModifiedProperties();
+		serializedObject.ApplyModifiedProperties();
 	}
 
 	public void OnSceneGUI() {
@@ -122,7 +123,7 @@ public class VoxelEditorGUI : Editor {
 		// mask list
 		showMasks = doBigFoldout(showMasks, "Masks");
 		if (showMasks) {
-			SerializedProperty voxelMasks = ob.FindProperty("masks");
+			SerializedProperty voxelMasks = serializedObject.FindProperty("masks");
 			// EditorGUILayout.PropertyField(voxelMasks, new GUIContent("Sculpting Masks"), true);
 			InspectorList.doArrayGUISimple(ref voxelMasks);
 		}
@@ -254,7 +255,7 @@ public class VoxelEditorGUI : Editor {
 //		}
 
 		// do substances
-		doSubstancesGUI(ob);
+		doSubstancesGUI(serializedObject);
 
 
 		// show statistics
@@ -274,7 +275,7 @@ public class VoxelEditorGUI : Editor {
 		doGeneralPropertiesGUI(generationParameters);
 
 		// substances
-        doSubstancesGUI(ob);
+        doSubstancesGUI(serializedObject);
 
         // generation mode
         GUILayout.Label("Generation Mode", labelBigFont);
@@ -404,9 +405,9 @@ public class VoxelEditorGUI : Editor {
     }
 
     protected void doHeightmapGenerationGUI() {
-		SerializedProperty heightmaps = ob.FindProperty("heightmaps");
+		SerializedProperty heightmaps = serializedObject.FindProperty("heightmaps");
 		EditorGUILayout.PropertyField(heightmaps, new GUIContent("Height Maps"), true);
-		SerializedProperty heightmapSubstances = ob.FindProperty("heightmapSubstances");
+		SerializedProperty heightmapSubstances = serializedObject.FindProperty("heightmapSubstances");
 		EditorGUILayout.PropertyField(heightmapSubstances, new GUIContent("Height Map Substances"), true);
     }
 

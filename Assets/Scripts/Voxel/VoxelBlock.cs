@@ -291,7 +291,8 @@ namespace Vox {
 
 		public void clearSubRenderers(bool clearSelf, VoxelTree control) {
 			if (clearSelf && renderer != null) {
-				control.enqueueJob(new DropRendererJob(renderer));
+				//control.enqueueJob(new DropRendererJob(renderer));
+				renderer.clear();
 				renderer = null;
 				return;
 			}

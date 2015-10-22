@@ -95,7 +95,6 @@ public class RoboEyes : AbstractRobotComponent {
 
 	private void drawCircle() {
 		Vector3 pos;
-		print("angle: " + Vector3.Angle(transform.forward, Vector3.forward));
 		float theta = 0f;
 		float radius = sightDistance;
 
@@ -106,22 +105,19 @@ public class RoboEyes : AbstractRobotComponent {
 		  x += gameObject.transform.position.x;
 		  z += gameObject.transform.position.z;
 		  pos = new Vector3(x, transform.position.y, z);
-		  //pos = rotate * pos;
 		  lineRenderer.SetPosition(i, pos);
 		}
 	}
 
 	private void drawLine(Vector3 start, Vector3 end, Color color) {
 		LineRenderer line = new GameObject("Line ").AddComponent<LineRenderer>();
-		//line.transform.parent = container;
 		line.SetWidth(0.025F, 0.025F);
 		line.SetColors(color, color);
 		line.SetVertexCount(2);
 		line.SetPosition(0, start);
 		line.SetPosition(1, end);
+		line.material.shader = (Shader.Find("Unlit/Color"));
 		line.material.color = color;
-		//Material whiteDiffuseMat = new Material(Shader.Find("Unlit/Texture"));
-		//line.material = whiteDiffuseMat;
 		lines.Add(line.gameObject);
 	}
 }
