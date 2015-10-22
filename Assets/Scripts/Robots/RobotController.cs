@@ -125,7 +125,7 @@ public class RobotController : MonoBehaviour {
 		return trackedTargets;
 	}
 
-	List<string> lines = new List<string>();
+	public List<string> lines = new List<string>();
 
 #if UNITY_EDITOR
 	void OnGUI() {
