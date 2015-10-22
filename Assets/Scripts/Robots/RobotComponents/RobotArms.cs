@@ -27,7 +27,7 @@ public class RobotArms : AbstractRobotComponent {
 
 	void Update () {
 		BoxCollider collider = GetComponent<BoxCollider> ();
-		if (powerSource == null || !powerSource.drawPower (powerDrawRate * Time.deltaTime)) {
+		if (powerSource == null || !powerSource.hasPower (powerDrawRate * Time.deltaTime)) {
 			collider.enabled = false;
 			dropTarget ();
 		}
