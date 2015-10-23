@@ -166,11 +166,16 @@ public class RobotController : MonoBehaviour {
 				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
 
 				Texture2D red = new Texture2D(1, 1);
-				red.SetPixel(0, 0, Color.red);
+				Color transparentRed = new Color(1f, .1f, .1f, .4f);
+
+				red.SetPixel(0, 0, transparentRed);
 				red.Apply();
 
 				Texture2D green = new Texture2D(1, 1);
-				green.SetPixel(0, 0, Color.green);
+				Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
+				green.SetPixel(0, 0, transparentGreen);
+				green.alphaIsTransparency = true;
+			
 				green.Apply();
 
 				GUI.skin.box.normal.background = red;
