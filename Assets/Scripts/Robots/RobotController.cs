@@ -125,11 +125,7 @@ public class RobotController : MonoBehaviour {
 		return trackedTargets;
 	}
 
-	/*public void drawText(string text) {
-		lines.Add(text);
-	}*/
-
-	List<string> lines = new List<string>();
+	public List<string> lines = new List<string>();
 
 #if UNITY_EDITOR
 	void OnGUI() {
@@ -153,7 +149,7 @@ public class RobotController : MonoBehaviour {
 			GUI.enabled = true;
 			string buffer = "";
 			for(int i = 0; i < lines.Count; i++) {
-				buffer += lines[i].Trim() + "\n";//.PadRight(22);
+				buffer += lines[i].Trim() + "\n";
 			}
 			
 			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
@@ -161,10 +157,35 @@ public class RobotController : MonoBehaviour {
 			debugStyle.fontSize = 14;
 			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
 			size.y -= debugStyle.lineHeight;
-			//Rect rectangle = new Rect(pos.x - 100, Screen.height - pos.y - ((lines.Count + 1) * lineHeight), 200, lineHeight * (lines.Count + 1));
 			Rect rectangle = new Rect(pos.x - size.x /2, Screen.height - pos.y -size.y, size.x, size.y);
 			GUI.TextArea(rectangle, buffer, debugStyle);
-			//GUI.Label(rectangle, buffer);
+			
+
+			Battery battery = GetComponentInChildren<Battery>();
+			if (battery != null) {
+				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
+
+				Texture2D red = new Texture2D(1, 1);
+				Color transparentRed = new Color(1f, .1f, .1f, .4f);
+
+				red.SetPixel(0, 0, transparentRed);
+				red.Apply();
+
+				Texture2D green = new Texture2D(1, 1);
+				Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
+				green.SetPixel(0, 0, transparentGreen);
+				green.alphaIsTransparency = true;
+			
+				green.Apply();
+
+				GUI.skin.box.normal.background = red;
+				GUI.Box(progressBar, GUIContent.none);
+
+				GUI.skin.box.normal.background = green;
+
+				Rect progressBarFull = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x * (battery.currentCapacity/battery.maximumCapacity), 20);
+				GUI.Box(progressBarFull, GUIContent.none);
+			}
 		}
 	}
 #endif

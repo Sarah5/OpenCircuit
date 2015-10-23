@@ -10,7 +10,7 @@ public class LabelGUI : Editor {
 
 	private bool tagsExpanded = false;
 	private bool operationsExpanded = false;
-	private bool endeavoursExpanded = false;
+	private bool endeavoursExpanded = true;
 	private string[] operationTypeNames;
 	
 	public void OnEnable() {

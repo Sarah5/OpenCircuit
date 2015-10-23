@@ -53,6 +53,7 @@ public class VoxelEditorGUI : Editor {
 		tabsBigFont = new GUIStyle(GUI.skin.button);
 		tabsBigFont.fixedHeight = 30;
 
+		serializedObject.Update();
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		serializedObject.Update();
 

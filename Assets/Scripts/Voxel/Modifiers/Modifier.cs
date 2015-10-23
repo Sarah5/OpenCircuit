@@ -81,9 +81,9 @@ namespace Vox {
 					}
 				}
 			}
-
-			// TODO: this should check if completely contained, not if rendersize (for distant modifications) - FIXED?
-			if (updateMesh && info != null && (VoxelBlock.isRenderSize(info.size, control) || VoxelBlock.isRenderLod(info.x, info.y, info.z, control.sizes[detailLevel], control))) {
+			
+			if (updateMesh && info != null && (VoxelBlock.isRenderSize(info.size, control) || VoxelBlock.isRenderLod(info.x, info.y, info.z, info.size, control))) {
+				//block.clearSubRenderers(control);
 				block.updateAll(info.x, info.y, info.z, info.detailLevel, control, true);
 			}
 		}

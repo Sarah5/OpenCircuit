@@ -39,7 +39,7 @@ public class HoverJet : AbstractRobotComponent {
 			float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
 			                                new Vector2(target.transform.position.x, target.transform.position.z));
 			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
-			if (xzDist < .5f && yDist < 1f) {
+			if (xzDist < .5f && yDist < 1.2f) {
 				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .0001f)) {
 					roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
 				} else {
@@ -59,9 +59,9 @@ public class HoverJet : AbstractRobotComponent {
 			}
 
 			//if (!powerSource.drawPower (5 * Time.deltaTime)){
-			nav.enabled = powerSource.drawPower (powerDrawRate * Time.deltaTime);
 		//}
 		}
+		nav.enabled = powerSource.drawPower(powerDrawRate * Time.deltaTime);
 	}
 
 	public float calculatePathCost(Label target) {

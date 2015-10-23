@@ -7,6 +7,7 @@ public class RechargeAction : Endeavour {
 
     private Label powerStation;
 	private Battery battery;
+	public float rechargePoint = 1;
 
     public RechargeAction(RobotController controller, List<Goal> goals, Label target, Battery battery) : base(controller, goals, target.gameObject) {
         powerStation = target;
@@ -44,6 +45,10 @@ public class RechargeAction : Endeavour {
 	public override float getPriority() {
 		float batteryDrained = 2 - ((battery.currentCapacity / battery.maximumCapacity)*2f);
 		return base.getPriority() * batteryDrained;
+	}
+
+	public override bool canExecute(Dictionary<System.Type, int> availableComponents) {
+		return base.canExecute(availableComponents) && ((battery.currentCapacity/battery.maximumCapacity) <= rechargePoint || active);
 	}
 
     protected override float getCost() {

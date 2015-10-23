@@ -14,6 +14,55 @@ public class RobotControllerGUI : Editor {
         size = this.serializedObject.FindProperty("goals").arraySize;
     }
 
+	void OnSceneGUI() {
+		if(!Application.isPlaying)
+			return;
+		Handles.BeginGUI();
+		serializedObject.Update();
+		RobotController robot = (RobotController)target;
+
+		string buffer = "";
+		for(int i = 0; i < robot.lines.Count; i++) {
+			buffer += robot.lines[i].Trim() + "\n";
+		}
+
+		Vector3 pos;
+		pos = robot.transform.position;
+
+		Font font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+		GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
+		debugStyle.font = font;
+		debugStyle.fontSize = 14;
+		GUIStyle debugLabelStyle = new GUIStyle(GUI.skin.label);
+		debugLabelStyle.font = font;
+		debugLabelStyle.fontSize = 14;
+		Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
+		size.y -= debugStyle.lineHeight;
+		Rect rectangle = new Rect(5, 20, size.x, size.y);
+
+
+		GUILayout.Window(2, rectangle, (id) => {
+
+			GUILayoutOption[] options = new GUILayoutOption[] { GUILayout.Width(size.x)};
+			GUILayout.TextArea(buffer, debugStyle, options);
+
+			Battery battery = robot.GetComponentInChildren<Battery>();
+			if(battery != null) {
+
+				battery.currentCapacity = GUILayout.HorizontalSlider(battery.currentCapacity, 0, battery.maximumCapacity, options);
+				GUILayout.BeginHorizontal(options);
+				GUILayout.Label("0", debugLabelStyle);
+				GUILayout.Label(battery.currentCapacity + "", debugLabelStyle);
+				GUILayout.Label(battery.maximumCapacity + "", debugLabelStyle);
+				GUILayout.EndHorizontal();
+			}
+
+
+		}, robot.name);
+
+		Handles.EndGUI();
+	}
+
 	public override void OnInspectorGUI() {
         serializedObject.Update();
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("debug"));
