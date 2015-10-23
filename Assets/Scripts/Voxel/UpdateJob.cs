@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Vox {
 
@@ -101,6 +102,18 @@ namespace Vox {
 			lock (rend.control) {
 				rend.clear();
 			}
+		}
+	}
+
+	public class LinkRenderersJob: VoxelJob {
+		private VoxelTree control;
+
+		public LinkRenderersJob(VoxelTree control) {
+			this.control = control;
+		}
+
+		public override void execute() {
+			control.relinkRenderers();
 		}
 	}
 

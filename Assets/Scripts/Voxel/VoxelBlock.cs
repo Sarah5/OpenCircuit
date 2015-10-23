@@ -272,7 +272,7 @@ namespace Vox {
 			// check if we already have a mesh
 			if (renderer == null) {
 				//clearSubRenderers();
-				renderer = new VoxelRenderer(new VoxelIndex(x, y, z, detailLevel), control, new Vector3(x * control.sizes[detailLevel], y * control.sizes[detailLevel], z * control.sizes[detailLevel]));
+				renderer = new VoxelRenderer(new VoxelIndex(x, y, z, detailLevel), control);
 				//info.renderers[1, 1, 1] = renderer;
 			} else {
 				renderer.old = false;

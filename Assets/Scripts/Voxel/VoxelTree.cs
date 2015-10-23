@@ -249,7 +249,8 @@ namespace Vox {
 		}
 
 		public void OnAfterDeserialize() {
-//			clearRenderers();
+			//			clearRenderers();
+			print("Deserializing");
 			lock(this) {
 				if (voxelData.Length > 0) {
 					MemoryStream stream = new MemoryStream(voxelData);
@@ -257,6 +258,55 @@ namespace Vox {
 					head = (VoxelBlock)VoxelHolder.deserialize(reader);
 					stream.Close();
 				}
+
+				// relink renderers
+				//relinkRenderers();
+				jobQueue.Enqueue(new LinkRenderersJob(this));
+			}
+		}
+
+		public void relinkRenderers() {
+			lock(this) {
+				//print("Start Renderers: " + renderers.Count);
+				Dictionary<VoxelIndex, List<GameObject>> meshes = new Dictionary<VoxelIndex, List<GameObject>>();
+				foreach (Transform child in transform) {
+					VoxelMeshObject meshObject = child.GetComponent<VoxelMeshObject>();
+					if (meshObject == null)
+						continue;
+					List<GameObject> objects;
+					//if (meshObject.index == null) {
+					//	print("wow");
+					//	continue;
+					//}
+					//print("Found valid child");
+					meshes.TryGetValue(meshObject.index, out objects);
+					if (objects == null) {
+						objects = new List<GameObject>();
+						meshes[meshObject.index] = objects;
+					}
+					objects.Add(meshObject.gameObject);
+				}
+				foreach (VoxelIndex index in meshes.Keys) {
+					List<GameObject> objects = meshes[index];
+					//print("Mesh object count: " + objects.Count);
+					VoxelRenderer rend;
+					renderers.TryGetValue(index, out rend);
+					if (rend == null) {
+						rend = new VoxelRenderer(index, this);
+						renderers[index] = rend;
+					//} else {
+					//	print("already had renderer");
+					}
+					VoxelHolder block = head.get(index);
+					if (block is VoxelBlock) {
+						//print("linking");
+						((VoxelBlock)block).renderer = rend;
+					//} else {
+					//	print("NOT BLOCK!");
+					}
+					rend.obs = objects.ToArray();
+				}
+				//print("End Renderers: " + renderers.Count);
 			}
 		}
 

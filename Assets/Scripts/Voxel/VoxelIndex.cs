@@ -2,8 +2,7 @@
 using System.Collections;
 
 namespace Vox {
-
-	[ExecuteInEditMode]
+	
 	[System.Serializable]
 	public class VoxelIndex {
 

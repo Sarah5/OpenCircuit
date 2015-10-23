@@ -37,7 +37,8 @@ namespace Vox {
 
 
 		public void clear() {
-//			lock (this) {
+			//			lock (this) {
+			//MonoBehaviour.print("Deleted Renderer");
 				if (control != null) {
 					lock(control.renderers) {
 						control.renderers.Remove(index);
@@ -56,6 +57,13 @@ namespace Vox {
 //				if (collider != null)
 //					GameObject.DestroyImmediate(collider);
 //			}
+		}
+
+		public VoxelRenderer(VoxelIndex index, VoxelTree control):
+			this(index, control, new Vector3(
+				index.x * control.sizes[index.depth],
+				index.y * control.sizes[index.depth],
+				index.z * control.sizes[index.depth])) {
 		}
 
 		public VoxelRenderer(VoxelIndex index, VoxelTree control, Vector3 localPosition) {
@@ -223,6 +231,7 @@ namespace Vox {
 			UnityEditor.EditorUtility.SetSelectedWireframeHidden(rend, true);
 #endif
 			gameObject.AddComponent<MeshFilter>().sharedMesh = new Mesh();
+			gameObject.AddComponent<VoxelMeshObject>().index = index;
 			return gameObject;
 		}
 

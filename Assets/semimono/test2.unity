@@ -2085,6 +2085,10 @@ Prefab:
       propertyPath: goals.Array.data[1].priority
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11499298, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
   m_IsPrefabParent: 0

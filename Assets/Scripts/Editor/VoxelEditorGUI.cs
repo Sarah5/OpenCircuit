@@ -13,8 +13,7 @@ public class VoxelEditorGUI : Editor {
 	protected static readonly GUIContent[] modes = {new GUIContent("Manage"), new GUIContent("Sculpt"), new GUIContent("Mask")};
 	protected static readonly GUIContent[] brushes = {new GUIContent("Sphere"), new GUIContent("Rectangle"), new GUIContent("Smooth")};
 	protected static readonly GUIContent[] generationModes = {new GUIContent("Flat"), new GUIContent("Sphere"), new GUIContent("Procedural"), new GUIContent("Heightmaps")};
-
-	private SerializedObject ob;
+	
 	private GUIStyle labelBigFont = null;
 	private GUIStyle foldoutBigFont = null;
 	private GUIStyle buttonBigFont = null;
@@ -35,7 +34,6 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	public void OnEnable() {
-		ob = new SerializedObject(target);
 		setupGeneration = false;
 		showSubstances = false;
 		showMasks = true;
@@ -56,7 +54,7 @@ public class VoxelEditorGUI : Editor {
 		tabsBigFont.fixedHeight = 30;
 
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		ob.UpdateIfDirtyOrScript();
+		serializedObject.Update();
 
 		if (editor.generating()) {
 			GUILayout.Label("Generating...", labelBigFont);
@@ -86,7 +84,7 @@ public class VoxelEditorGUI : Editor {
 		}
 
 		// finally, apply the changes
-		ob.ApplyModifiedProperties();
+		serializedObject.ApplyModifiedProperties();
 	}
 
 	public void OnSceneGUI() {
@@ -122,7 +120,7 @@ public class VoxelEditorGUI : Editor {
 		// mask list
 		showMasks = doBigFoldout(showMasks, "Masks");
 		if (showMasks) {
-			SerializedProperty voxelMasks = ob.FindProperty("masks");
+			SerializedProperty voxelMasks = serializedObject.FindProperty("masks");
 			// EditorGUILayout.PropertyField(voxelMasks, new GUIContent("Sculpting Masks"), true);
 			InspectorList.doArrayGUISimple(ref voxelMasks);
 		}
@@ -199,15 +197,18 @@ public class VoxelEditorGUI : Editor {
             generationParameters.setFrom(editor);
         }
 		if (editor.hasVoxelData()) {
-			if (GUILayout.Button("Clear")) {
-				if (EditorUtility.DisplayDialog("Clear Voxels?", "Are you sure you want to clear all voxel data?", "Clear", "Cancel")) {
+			if (GUILayout.Button("Erase")) {
+				if (EditorUtility.DisplayDialog("Erase Voxels?", "Are you sure you want to erase all voxel data?", "Erase", "Cancel")) {
 					editor.wipe();
 				}
 			}
-			if (GUILayout.Button("Reskin", buttonBigFont) && validateSubstances(editor)) {
-				if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
+			if (GUILayout.Button(editor.hasRenderers()? "Reskin": "Skin", buttonBigFont) && validateSubstances(editor)) {
+				//if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
 					editor.generateRenderers();
-				}
+				//}
+			}
+			if (editor.hasRenderers() && GUILayout.Button("Clear Skin") && validateSubstances(editor)) {
+				editor.clearRenderers();
 			}
 			if (GUILayout.Button("Export")) {
 				editor.export(EditorUtility.SaveFilePanel("Choose File to Export To", "", "Voxels", "vox"));
@@ -254,7 +255,7 @@ public class VoxelEditorGUI : Editor {
 //		}
 
 		// do substances
-		doSubstancesGUI(ob);
+		doSubstancesGUI(serializedObject);
 
 
 		// show statistics
@@ -274,7 +275,7 @@ public class VoxelEditorGUI : Editor {
 		doGeneralPropertiesGUI(generationParameters);
 
 		// substances
-        doSubstancesGUI(ob);
+        doSubstancesGUI(serializedObject);
 
         // generation mode
         GUILayout.Label("Generation Mode", labelBigFont);
@@ -372,12 +373,13 @@ public class VoxelEditorGUI : Editor {
 		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
 		editor.useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
 		editor.saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
-        // if (createColliders != editor.createColliders || useStaticMeshes != editor.useStaticMeshes) {
+		//editor.maxDetail = (byte)EditorGUILayout.IntField(new GUIContent("Voxel Power"), editor.maxDetail);
+		// if (createColliders != editor.createColliders || useStaticMeshes != editor.useStaticMeshes) {
 		// 	editor.createColliders = createColliders;
 		// 	editor.useStaticMeshes = useStaticMeshes;
-        //     editor.generateRenderers();
-        // }
-    }
+		//     editor.generateRenderers();
+		// }
+	}
 
 	protected void doGeneralPropertiesGUI(VoxelEditorParameters editor) {
 		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
@@ -404,9 +406,9 @@ public class VoxelEditorGUI : Editor {
     }
 
     protected void doHeightmapGenerationGUI() {
-		SerializedProperty heightmaps = ob.FindProperty("heightmaps");
+		SerializedProperty heightmaps = serializedObject.FindProperty("heightmaps");
 		EditorGUILayout.PropertyField(heightmaps, new GUIContent("Height Maps"), true);
-		SerializedProperty heightmapSubstances = ob.FindProperty("heightmapSubstances");
+		SerializedProperty heightmapSubstances = serializedObject.FindProperty("heightmapSubstances");
 		EditorGUILayout.PropertyField(heightmapSubstances, new GUIContent("Height Map Substances"), true);
     }
 
