@@ -46,7 +46,7 @@ public class PatrolAction : Endeavour {
 	public override void onMessage(RobotMessage message) {
 		if (message.Message.Equals ("target reached")) {
 			HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
-			if (jet != null) {
+			if (jet != null && routePoints[currentDestination] == message.Target) {
 				++currentDestination;
 				if (currentDestination == routePoints.Count) {
 					currentDestination = 0;

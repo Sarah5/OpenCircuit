@@ -125,71 +125,6 @@ public class RobotController : MonoBehaviour {
 		return trackedTargets;
 	}
 
-	public List<string> lines = new List<string>();
-
-#if UNITY_EDITOR
-	void OnGUI() {
-		if(debug) {
-			Camera cam = Camera.current;
-			Vector3 pos;
-			if(cam != null) {
-				Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
-				pos = cam.WorldToScreenPoint(worldTextPos);
-				if(Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
-					return;
-				}
-			} else {
-				return;
-			}
-
-			while(lines.Count > 8) {
-				lines.RemoveAt(0);
-			}
-
-			GUI.enabled = true;
-			string buffer = "";
-			for(int i = 0; i < lines.Count; i++) {
-				buffer += lines[i].Trim() + "\n";
-			}
-			
-			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
-			debugStyle.font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
-			debugStyle.fontSize = 14;
-			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
-			size.y -= debugStyle.lineHeight;
-			Rect rectangle = new Rect(pos.x - size.x /2, Screen.height - pos.y -size.y, size.x, size.y);
-			GUI.TextArea(rectangle, buffer, debugStyle);
-			
-
-			Battery battery = GetComponentInChildren<Battery>();
-			if (battery != null) {
-				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
-
-				Texture2D red = new Texture2D(1, 1);
-				Color transparentRed = new Color(1f, .1f, .1f, .4f);
-
-				red.SetPixel(0, 0, transparentRed);
-				red.Apply();
-
-				Texture2D green = new Texture2D(1, 1);
-				Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
-				green.SetPixel(0, 0, transparentGreen);
-				green.alphaIsTransparency = true;
-			
-				green.Apply();
-
-				GUI.skin.box.normal.background = red;
-				GUI.Box(progressBar, GUIContent.none);
-
-				GUI.skin.box.normal.background = green;
-
-				Rect progressBarFull = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x * (battery.currentCapacity/battery.maximumCapacity), 20);
-				GUI.Box(progressBarFull, GUIContent.none);
-			}
-		}
-	}
-#endif
-
 	private void evaluateActions() {
 		List<string> debugText = new List<string>();
 		if (debug)
@@ -234,9 +169,6 @@ public class RobotController : MonoBehaviour {
 				}
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
-				if(!action.active) {
-					action.execute();
-				}
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
@@ -247,6 +179,13 @@ public class RobotController : MonoBehaviour {
 				if(action.active) {
 					action.stopExecution();
 				}
+			}
+		}
+
+		// All previous actions MUST be stopped before we start the new ones
+		foreach(Endeavour action in proposedEndeavours) {
+			if(!action.active) {
+				action.execute();
 			}
 		}
 	
@@ -291,4 +230,69 @@ public class RobotController : MonoBehaviour {
 			return externalMentalModel; 
 		}
 	}
+
+	public List<string> lines = new List<string>();
+
+#if UNITY_EDITOR
+	void OnGUI() {
+		if(debug) {
+			Camera cam = Camera.current;
+			Vector3 pos;
+			if(cam != null) {
+				Vector3 worldTextPos = transform.position + new Vector3(0, 1, 0);
+				pos = cam.WorldToScreenPoint(worldTextPos);
+				if(Vector3.Dot(cam.transform.forward, (worldTextPos - cam.transform.position).normalized) < 0) {
+					return;
+				}
+			} else {
+				return;
+			}
+
+			while(lines.Count > 8) {
+				lines.RemoveAt(0);
+			}
+
+			GUI.enabled = true;
+			string buffer = "";
+			for(int i = 0; i < lines.Count; i++) {
+				buffer += lines[i].Trim() + "\n";
+			}
+
+			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
+			debugStyle.font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+			debugStyle.fontSize = 14;
+			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
+			size.y -= debugStyle.lineHeight;
+			Rect rectangle = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y, size.x, size.y);
+			GUI.TextArea(rectangle, buffer, debugStyle);
+
+
+			Battery battery = GetComponentInChildren<Battery>();
+			if(battery != null) {
+				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
+
+				Texture2D red = new Texture2D(1, 1);
+				Color transparentRed = new Color(1f, .1f, .1f, .4f);
+
+				red.SetPixel(0, 0, transparentRed);
+				red.Apply();
+
+				Texture2D green = new Texture2D(1, 1);
+				Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
+				green.SetPixel(0, 0, transparentGreen);
+				green.alphaIsTransparency = true;
+
+				green.Apply();
+
+				GUI.skin.box.normal.background = red;
+				GUI.Box(progressBar, GUIContent.none);
+
+				GUI.skin.box.normal.background = green;
+
+				Rect progressBarFull = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x * (battery.currentCapacity / battery.maximumCapacity), 20);
+				GUI.Box(progressBarFull, GUIContent.none);
+			}
+		}
+	}
+#endif
 }
