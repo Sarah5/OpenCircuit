@@ -33,6 +33,7 @@ public class HoverJet : AbstractRobotComponent {
 
 	void Update () {
 		if (powerSource == null) {
+			Debug.LogWarning(roboController.name + " is missing a power source.");
 			return;
 		}
 		if (target != null) {
@@ -42,6 +43,8 @@ public class HoverJet : AbstractRobotComponent {
 			if (xzDist < .5f && yDist < 1.2f) {
 				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .0001f)) {
 					roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
+					target = null;
+					return;
 				} else {
 					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.transform.forward), nav.angularSpeed * Time.deltaTime);
 				}

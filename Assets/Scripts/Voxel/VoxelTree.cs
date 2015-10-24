@@ -250,7 +250,7 @@ namespace Vox {
 
 		public void OnAfterDeserialize() {
 			//			clearRenderers();
-			print("Deserializing");
+			//print("Deserializing");
 			lock(this) {
 				if (voxelData.Length > 0) {
 					MemoryStream stream = new MemoryStream(voxelData);
@@ -265,27 +265,35 @@ namespace Vox {
 			}
 		}
 
+		public Dictionary<VoxelIndex, List<GameObject>> findRendererObjects() {
+			Dictionary<VoxelIndex, List<GameObject>> meshes = new Dictionary<VoxelIndex, List<GameObject>>();
+			foreach (Transform child in transform) {
+				VoxelMeshObject meshObject = child.GetComponent<VoxelMeshObject>();
+				if (meshObject == null)
+					continue;
+				List<GameObject> objects;
+				//if (meshObject.index == null) {
+				//	print("wow");
+				//	continue;
+				//}
+				//print("Found valid child");
+				meshes.TryGetValue(meshObject.index, out objects);
+				if (objects == null) {
+					objects = new List<GameObject>();
+					meshes[meshObject.index] = objects;
+				}
+				objects.Add(meshObject.gameObject);
+			}
+			return meshes;
+		}
+
 		public void relinkRenderers() {
+			relinkRenderers(findRendererObjects());
+		}
+
+		public void relinkRenderers(Dictionary<VoxelIndex, List<GameObject>> meshes) {
 			lock(this) {
 				//print("Start Renderers: " + renderers.Count);
-				Dictionary<VoxelIndex, List<GameObject>> meshes = new Dictionary<VoxelIndex, List<GameObject>>();
-				foreach (Transform child in transform) {
-					VoxelMeshObject meshObject = child.GetComponent<VoxelMeshObject>();
-					if (meshObject == null)
-						continue;
-					List<GameObject> objects;
-					//if (meshObject.index == null) {
-					//	print("wow");
-					//	continue;
-					//}
-					//print("Found valid child");
-					meshes.TryGetValue(meshObject.index, out objects);
-					if (objects == null) {
-						objects = new List<GameObject>();
-						meshes[meshObject.index] = objects;
-					}
-					objects.Add(meshObject.gameObject);
-				}
 				foreach (VoxelIndex index in meshes.Keys) {
 					List<GameObject> objects = meshes[index];
 					//print("Mesh object count: " + objects.Count);
