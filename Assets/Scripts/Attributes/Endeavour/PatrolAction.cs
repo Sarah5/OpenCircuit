@@ -90,4 +90,8 @@ public class PatrolAction : Endeavour {
 		}
 		return 0;
 	}
+
+	public override bool canExecute() {
+		return true;
+	}
 }

@@ -12,10 +12,10 @@ public class PursueAction : Endeavour {
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
-	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
+	public override bool canExecute () {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
         RobotArms arms = controller.GetComponentInChildren<RobotArms>();
-        return !arms.hasTarget() && controller.knowsTarget(target) && base.canExecute(availableComponents) && jet != null && jet.canReach(target);;
+        return !arms.hasTarget() && controller.knowsTarget(target) && jet != null && jet.canReach(target);;
 	}
 
 	public override void execute() {

@@ -23,7 +23,7 @@ public abstract class Endeavour : Prioritizable {
 
 	protected GameObject parent;
 
-    protected bool active = false;
+    public bool active = false;
 
 	public Endeavour(RobotController controller, List<Goal> goals, GameObject parent) {
 		this.controller = controller;
@@ -42,9 +42,13 @@ public abstract class Endeavour : Prioritizable {
     }
 	public abstract void onMessage(RobotMessage message);
 
-	public virtual bool canExecute (Dictionary<System.Type, int> availableComponents) {
-		foreach (System.Type type in requiredComponents) {
-			if (!availableComponents.ContainsKey(type) || availableComponents[type] < 1) {
+	public bool isReady(Dictionary<System.Type, int> availableComponents) {
+		return canExecute() && hasAllComponents(availableComponents);
+	}
+
+	private bool hasAllComponents(Dictionary<System.Type, int> availableComponents) {
+		foreach(System.Type type in requiredComponents) {
+			if(!availableComponents.ContainsKey(type) || availableComponents[type] < 1) {
 				return false;
 			}
 		}
@@ -58,6 +62,8 @@ public abstract class Endeavour : Prioritizable {
 		}
 		return true;
 	}
+
+	public abstract bool canExecute();
 
 	public virtual float getPriority() {
 		float finalPriority = 0;

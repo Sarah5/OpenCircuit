@@ -47,8 +47,8 @@ public class RechargeAction : Endeavour {
 		return base.getPriority() * batteryDrained;
 	}
 
-	public override bool canExecute(Dictionary<System.Type, int> availableComponents) {
-		return base.canExecute(availableComponents) && ((battery.currentCapacity/battery.maximumCapacity) <= rechargePoint || active);
+	public override bool canExecute() {
+		return ((battery.currentCapacity / battery.maximumCapacity) <= rechargePoint || active);
 	}
 
     protected override float getCost() {

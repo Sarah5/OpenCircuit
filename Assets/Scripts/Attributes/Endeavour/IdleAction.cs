@@ -28,4 +28,8 @@ public class IdleAction : Endeavour {
     protected override float getCost() {
         return 0f;
     }
+
+	public override bool canExecute() {
+		return true;
+	}
 }

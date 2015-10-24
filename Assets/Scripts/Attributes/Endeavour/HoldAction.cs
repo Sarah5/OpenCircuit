@@ -14,8 +14,8 @@ public class HoldAction : Endeavour {
 		requiredComponents = new System.Type[] {typeof(RobotArms)};
 	}
 
-	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
-		return target != null && base.canExecute (availableComponents);
+	public override bool canExecute () {
+		return target != null;
 	}
 
 	public override void execute (){

@@ -12,9 +12,9 @@ public class DropKickAction : Endeavour {
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
 	}
 
-	public override bool canExecute (Dictionary<System.Type, int> availableComponents) {
+	public override bool canExecute () {
 		RobotArms arms = controller.GetComponentInChildren<RobotArms> ();
-		return (arms != null) && (dropPoint != null) && (arms.hasTarget()) && base.canExecute (availableComponents);
+		return (arms != null) && (dropPoint != null) && (arms.hasTarget());
 	}
 
 	public override void execute (){

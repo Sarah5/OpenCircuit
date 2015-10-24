@@ -192,8 +192,7 @@ public class RobotController : MonoBehaviour {
 
 	private void evaluateActions() {
 		List<string> debugText = new List<string>();
-		//print("**************EVALUATE**************");
-		//drawText("****EVALUATE****");
+		if (debug)
 		debugText.Add("****EVALUATE****");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
@@ -201,14 +200,11 @@ public class RobotController : MonoBehaviour {
 		//print("\tCurrent Endeavours");
 		foreach (Endeavour action in currentEndeavours) {
 			if (action.isStale ()) {
-				//print("\t\t--" + action.getName());
-				//drawText("\t\t--" + action.getName());
+				//print("\t\tstale: " + action.getName());
 				action.stopExecution ();
 				staleEndeavours.Add (action);	
 			} else {
 				//print("\t\t++" + action.getName());
-				//drawText("\t\t++" + action.getName());
-				//endeavourQueue.Enqueue (action);
 				availableEndeavours.Add(action);
 			}
 		}
@@ -230,44 +226,30 @@ public class RobotController : MonoBehaviour {
 		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
 		
 		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
-		//print("\tEvaluate actions");
 		while (endeavourQueue.Count > 0) {
-			if (((Endeavour)endeavourQueue.peek()).canExecute(componentMap)) {
+			if (((Endeavour)endeavourQueue.peek()).isReady(componentMap)) {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
-				//print("\t\t++" + action.getName() + "->" + action.getPriority());
-				//drawText("\t\t++" + action.getName() + "->" + action.getPriority());
-				debugText.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
+				if(debug) {
+					debugText.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
+				}
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
+				if(!action.active) {
+					action.execute();
+				}
 			}
 			else {
 				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
-				//print("\t\t--" + action.getName() + "->" + action.getPriority());
-				//drawText("\t\t--" + action.getName() + "->" + action.getPriority());
-				string number = action.getPriority().ToString("0.0##");
-				debugText.Add("-" + action.getName().PadRight(12) + "->" + number);
-
+				if(debug) {
+					string number = action.getPriority().ToString("0.0##");
+					debugText.Add("-" + action.getName().PadRight(12) + "->" + number);
+				}
+				if(action.active) {
+					action.stopExecution();
+				}
 			}
 		}
-		
-		List<Endeavour> toExecute = new List<Endeavour> ();
-		foreach (Endeavour action in proposedEndeavours) {
-			if (currentEndeavours.Contains(action)) {
-				currentEndeavours.Remove(action);
-				
-			}
-			else {
-				toExecute.Add(action);
-			}
-		}
-		
-		foreach (Endeavour action in currentEndeavours) {
-			action.stopExecution();
-		}
-		
-		foreach (Endeavour action in toExecute) {
-			action.execute();
-		}
+	
 		currentEndeavours = proposedEndeavours;
 		if (debug)
 		lines = debugText;
