@@ -44,8 +44,7 @@ namespace Vox {
 
 
 		public void Awake() {
-			Dictionary<VoxelIndex, List<GameObject>> meshes = findRendererObjects();
-			if (findRendererObjects().Count < 1) {
+			if (hasVoxelData() && findRendererObjects().Count < 1) {
 				generateRenderers();
 				pauseForGeneration();
 			}
