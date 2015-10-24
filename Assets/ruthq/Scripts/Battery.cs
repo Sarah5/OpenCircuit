@@ -25,6 +25,6 @@ public class Battery : AbstractPowerSource {
         if (currentCapacity < amount) {
             return false;
         }
-        return true;
+        return !isDisabled;
     }
 }
