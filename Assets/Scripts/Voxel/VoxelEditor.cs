@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
@@ -43,9 +44,8 @@ namespace Vox {
 
 
 		public void Awake() {
-			if (Application.isPlaying &&
-			    !hasRenderers() &&
-			    !saveMeshes) {
+			Dictionary<VoxelIndex, List<GameObject>> meshes = findRendererObjects();
+			if (findRendererObjects().Count < 1) {
 				generateRenderers();
 				pauseForGeneration();
 			}
