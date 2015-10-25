@@ -18,7 +18,7 @@ public class PocketEMP : ContextItem {
     }
 
 	public override void invoke(Inventory invoker) {
-		audioSource.Play();
+		//audioSource.Play();
 		foreach (AbstractPowerSource source in AbstractPowerSource.powerSources) {
 			if (Vector3.Distance(invoker.transform.position, source.transform.position) < range)
 				source.disable(disableTime);
