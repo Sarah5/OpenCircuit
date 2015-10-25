@@ -6,7 +6,6 @@ public abstract class AbstractRobotComponent : MonoBehaviour {
 	protected AbstractPowerSource powerSource;
 	protected RobotController roboController;
 	protected bool isOccupied = false;
-    public float powerDrawRate = 5f;
 
 	// Use this for initialization
 	void Awake () {

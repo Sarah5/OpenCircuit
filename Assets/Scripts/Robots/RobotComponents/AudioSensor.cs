@@ -21,6 +21,6 @@ public class AudioSensor : AbstractRobotComponent {
 	
 	// Update is called once per frame
 	void Update () {
-		hasPower = powerSource != null && powerSource.hasPower(powerDrawRate * Time.deltaTime);
+		hasPower = powerSource != null && powerSource.hasPower(Time.deltaTime);
 	}
 }

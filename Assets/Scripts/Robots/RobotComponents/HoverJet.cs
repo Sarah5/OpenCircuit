@@ -17,7 +17,9 @@ public class HoverJet : AbstractRobotComponent {
 
 	public float animSpeedAdjust = 1f;
 
-	public void setTarget(Label target, bool matchRotation = false) {
+    public float powerDrawRate = 5f;
+
+    public void setTarget(Label target, bool matchRotation = false) {
 		this.target = target;
 		matchTargetRotation = matchRotation;
 	}
