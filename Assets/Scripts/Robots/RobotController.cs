@@ -126,9 +126,9 @@ public class RobotController : MonoBehaviour {
 	}
 
 	private void evaluateActions() {
-		List<string> debugText = new List<string>();
+		List<DecisionInfoObject> debugText = new List<DecisionInfoObject>();
 		if (debug)
-		debugText.Add("****EVALUATE****");
+		//debugText.Add("****EVALUATE****");
 		dirty = false;
 		PriorityQueue endeavourQueue = new PriorityQueue ();
 		List<Endeavour> staleEndeavours = new List<Endeavour>();
@@ -161,21 +161,57 @@ public class RobotController : MonoBehaviour {
 		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
 		
 		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
+		
+#if UNITY_EDITOR
+		bool maxPrioritySet = false;
+		float localMaxPriority = 0;
+		float localMinPriority = 0;
+#endif
+
 		while (endeavourQueue.Count > 0) {
-			if (((Endeavour)endeavourQueue.peek()).isReady(componentMap)) {
-				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
+			Endeavour action = (Endeavour)endeavourQueue.Dequeue();
+			if (action.isReady(componentMap)) {
+#if UNITY_EDITOR
 				if(debug) {
-					debugText.Add("+" + action.getName().PadRight(12) + "->" + action.getPriority());
+					float priority = action.getPriority();
+					if (!maxPrioritySet) {
+						maxPrioritySet = true;
+						localMaxPriority = priority;
+						localMinPriority = priority;
+					}
+					else {
+						if(priority > localMaxPriority ) {
+							localMaxPriority = priority;
+						}
+						if(priority < localMinPriority) {
+							localMinPriority = priority;
+						}
+					}
+					debugText.Add(new DecisionInfoObject(action.getName() + " " + action.getParent(), priority, true));
 				}
+#endif
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
 			}
 			else {
-				Endeavour action = (Endeavour)endeavourQueue.Dequeue();
+#if UNITY_EDITOR
 				if(debug) {
-					string number = action.getPriority().ToString("0.0##");
-					debugText.Add("-" + action.getName().PadRight(12) + "->" + number);
+					float priority = action.getPriority();
+					if(!maxPrioritySet) {
+						maxPrioritySet = true;
+						localMaxPriority = priority;
+						localMinPriority = priority;
+					} else {
+						if(priority > localMaxPriority) {
+							localMaxPriority = priority;
+						}
+						if(priority < localMinPriority) {
+							localMinPriority = priority;
+						}
+					}
+					debugText.Add(new DecisionInfoObject(action.getName() + " " + action.getParent(), priority, false));
 				}
+#endif
 				if(action.active) {
 					action.stopExecution();
 				}
@@ -190,8 +226,14 @@ public class RobotController : MonoBehaviour {
 		}
 	
 		currentEndeavours = proposedEndeavours;
-		if (debug)
-		lines = debugText;
+#if UNITY_EDITOR
+		if(debug) {
+			lines = debugText;
+			maxPriority = localMaxPriority;
+			minPriority = localMinPriority;
+			alphabetize();
+		}
+#endif
 	}
 
 	private Dictionary<System.Type, int> getComponentUsageMap() {
@@ -231,9 +273,31 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 
-	public List<string> lines = new List<string>();
-
 #if UNITY_EDITOR
+	public List<DecisionInfoObject> lines = new List<DecisionInfoObject>();
+	public float maxPriority = 0;
+	public float minPriority = 0;
+
+	void alphabetize() {
+		if(lines.Count > 0) {
+			List<DecisionInfoObject> newList = new List<DecisionInfoObject>();
+			newList.Add(lines[0]);
+			lines.RemoveAt(0);
+			foreach(DecisionInfoObject obj in lines) {
+				for(int i = 0; i < newList.Count; ++i) {
+					if(obj.getTitle().CompareTo(newList[i].getTitle()) < 0) {
+						newList.Insert(i, obj);
+						break;
+					} else if(i == newList.Count - 1) {
+						newList.Add(obj);
+						break;
+					}
+				}
+			}
+			lines = newList;
+		}
+	}
+
 	void OnGUI() {
 		if(debug) {
 			Camera cam = Camera.current;
@@ -255,34 +319,58 @@ public class RobotController : MonoBehaviour {
 			GUI.enabled = true;
 			string buffer = "";
 			for(int i = 0; i < lines.Count; i++) {
-				buffer += lines[i].Trim() + "\n";
+				buffer += "\n";
 			}
 
-			GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
-			debugStyle.font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
-			debugStyle.fontSize = 14;
-			Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
-			size.y -= debugStyle.lineHeight;
-			Rect rectangle = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y, size.x, size.y);
-			GUI.TextArea(rectangle, buffer, debugStyle);
 
+			Texture2D red = new Texture2D(1, 1);
+			Color transparentRed = new Color(1f, .1f, .1f, .4f);
+
+			red.SetPixel(0, 0, transparentRed);
+			red.Apply();
+			Texture2D green = new Texture2D(1, 1);
+			Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
+			green.SetPixel(0, 0, transparentGreen);
+			green.alphaIsTransparency = true;
+
+			green.Apply();
+
+			float lineHeight = 22f;
+			Vector2 size = new Vector2(200, lines.Count * lineHeight);
+			for (int i = 0; i < lines.Count; ++i) {
+				DecisionInfoObject obj = lines[i];
+				float percentFilled = 0;
+
+
+				float max = lines[0].getPriority();
+				foreach(DecisionInfoObject thing in lines) {
+					if(thing.getPriority() > max) {
+						max = thing.getPriority();
+					}
+				}
+				percentFilled = ((obj.getPriority() + Mathf.Abs(minPriority)) / (maxPriority + Mathf.Abs(minPriority)));
+
+				Rect rectng = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight), size.x, lineHeight);
+				Rect textCentered = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight) + 4, size.x, lineHeight);
+
+				GUI.skin.box.normal.background = red;
+
+				GUI.Box(rectng, GUIContent.none);
+				if(percentFilled > 0) {
+					Rect filled = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight), size.x * (percentFilled), lineHeight);
+					GUI.skin.box.normal.background = green;
+					GUI.Box(filled, GUIContent.none);
+				}
+				if(obj.isChosen()) {
+					GUI.Label(textCentered, "+" + obj.getTitle() + " " + obj.getPriority());
+				} else {
+					GUI.Label(textCentered, "     " + obj.getTitle() + " " + obj.getPriority());
+				}
+			}
 
 			Battery battery = GetComponentInChildren<Battery>();
 			if(battery != null) {
 				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);
-
-				Texture2D red = new Texture2D(1, 1);
-				Color transparentRed = new Color(1f, .1f, .1f, .4f);
-
-				red.SetPixel(0, 0, transparentRed);
-				red.Apply();
-
-				Texture2D green = new Texture2D(1, 1);
-				Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
-				green.SetPixel(0, 0, transparentGreen);
-				green.alphaIsTransparency = true;
-
-				green.Apply();
 
 				GUI.skin.box.normal.background = red;
 				GUI.Box(progressBar, GUIContent.none);

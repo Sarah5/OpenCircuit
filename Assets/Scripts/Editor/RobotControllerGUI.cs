@@ -22,8 +22,14 @@ public class RobotControllerGUI : Editor {
 		RobotController robot = (RobotController)target;
 
 		string buffer = "";
-		for(int i = 0; i < robot.lines.Count; i++) {
-			buffer += robot.lines[i].Trim() + "\n";
+		foreach (DecisionInfoObject obj in robot.lines) {
+
+			if(obj.isChosen()) {
+				buffer += "+";
+			} else {
+				buffer += "   ";
+			}
+				buffer += obj.getTitle().Substring(0, obj.getTitle().LastIndexOf(" ")).Trim() + " " + obj.getPriority() + "\n";
 		}
 
 		Vector3 pos;

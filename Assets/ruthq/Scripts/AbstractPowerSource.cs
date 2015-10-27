@@ -6,7 +6,7 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 
 	public static List<AbstractPowerSource> powerSources = new List<AbstractPowerSource> ();
 
-	bool isDisabled = false;
+	protected bool isDisabled = false;
 
 	void Awake() {
 		powerSources.Add (this);
