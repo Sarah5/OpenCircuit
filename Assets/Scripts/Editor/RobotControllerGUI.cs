@@ -17,20 +17,11 @@ public class RobotControllerGUI : Editor {
 	void OnSceneGUI() {
 		if(!Application.isPlaying)
 			return;
+
 		Handles.BeginGUI();
 		serializedObject.Update();
 		RobotController robot = (RobotController)target;
-
-		string buffer = "";
-		foreach (DecisionInfoObject obj in robot.lines) {
-
-			if(obj.isChosen()) {
-				buffer += "+";
-			} else {
-				buffer += "   ";
-			}
-				buffer += obj.getTitle().Substring(0, obj.getTitle().LastIndexOf(" ")).Trim() + " " + obj.getPriority() + "\n";
-		}
+		Battery battery = robot.GetComponentInChildren<Battery>();
 
 		Vector3 pos;
 		pos = robot.transform.position;
@@ -42,28 +33,106 @@ public class RobotControllerGUI : Editor {
 		GUIStyle debugLabelStyle = new GUIStyle(GUI.skin.label);
 		debugLabelStyle.font = font;
 		debugLabelStyle.fontSize = 14;
-		Vector2 size = debugStyle.CalcSize(new GUIContent(buffer));
-		size.y -= debugStyle.lineHeight;
-		Rect rectangle = new Rect(5, 20, size.x, size.y);
+
+		Texture2D blue = new Texture2D(1, 1);
+		Color transparentBlue = new Color(.1f, .1f, 1f, 1f);
+		blue.SetPixel(0, 0, transparentBlue);
+		blue.alphaIsTransparency = true;
+
+		blue.Apply();
+
+		Texture2D green = new Texture2D(1, 1);
+		Color transparentGreen = new Color(.1f, 1f, .1f, 1f);
+		green.SetPixel(0, 0, transparentGreen);
+		green.alphaIsTransparency = true;
+
+		green.Apply();
+
+		Texture2D red = new Texture2D(1, 1);
+		Color transparentRed = new Color(1f, .1f, .1f, 1f);
+		red.SetPixel(0, 0, transparentRed);
+		red.alphaIsTransparency = true;
+
+		red.Apply();
 
 
+		GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+		labelStyle.font = font;
+		labelStyle.fontSize = 14;
+
+		GUIStyle blueStyle = new GUIStyle(GUI.skin.box);
+		blueStyle.border = new RectOffset(0, 0, 0, 0);
+
+		const float windowWidth = 240f;
+		const float verticalOffset = 42f;
+		Rect rectangle;
+		if(battery != null) {
+			rectangle = new Rect(5, 20, windowWidth, verticalOffset + 22f * robot.lines.Count + 44f);
+		} else {
+			rectangle = new Rect(5, 20, windowWidth, verticalOffset + 22f * robot.lines.Count);
+		}
 		GUILayout.Window(2, rectangle, (id) => {
+			robot.shouldAlphabetize = GUILayout.Toggle(robot.shouldAlphabetize, "Alphabetize?");
+			GUILayoutOption[] options = new GUILayoutOption[] { GUILayout.Width(windowWidth)};
+			for (int i = 0; i <robot.lines.Count; ++i) {
+				DecisionInfoObject obj = robot.lines[i];
 
-			GUILayoutOption[] options = new GUILayoutOption[] { GUILayout.Width(size.x)};
-			GUILayout.TextArea(buffer, debugStyle, options);
+				GUILayoutOption[] boxOptions = new GUILayoutOption[] { 
+					GUILayout.Width(100 * (obj.getPriority() / robot.maxPriority)) 
+				};				
 
-			Battery battery = robot.GetComponentInChildren<Battery>();
-			if(battery != null) {
+				GUILayout.BeginHorizontal();
+				GUIContent label = new GUIContent(obj.getTitle().PadRight(10));
 
-				battery.currentCapacity = GUILayout.HorizontalSlider(battery.currentCapacity, 0, battery.maximumCapacity, options);
-				GUILayout.BeginHorizontal(options);
-				GUILayout.Label("0", debugLabelStyle);
-				GUILayout.Label(battery.currentCapacity + "", debugLabelStyle);
-				GUILayout.Label(battery.maximumCapacity + "", debugLabelStyle);
+				Vector2 labelSize = labelStyle.CalcSize(label);
+				GUILayoutOption[] labelOptions = new GUILayoutOption[] { 
+					GUILayout.Width(labelSize.x)
+				};
+				float spaceBefore = 0;
+				if(robot.maxPriority > 0) {
+					spaceBefore = 125;
+				} else {
+					spaceBefore = 125 * ((robot.maxPriority + obj.getPriority()) / robot.maxPriority);
+				}
+				GUILayout.Space(spaceBefore);
+
+
+				GUI.skin.box.normal.background = blue;
+				GUILayout.Box(GUIContent.none, blueStyle, boxOptions);
+
+				Rect checkBox = new Rect(5, i * 22 + verticalOffset, 15, 15);
+				if (obj.isChosen()) {
+					GUI.DrawTexture(checkBox, green);
+				} else {
+					GUI.DrawTexture(checkBox, red);
+				}
+
+				GUI.Label(new Rect(30, i * 22 + verticalOffset, labelSize.x, labelSize.y), label.text, labelStyle);
+				GUIContent priorityContent = new GUIContent(obj.getPriority().ToString("0.#0").PadLeft(7));
+				GUI.Label(new Rect(labelSize.x + 115 - labelStyle.CalcSize(priorityContent).x / 2, i * 22 + verticalOffset, 200, labelSize.y), priorityContent, labelStyle);
+
+				if(robot.maxPriority > 0) {
+					GUILayout.Space(100 * ((robot.maxPriority - obj.getPriority()) / robot.maxPriority));
+				} else {
+					GUILayout.Space(100);
+				}
 				GUILayout.EndHorizontal();
 			}
 
+			if(battery != null) {
 
+				battery.currentCapacity = GUILayout.HorizontalSlider(battery.currentCapacity, 0, battery.maximumCapacity);
+				//GUILayout.BeginHorizontal(options);
+				GUIContent zero = new GUIContent("0");
+				GUIContent cur = new GUIContent(battery.currentCapacity.ToString("0.#0"));
+				GUIContent max = new GUIContent(battery.maximumCapacity.ToString());
+				Vector2 labelSize = labelStyle.CalcSize(zero);
+				GUI.Label(new Rect(5, (robot.lines.Count + 1) * 22 + verticalOffset, labelSize.x, labelSize.y), zero, labelStyle);
+				labelSize = labelStyle.CalcSize(cur);
+				GUI.Label(new Rect(windowWidth/2 - labelSize.x/2, (robot.lines.Count + 1) * 22 + verticalOffset, labelSize.x, labelSize.y), cur, labelStyle);
+				labelSize = labelStyle.CalcSize(max);
+				GUI.Label(new Rect(windowWidth - labelSize.x, (robot.lines.Count + 1) * 22 + verticalOffset, labelSize.x, labelSize.y), max, labelStyle);
+			}
 		}, robot.name);
 
 		Handles.EndGUI();

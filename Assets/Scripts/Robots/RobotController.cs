@@ -8,7 +8,11 @@ public class RobotController : MonoBehaviour {
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<Label> trackedTargets = new List<Label> ();
 
+#if UNITY_EDITOR
 	public bool debug = false;
+	public bool shouldAlphabetize = false;
+#endif
+
 
 	public Label[] locations;
     public Goal[] goals;
@@ -187,7 +191,7 @@ public class RobotController : MonoBehaviour {
 							localMinPriority = priority;
 						}
 					}
-					debugText.Add(new DecisionInfoObject(action.getName() + " " + action.getParent(), priority, true));
+					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().name, priority, true));
 				}
 #endif
 				proposedEndeavours.Add(action);
@@ -209,7 +213,7 @@ public class RobotController : MonoBehaviour {
 							localMinPriority = priority;
 						}
 					}
-					debugText.Add(new DecisionInfoObject(action.getName() + " " + action.getParent(), priority, false));
+					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().name, priority, false));
 				}
 #endif
 				if(action.active) {
@@ -229,9 +233,10 @@ public class RobotController : MonoBehaviour {
 #if UNITY_EDITOR
 		if(debug) {
 			lines = debugText;
-			maxPriority = localMaxPriority;
-			minPriority = localMinPriority;
-			alphabetize();
+			maxPriority = (Mathf.Abs(localMaxPriority) > Mathf.Abs(localMinPriority)) ? Mathf.Abs(localMaxPriority) : Mathf.Abs(localMinPriority);
+			if(shouldAlphabetize) {
+				alphabetize();
+			}
 		}
 #endif
 	}
@@ -324,10 +329,18 @@ public class RobotController : MonoBehaviour {
 
 
 			Texture2D red = new Texture2D(1, 1);
-			Color transparentRed = new Color(1f, .1f, .1f, .4f);
+			Color transparentRed = new Color(0f, .0f, .0f, .4f);
 
 			red.SetPixel(0, 0, transparentRed);
 			red.Apply();
+
+			Texture2D blue = new Texture2D(1, 1);
+			Color transparentBlue = new Color(.1f, .1f, 1f, .6f);
+			blue.SetPixel(0, 0, transparentBlue);
+			blue.alphaIsTransparency = true;
+
+			blue.Apply();
+
 			Texture2D green = new Texture2D(1, 1);
 			Color transparentGreen = new Color(.1f, 1f, .1f, .4f);
 			green.SetPixel(0, 0, transparentGreen);
@@ -335,37 +348,63 @@ public class RobotController : MonoBehaviour {
 
 			green.Apply();
 
-			float lineHeight = 22f;
+			float lineHeight = 30f;
 			Vector2 size = new Vector2(200, lines.Count * lineHeight);
 			for (int i = 0; i < lines.Count; ++i) {
 				DecisionInfoObject obj = lines[i];
 				float percentFilled = 0;
 
-
-				float max = lines[0].getPriority();
-				foreach(DecisionInfoObject thing in lines) {
-					if(thing.getPriority() > max) {
-						max = thing.getPriority();
-					}
+				percentFilled = (Mathf.Abs(obj.getPriority()) / (maxPriority));
+				if(obj.getPriority() < 0) {
+					percentFilled = -percentFilled;
 				}
-				percentFilled = ((obj.getPriority() + Mathf.Abs(minPriority)) / (maxPriority + Mathf.Abs(minPriority)));
 
 				Rect rectng = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight), size.x, lineHeight);
-				Rect textCentered = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight) + 4, size.x, lineHeight);
 
 				GUI.skin.box.normal.background = red;
 
 				GUI.Box(rectng, GUIContent.none);
-				if(percentFilled > 0) {
-					Rect filled = new Rect(pos.x - size.x / 2, Screen.height - pos.y - size.y + (i * lineHeight), size.x * (percentFilled), lineHeight);
-					GUI.skin.box.normal.background = green;
-					GUI.Box(filled, GUIContent.none);
-				}
-				if(obj.isChosen()) {
-					GUI.Label(textCentered, "+" + obj.getTitle() + " " + obj.getPriority());
+
+				Rect filled;
+				if(percentFilled < 0) {
+					filled = new Rect(pos.x + ((size.x / 2) * percentFilled), Screen.height - pos.y - size.y + (i * lineHeight), -((size.x / 2) * percentFilled), lineHeight);
 				} else {
-					GUI.Label(textCentered, "     " + obj.getTitle() + " " + obj.getPriority());
+					filled = new Rect(pos.x, Screen.height - pos.y - size.y + (i * lineHeight), (size.x / 2) * (percentFilled), lineHeight);
 				}
+
+				//GUI.skin.box.normal.background = green;
+				//GUI.Box(filled, GUIContent.none);
+				GUI.DrawTexture(filled, blue);
+				//if(obj.isChosen()) {
+				//	GUI.Label(textCentered, "+" + obj.getTitle());
+				//} else {
+				//}
+				Rect boxRectangle = new Rect(pos.x - size.x/2, Screen.height - pos.y - size.y + (i*lineHeight)+lineHeight/4, 15, 15);
+				if(obj.isChosen()) {
+					GUI.DrawTexture(boxRectangle, green);
+				} else {
+					GUI.DrawTexture(boxRectangle, red);
+				}
+
+				Rect textCentered = new Rect(pos.x - size.x / 2 + 17, Screen.height - pos.y - size.y + (i * lineHeight) + 4, size.x, lineHeight);
+				GUI.Label(textCentered, obj.getTitle());
+
+
+				Font font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+				GUIStyle style = new GUIStyle(GUI.skin.label);
+				style.font = font;
+				style.fontSize = 14;
+				
+				string priorityString = obj.getPriority().ToString("0.#0").PadLeft(7);
+				Vector2 labelSize = style.CalcSize(new GUIContent(priorityString));
+				//Rect center = new Rect(pos.x - labelSize.x/2 - 7, Screen.height - pos.y - size.y + (i * lineHeight), labelSize.x, labelSize.y);
+				Rect center = new Rect(pos.x + size.x/2 - labelSize.x, Screen.height - pos.y - size.y + (i * lineHeight), labelSize.x, labelSize.y);
+				GUI.Label(center, priorityString, style);
+
+				string sourceString = obj.getSource();
+				Vector2 sourceStringSize = style.CalcSize(new GUIContent(sourceString));
+				Rect sourceRect = new Rect(pos.x + size.x / 2 - sourceStringSize.x, Screen.height - pos.y - size.y + (i * lineHeight) + lineHeight/2, sourceStringSize.x, sourceStringSize.y);
+				GUI.Label(sourceRect, sourceString, style);
 			}
 
 			Battery battery = GetComponentInChildren<Battery>();
