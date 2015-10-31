@@ -3,41 +3,50 @@ using System.Collections.Generic;
 
 public class MentalModel {
 
-	Dictionary<Label, int> targetSightings = new Dictionary<Label, int> ();
+	Dictionary<Label, SensoryInfo> targetSightings = new Dictionary<Label, SensoryInfo>();
 
 	List<MentalModelUpdateListener> listeners = new List<MentalModelUpdateListener> ();
 
-	public void addSighting(Label target) {
+	public void addSighting(Label target, Vector3 position) {
 		if (targetSightings.ContainsKey (target)) {
-			if (targetSightings[target] == 0) {
-				targetSightings [target]++;
-
+			SensoryInfo info = targetSightings[target];
+			
+			if (info.getSightings() == 0) {
+				// We have to increment the sighting count before we notify listeners
+				info.addSighting();
 				notifyListenersTargetFound(target);
 			}
 			else {
-				targetSightings [target]++;
+				// Keep this. See above comment
+				info.addSighting();
 			}
+			info.updatePosition(position);
+
 		} else {
-			targetSightings[target] = 1;
+			targetSightings[target] = new SensoryInfo(position, 1);
 			notifyListenersTargetFound(target);
 		}
 	}
 
-	public void removeSighting(Label target) {
+	public void removeSighting(Label target, Vector3 position) {
 		if (targetSightings.ContainsKey (target)) {
-			targetSightings [target]--;
-			if (targetSightings [target] < 1) {
+			SensoryInfo info = targetSightings[target];
+
+			info.removeSighting();
+			if (info.getSightings() < 1) {
 				notifyListenersTargetLost (target);
 			}
+			info.updatePosition(position);
 		} else {
-			targetSightings[target] = 0;
+			//Realistically we should never get here. This case is stupid.
+			targetSightings[target] = new SensoryInfo(position, 0);
 			notifyListenersTargetLost (target);
-
+			Debug.LogWarning("Target '" + target.name + "' that was never found has been lost. Shenanigans?");
 		}
 	}
 
 	public bool canSee(Label target) {
-		return targetSightings.ContainsKey(target) && targetSightings[target] > 0;
+		return targetSightings.ContainsKey(target) && targetSightings[target].getSightings() > 0;
 	}
 
 	public void notifyListenersTargetFound(Label target) {

@@ -147,7 +147,7 @@ public class Movement : MonoBehaviour {
 			if (nextFootstep != 0) {
 				float volume = 0.8f -(0.8f / (1 + currentSpeed /100));
 				playFootstep(volume);
-                AudioEvent footStepsEvent = new AudioEvent(transform.position, new Tag(TagEnum.Threat, 5f));
+                AudioEvent footStepsEvent = new AudioEvent(transform.position, new Tag(TagEnum.Threat, 5f), transform.position);
                 footStepsEvent.broadcast(volume);
 			}
 			nextFootstep = Time.fixedTime + minimumFoostepOccurence / (1 + currentSpeed * foostepSpeedScale);

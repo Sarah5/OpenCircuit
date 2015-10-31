@@ -44,7 +44,7 @@ public class HoverJet : AbstractRobotComponent {
 			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
 			if (xzDist < .5f && yDist < 1.2f) {
 				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .0001f)) {
-					roboController.enqueueMessage(new RobotMessage("action", "target reached", target));
+					roboController.enqueueMessage(new RobotMessage("action", "target reached", target, target.transform.position));
 					target = null;
 					return;
 				} else {

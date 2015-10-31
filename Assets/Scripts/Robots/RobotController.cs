@@ -47,7 +47,7 @@ public class RobotController : MonoBehaviour {
 				Debug.LogWarning("Null location attached to AI with name: " + gameObject.name);
 				continue;
 			}
-			mentalModel.addSighting(location);
+			mentalModel.addSighting(location, location.transform.position);
 			trackTarget(location);
 		}
 		InvokeRepeating ("evaluateActions", .1f, .2f);
@@ -59,12 +59,12 @@ public class RobotController : MonoBehaviour {
 			RobotMessage message = messageQueue.Dequeue();
 
 			if (message.Type.Equals("target sighted")) {
-				sightingFound(message.Target);
+				sightingFound(message.Target, message.TargetPos);
 				trackTarget(message.Target);
 				evaluateActions();
 			}
 			else if (message.Type.Equals("target lost")) {
-				sightingLost(message.Target);
+				sightingLost(message.Target, message.TargetPos);
 				trackedTargets.Remove(message.Target);
 				evaluateActions();
 			}
@@ -256,18 +256,18 @@ public class RobotController : MonoBehaviour {
 		return componentUsageMap;
 	}
 
-	private void sightingLost(Label target) {
+	private void sightingLost(Label target, Vector3 lastKnownPos) {
 		if (externalMentalModel != null) {
-			externalMentalModel.removeSighting(target);
+			externalMentalModel.removeSighting(target, lastKnownPos);
 		}
-		mentalModel.removeSighting (target);
+		mentalModel.removeSighting(target, lastKnownPos);
 	}
 
-	private void sightingFound(Label target) {
+	private void sightingFound(Label target, Vector3 pos) {
 		if (externalMentalModel != null) {
-			externalMentalModel.addSighting(target);
+			externalMentalModel.addSighting(target, pos);
 		}
-		mentalModel.addSighting (target);
+		mentalModel.addSighting(target, pos);
 	}
 
 	public MentalModel getMentalModel() {

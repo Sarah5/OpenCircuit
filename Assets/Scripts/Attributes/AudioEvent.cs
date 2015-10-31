@@ -6,7 +6,7 @@ public class AudioEvent : RobotMessage {
     private Vector3 source;
     private Tag descriptor;
     
-    public AudioEvent(Vector3 source, Tag descriptor) : base("audioEvent", "sound heard", null) {
+    public AudioEvent(Vector3 source, Tag descriptor, Vector3 sourcePos) : base("audioEvent", "sound heard", null, sourcePos) {
         this.source = source;
         this.descriptor = descriptor;
     }

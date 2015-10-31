@@ -12,7 +12,8 @@ public class RoboEyes : AbstractRobotComponent {
 
 
 
-	private Dictionary<Label, bool> targetMap = new Dictionary<Label, bool>();
+	private Dictionary<Label, SensoryInfo> targetMap = new Dictionary<Label, SensoryInfo>();
+
 	private List<GameObject> lines = new List<GameObject>();
 	  LineRenderer lineRenderer;
 
@@ -76,16 +77,23 @@ public class RoboEyes : AbstractRobotComponent {
 		bool hasPower = powerSource != null && powerSource.hasPower(Time.deltaTime);
 		foreach (Label label in Label.visibleLabels) {
 			bool targetInView = hasPower && canSee (label.transform);
-			if ((!targetMap.ContainsKey (label) || !targetMap [label]) && targetInView) {
-				//print("target sighted: " + label.name);
-				roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label));
-
+			if(targetInView) {
+				if(!targetMap.ContainsKey(label)) {
+					targetMap[label] = new SensoryInfo(label.transform.position, 0);
+				}
+				if(targetMap[label].getSightings() == 0) {
+					//print("target sighted: " + label.name);
+					roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label, label.transform.position));
+					targetMap[label].addSighting();
+				}
+				targetMap[label].updatePosition(label.transform.position);
+			} else {
+				if (targetMap.ContainsKey(label) && targetMap [label].getSightings() == 1) {
+					//print("target lost: " + label.name);
+					roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label, targetMap[label].getPosition()));
+					targetMap[label].removeSighting();
+				}
 			}
-			else if (targetMap.ContainsKey(label) && targetMap [label] && !targetInView) {
-				//print("target lost: " + label.name);
-				roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label));
-			}
-			targetMap [label] = targetInView;
 		}
 	}
 
