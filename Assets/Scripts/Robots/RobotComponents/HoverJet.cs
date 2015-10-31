@@ -44,7 +44,7 @@ public class HoverJet : AbstractRobotComponent {
 			float yDist = Mathf.Abs(roboController.transform.position.y - target.transform.position.y);
 			if (xzDist < .5f && yDist < 1.2f) {
 				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.transform.forward) < .0001f)) {
-					roboController.enqueueMessage(new RobotMessage("action", "target reached", target, target.transform.position));
+					roboController.enqueueMessage(new RobotMessage("action", "target reached", target.labelHandle, target.transform.position));
 					target = null;
 					return;
 				} else {
@@ -81,7 +81,7 @@ public class HoverJet : AbstractRobotComponent {
 		corners.Add(target.transform.position);
 		//corners
 		float pathLength = 0;
-		foreach (Label item in roboController.getTrackedTargets()) {
+		foreach (LabelHandle item in roboController.getTrackedTargets()) {
 				//print ("checking path cost against item: " + item.name);
 				//print ("target threatLevel " + item.threatLevel);
 				float minDist = -1;
@@ -93,15 +93,15 @@ public class HoverJet : AbstractRobotComponent {
 						//Debug.Log("adding path length");
 						pathLength += Vector3.Distance(corners[i - 1], vertex);
 					}
-					float curDist = Vector3.Distance(vertex, item.transform.position);
+					float curDist = Vector3.Distance(vertex, item.label.transform.position);
 					if(minDist == -1) {
 						minDist = curDist;
 					} else if(curDist < minDist) {
 						minDist = curDist;
 					}
 				}
-				if(item.hasTag(TagEnum.Threat)) {
-					float threatLevel = item.getTag(TagEnum.Threat).severity;
+				if(item.label.hasTag(TagEnum.Threat)) {
+					float threatLevel = item.label.getTag(TagEnum.Threat).severity;
 					cost += threatLevel / minDist;
 				}
 		}

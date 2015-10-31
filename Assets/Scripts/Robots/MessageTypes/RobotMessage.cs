@@ -4,10 +4,10 @@ public class RobotMessage {
 
 	string message;
 	string type;
-	Label target;
+	LabelHandle target;
 	Vector3 targetPos;
 
-	public RobotMessage(string type, string message, Label target, Vector3 targetPos) {
+	public RobotMessage(string type, string message, LabelHandle target, Vector3 targetPos) {
 		this.type = type;
 		this.message = message;
 		this.target = target;
@@ -37,7 +37,7 @@ public class RobotMessage {
 		}
 	}
 
-	public Label Target {
+	public LabelHandle Target {
 		get {
 			return target;
 		}

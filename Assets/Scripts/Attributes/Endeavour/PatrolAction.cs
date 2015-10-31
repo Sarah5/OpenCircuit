@@ -6,10 +6,11 @@ public class PatrolAction : Endeavour {
 
 	//private PatrolRoute route;
 	//private List<Label> points;
-	private List<Label> routePoints;
+	private List<LabelHandle> routePoints;
 	private int currentDestination;
 
-	public PatrolAction(RobotController controller, List<Goal> goals, List<Label> route, Label target) : base(controller, goals, target.gameObject) {
+	public PatrolAction(RobotController controller, List<Goal> goals, List<LabelHandle> route, Label target)
+		: base(controller, goals, target.gameObject) {
 		//this.route = route;
 		this.name = "patrol";
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
@@ -29,7 +30,7 @@ public class PatrolAction : Endeavour {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			currentDestination = getNearest(controller.transform.position);
-			jet.setTarget(routePoints[currentDestination]);
+			jet.setTarget(routePoints[currentDestination].label);
 			jet.setAvailability(false);
 		}
 	}
@@ -55,7 +56,7 @@ public class PatrolAction : Endeavour {
 					Debug.LogWarning("Robot '" + controller.name + "' has detected a missing patrol route point. ");
 					Debug.LogWarning("Robot '" + controller.name + "' halted. ");
 				} else {
-					jet.setTarget(routePoints[currentDestination]);
+					jet.setTarget(routePoints[currentDestination].label);
 				}
 			}
 		}
@@ -68,13 +69,13 @@ public class PatrolAction : Endeavour {
 	public int getNearest(Vector3 position) {
 		float minDist;
 		int index = 0;
-		minDist = Vector3.Distance(position, routePoints[0].transform.position);
+		minDist = Vector3.Distance(position, routePoints[0].label.transform.position);
 		for (int i = 0; i < routePoints.Count; i++) {
 			if(routePoints[i] == null) {
 				Debug.LogWarning("Robot '"+controller.name+"' has detected a missing patrol route point!!!");
 				continue;
 			}
-			float curDist = Vector3.Distance(position, routePoints[i].transform.position);
+			float curDist = Vector3.Distance(position, routePoints[i].label.transform.position);
 			if (curDist < minDist) {
 				minDist = curDist;
 				index = i;
@@ -86,7 +87,7 @@ public class PatrolAction : Endeavour {
 	protected override float getCost() {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			return jet.calculatePathCost(routePoints[currentDestination]);
+			return jet.calculatePathCost(routePoints[currentDestination].label);
 		}
 		return 0;
 	}

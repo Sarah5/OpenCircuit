@@ -5,6 +5,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 [AddComponentMenu("Scripts/Labels/Label")]
 public class Label : MonoBehaviour, ISerializationCallbackReceiver {
+
+	[System.NonSerialized]
+	public LabelHandle labelHandle;
 	
 	[System.NonSerialized]
 	public static readonly HashSet<Label> labels = new HashSet<Label>();
@@ -34,6 +37,9 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	public Dictionary<TagEnum, Tag> tagMap = new Dictionary<TagEnum, Tag>();
 
 	public void Awake() {
+		labelHandle = new LabelHandle();
+		labelHandle.label = this;
+
 		Label.labels.Add(this);
 		if (isVisible) {
 			visibleLabels.Add(this);

@@ -5,10 +5,13 @@ public class AudioEvent : RobotMessage {
 
     private Vector3 source;
     private Tag descriptor;
-    
-    public AudioEvent(Vector3 source, Tag descriptor, Vector3 sourcePos) : base("audioEvent", "sound heard", null, sourcePos) {
+	private LabelHandle audioHandle;
+
+	public AudioEvent(Vector3 source, Tag descriptor, LabelHandle handle, Vector3 sourcePos)
+		: base("audioEvent", "sound heard", handle, sourcePos) {
         this.source = source;
         this.descriptor = descriptor;
+		this.audioHandle = handle;
     }
 
     public void broadcast(float volume) {

@@ -15,7 +15,7 @@ public class PursueAction : Endeavour {
 	public override bool canExecute () {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
         RobotArms arms = controller.GetComponentInChildren<RobotArms>();
-        return arms != null && !arms.hasTarget() && controller.knowsTarget(target) && jet != null && jet.canReach(target);;
+        return arms != null && !arms.hasTarget() && controller.knowsTarget(target.labelHandle) && jet != null && jet.canReach(target);;
 	}
 
 	public override void execute() {
@@ -37,7 +37,7 @@ public class PursueAction : Endeavour {
 	}
 
 	public override bool isStale() {
-		return !controller.knowsTarget (target);
+		return !controller.knowsTarget (target.labelHandle);
 	}
 
 	public override void onMessage(RobotMessage message) {

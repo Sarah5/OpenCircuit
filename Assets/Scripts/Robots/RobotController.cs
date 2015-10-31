@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
-	private List<Label> trackedTargets = new List<Label> ();
+	private List<LabelHandle> trackedTargets = new List<LabelHandle> ();
 
 #if UNITY_EDITOR
 	public bool debug = false;
@@ -47,8 +47,8 @@ public class RobotController : MonoBehaviour {
 				Debug.LogWarning("Null location attached to AI with name: " + gameObject.name);
 				continue;
 			}
-			mentalModel.addSighting(location, location.transform.position);
-			trackTarget(location);
+			mentalModel.addSighting(location.labelHandle, location.transform.position);
+			trackTarget(location.labelHandle);
 		}
 		InvokeRepeating ("evaluateActions", .1f, .2f);
 	}
@@ -93,15 +93,17 @@ public class RobotController : MonoBehaviour {
 		evaluateActions ();
 	}
 
-	public void trackTarget(Label target) {
+	public void trackTarget(LabelHandle target) {
 		trackedTargets.Add (target);
-		foreach (Endeavour action in target.getAvailableEndeavours(this)) {
+		if(target.label == null)
+			return;
+		foreach (Endeavour action in target.label.getAvailableEndeavours(this)) {
 			availableEndeavours.Add(action);
 		}
 		dirty = true;
 	}
 
-	public bool knowsTarget(Label target) {
+	public bool knowsTarget(LabelHandle target) {
 		return getMentalModel ().canSee (target);
 	}
 
@@ -125,7 +127,7 @@ public class RobotController : MonoBehaviour {
 		return componentMap;
 	}
 
-	public List<Label> getTrackedTargets() {
+	public List<LabelHandle> getTrackedTargets() {
 		return trackedTargets;
 	}
 
@@ -256,14 +258,14 @@ public class RobotController : MonoBehaviour {
 		return componentUsageMap;
 	}
 
-	private void sightingLost(Label target, Vector3 lastKnownPos) {
+	private void sightingLost(LabelHandle target, Vector3 lastKnownPos) {
 		if (externalMentalModel != null) {
 			externalMentalModel.removeSighting(target, lastKnownPos);
 		}
 		mentalModel.removeSighting(target, lastKnownPos);
 	}
 
-	private void sightingFound(Label target, Vector3 pos) {
+	private void sightingFound(LabelHandle target, Vector3 pos) {
 		if (externalMentalModel != null) {
 			externalMentalModel.addSighting(target, pos);
 		}

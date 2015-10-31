@@ -32,16 +32,16 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 					continue;
 				}
 			} else {
-				mentalModel.addSighting(location, location.transform.position);
+				mentalModel.addSighting(location.labelHandle, location.transform.position);
 			}
 		}
 	}
 
-	public void notifySighting(Label target) {
+	public void notifySighting(LabelHandle target) {
 		broadcastMessage (new EventMessage ("target found", target));
 	}
 
-	public void notifySightingLost(Label target) {
+	public void notifySightingLost(LabelHandle target) {
 		broadcastMessage (new EventMessage ("target lost", target));
 	}
 

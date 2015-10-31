@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class MentalModel {
 
-	Dictionary<Label, SensoryInfo> targetSightings = new Dictionary<Label, SensoryInfo>();
+	Dictionary<LabelHandle, SensoryInfo> targetSightings = new Dictionary<LabelHandle, SensoryInfo>();
 
 	List<MentalModelUpdateListener> listeners = new List<MentalModelUpdateListener> ();
 
-	public void addSighting(Label target, Vector3 position) {
+	public void addSighting(LabelHandle target, Vector3 position) {
 		if (targetSightings.ContainsKey (target)) {
 			SensoryInfo info = targetSightings[target];
 			
@@ -28,7 +28,7 @@ public class MentalModel {
 		}
 	}
 
-	public void removeSighting(Label target, Vector3 position) {
+	public void removeSighting(LabelHandle target, Vector3 position) {
 		if (targetSightings.ContainsKey (target)) {
 			SensoryInfo info = targetSightings[target];
 
@@ -41,21 +41,21 @@ public class MentalModel {
 			//Realistically we should never get here. This case is stupid.
 			targetSightings[target] = new SensoryInfo(position, 0);
 			notifyListenersTargetLost (target);
-			Debug.LogWarning("Target '" + target.name + "' that was never found has been lost. Shenanigans?");
+			Debug.LogWarning("Target '" + target.label.name + "' that was never found has been lost. Shenanigans?");
 		}
 	}
 
-	public bool canSee(Label target) {
+	public bool canSee(LabelHandle target) {
 		return targetSightings.ContainsKey(target) && targetSightings[target].getSightings() > 0;
 	}
 
-	public void notifyListenersTargetFound(Label target) {
+	public void notifyListenersTargetFound(LabelHandle target) {
 		for (int i = 0; i < listeners.Count; i++) {
 			listeners[i].notifySighting(target);
 		}
 	}
 
-	public void notifyListenersTargetLost(Label target) {
+	public void notifyListenersTargetLost(LabelHandle target) {
 		for (int i = 0; i < listeners.Count; i++) {
 			listeners[i].notifySightingLost(target);
 		}

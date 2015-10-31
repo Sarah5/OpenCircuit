@@ -83,14 +83,14 @@ public class RoboEyes : AbstractRobotComponent {
 				}
 				if(targetMap[label].getSightings() == 0) {
 					//print("target sighted: " + label.name);
-					roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label, label.transform.position));
+					roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label.labelHandle, label.transform.position));
 					targetMap[label].addSighting();
 				}
 				targetMap[label].updatePosition(label.transform.position);
 			} else {
 				if (targetMap.ContainsKey(label) && targetMap [label].getSightings() == 1) {
 					//print("target lost: " + label.name);
-					roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label, targetMap[label].getPosition()));
+					roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label.labelHandle, targetMap[label].getPosition()));
 					targetMap[label].removeSighting();
 				}
 			}
