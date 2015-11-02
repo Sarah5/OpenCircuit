@@ -14,6 +14,7 @@ namespace Vox {
 		private static Thread updateThread;
 		private static Thread checkThread;
 		private static BlockingQueue<VoxelJob> checkQueue;
+		private static int jobStartCount = 0;
 		public static BlockingQueue<VoxelJob> updateQueue;
 
 		//private static VoxelThread threader;
@@ -53,7 +54,12 @@ namespace Vox {
 		public static void enqueueUpdate(VoxelJob job) {
 			initialize();
 			updateQueue.enqueue(job);
+			++jobStartCount;
 			//MonoBehaviour.print("WHO's your daddy?");
+		}
+
+		public static int getStartJobCount() {
+			return jobStartCount;
 		}
 
 		public static int getJobCount() {
@@ -79,6 +85,8 @@ namespace Vox {
 		private static void updateThreadReader() {
 			while (running) {
 				updateQueue.dequeue().execute();
+				if (updateQueue.count < 1)
+					jobStartCount = 0;
 			}
 		}
 

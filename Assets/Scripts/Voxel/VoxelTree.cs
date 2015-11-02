@@ -16,6 +16,9 @@ namespace Vox {
 
 		public const ulong FILE_FORMAT_VERSION = 1;
 
+		[System.NonSerialized]
+		public readonly static HashSet<VoxelTree> generatingTrees = new HashSet<VoxelTree>();
+
 		// basic stats
 		public float baseSize = 128;
 		public byte maxDetail = 7;
@@ -112,6 +115,8 @@ namespace Vox {
 				updateCounter = (updateCounter + 1) % 2;
 			}
 			applyQueuedMeshes();
+			if (jobQueue.Count < 1)
+				generatingTrees.Remove(this);
 			if (generationPaused) {
 				if (VoxelThread.getJobCount() < 1 && jobQueue.Count < 1) {
 					//if (!rebakedLighting) {
@@ -134,11 +139,14 @@ namespace Vox {
 		}
 
 		public void applyQueuedMeshes() {
-			lock (this) {
-				while (jobQueue.Count > 0) {
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Start();
+			while (jobQueue.Count > 0 && watch.ElapsedMilliseconds < 20) {
+				lock(jobQueue) {
 					jobQueue.Dequeue().execute();
 				}
 			}
+			watch.Stop();
 		}
 
 		public float subtractSphere(Vector3 worldLocation, float radius) {
@@ -261,7 +269,7 @@ namespace Vox {
 
 				// relink renderers
 				//relinkRenderers();
-				jobQueue.Enqueue(new LinkRenderersJob(this));
+				enqueueJob(new LinkRenderersJob(this));
 			}
 		}
 
@@ -349,18 +357,21 @@ namespace Vox {
 			return VoxelThread.getJobCount() > 0 || jobQueue.Count > 0;
 		}
 
+		public int getJobCount() {
+			return jobQueue.Count;
+		}
+
 		public void pauseForGeneration() {
 			generationPaused = true;
 			rebakedLighting = false;
 			Time.timeScale = 0;
 		}
 
-		internal void enqueueMeshApply(VoxelJob job) {
-			jobQueue.Enqueue(job);
-		}
-
-		internal void enqueueJob(VoxelJob job) {
-			jobQueue.Enqueue(job);
+		internal  void enqueueJob(VoxelJob job) {
+			lock(jobQueue) {
+				generatingTrees.Add(this);
+				jobQueue.Enqueue(job);
+			}
 		}
 	}
 

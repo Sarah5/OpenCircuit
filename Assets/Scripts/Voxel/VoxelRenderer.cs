@@ -137,7 +137,7 @@ namespace Vox {
 			alignEdge(info, 1, 1, 0);
 			alignEdge(info, 1, 1, 2);
 			lock (control) {
-				control.enqueueMeshApply(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
+				control.enqueueJob(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
 			}
 
 		}
@@ -593,7 +593,7 @@ namespace Vox {
 			}
 
 			alignEdge(info, x, y, z);
-			control.enqueueMeshApply(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
+			control.enqueueJob(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
 		}
 
 
@@ -701,7 +701,7 @@ namespace Vox {
 				VERTS = newVerts;
 				NORMS = newNorms;
 				TRIS = newTris.ToArray();
-				control.enqueueMeshApply(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
+				control.enqueueJob(new ApplyMeshJob(this, info.detailLevel, info.x, info.y, info.z));
 			}
 		}
 

@@ -52,15 +52,18 @@ public class VoxelEditorGUI : Editor {
 		buttonBigFont.fontSize = 14;
 		tabsBigFont = new GUIStyle(GUI.skin.button);
 		tabsBigFont.fixedHeight = 30;
-
-		serializedObject.Update();
+		
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		serializedObject.Update();
 
 		if (editor.generating()) {
-			GUILayout.Label("Generating...", labelBigFont);
+			string label = "Generating Skin...";
+			EditorGUI.ProgressBar(GUILayoutUtility.GetRect(new GUIContent(label), GUI.skin.button),
+				VoxelEditorProgressController.getGenerationProgress(editor), label);
+			Repaint();
 			return;
 		}
+
+		serializedObject.Update();
 
 		if (setupGeneration) {
 			doGenerationGUI(editor);
@@ -90,7 +93,6 @@ public class VoxelEditorGUI : Editor {
 
 	public void OnSceneGUI() {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
-		editor.Update();
 		if (editor.selectedMode != 1)
 			return;
 		int controlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -204,9 +206,7 @@ public class VoxelEditorGUI : Editor {
 				}
 			}
 			if (GUILayout.Button(editor.hasRenderers()? "Reskin": "Skin", buttonBigFont) && validateSubstances(editor)) {
-				//if (EditorUtility.DisplayDialog("Regenerate Voxel Meshes?", "Are you sure you want to regenerate all voxel meshes?", "Reskin", "Cancel")) {
-					editor.generateRenderers();
-				//}
+				editor.generateRenderers();
 			}
 			if (editor.hasRenderers() && GUILayout.Button("Clear Skin") && validateSubstances(editor)) {
 				editor.clearRenderers();
