@@ -49,6 +49,13 @@ public class MentalModel {
 		return targetSightings.ContainsKey(target) && targetSightings[target].getSightings() > 0;
 	}
 
+	public System.Nullable<Vector3> getLastKnownPosition(LabelHandle target) {
+		if (targetSightings.ContainsKey(target)) {
+			return targetSightings[target].getPosition();
+		}
+		return null;
+	}
+
 	public void notifyListenersTargetFound(LabelHandle target) {
 		for (int i = 0; i < listeners.Count; i++) {
 			listeners[i].notifySighting(target);

@@ -40,6 +40,12 @@ public class Rock : MonoBehaviour {
 			if (source.clip == null)
 				source.clip = clip;
 			source.Play(0);
+			LabelHandle audioLabel = new LabelHandle(transform.position, "rock");
+			audioLabel.addTag(new Tag(TagEnum.Sound, volume));
+			audioLabel.addTag(new Tag(TagEnum.Threat, 5f));
+			AudioEvent rockCollisionSound = new AudioEvent(transform.position, audioLabel, transform.position);
+			rockCollisionSound.broadcast(volume);
+
 		}
 	}
 }

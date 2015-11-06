@@ -23,9 +23,6 @@ public class RobotControllerGUI : Editor {
 		RobotController robot = (RobotController)target;
 		Battery battery = robot.GetComponentInChildren<Battery>();
 
-		Vector3 pos;
-		pos = robot.transform.position;
-
 		Font font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
 		GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
 		debugStyle.font = font;

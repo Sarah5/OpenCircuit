@@ -7,11 +7,9 @@ public class RoboEyes : AbstractRobotComponent {
 
 	public float fieldOfViewAngle = 170f;           // Number of degrees, centered on forward, for the enemy sight.
 	public float sightDistance = 30.0f;
-	  int size; //Total number of points in circle
-	  float theta_scale = 0.01f;        //Set lower to add more points
-
-
-
+	int size; //Total number of points in circle
+	float theta_scale = 0.01f;        //Set lower to add more points
+	
 	private Dictionary<Label, SensoryInfo> targetMap = new Dictionary<Label, SensoryInfo>();
 
 	private List<GameObject> lines = new List<GameObject>();
@@ -21,12 +19,12 @@ public class RoboEyes : AbstractRobotComponent {
 	// Use this for initialization
 	void Start () {
 		float sizeValue = 2f*Mathf.PI / theta_scale; 
-    size = (int)sizeValue;
-    size++;
-	lineRenderer = roboController.gameObject.AddComponent<LineRenderer>();
-    lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
-    lineRenderer.SetWidth(0.02f, 0.02f); //thickness of line
-	lineRenderer.SetVertexCount(size);
+		size = (int)sizeValue;
+		size++;
+		lineRenderer = roboController.gameObject.AddComponent<LineRenderer>();
+		lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
+		lineRenderer.SetWidth(0.02f, 0.02f); //thickness of line
+		lineRenderer.SetVertexCount(size);
 		InvokeRepeating ("lookAround", 0.5f, .03f);
 	}
 
@@ -83,14 +81,14 @@ public class RoboEyes : AbstractRobotComponent {
 				}
 				if(targetMap[label].getSightings() == 0) {
 					//print("target sighted: " + label.name);
-					roboController.enqueueMessage(new RobotMessage("target sighted", "target sighted", label.labelHandle, label.transform.position));
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_SIGHTED, "target sighted", label.labelHandle, label.transform.position));
 					targetMap[label].addSighting();
 				}
 				targetMap[label].updatePosition(label.transform.position);
 			} else {
 				if (targetMap.ContainsKey(label) && targetMap [label].getSightings() == 1) {
 					//print("target lost: " + label.name);
-					roboController.enqueueMessage(new RobotMessage("target lost", "target lost", label.labelHandle, targetMap[label].getPosition()));
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", label.labelHandle, targetMap[label].getPosition()));
 					targetMap[label].removeSighting();
 				}
 			}

@@ -5,7 +5,7 @@ using System;
 
 public class IdleAction : Endeavour {
 
-    public IdleAction(RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.gameObject) {
+    public IdleAction(RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.labelHandle) {
 
     }
 

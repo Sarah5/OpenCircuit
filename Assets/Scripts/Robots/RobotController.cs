@@ -13,9 +13,9 @@ public class RobotController : MonoBehaviour {
 	public bool shouldAlphabetize = false;
 #endif
 
-
 	public Label[] locations;
     public Goal[] goals;
+	public InherentEndeavourFactory[] inherentEndeavours;
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
     public float reliability = 5f;
@@ -31,6 +31,7 @@ public class RobotController : MonoBehaviour {
 	private bool dirty = false;
 
 	void Start() {
+		inherentEndeavours = new InherentEndeavourFactory[] { new Investigate() };
         foreach(Goal goal in goals) {
             if(!goalMap.ContainsKey(goal.type)) {
                 goalMap.Add(goal.type, goal);
@@ -58,17 +59,16 @@ public class RobotController : MonoBehaviour {
 		while (messageQueue.Count > 0) {
 			RobotMessage message = messageQueue.Dequeue();
 
-			if (message.Type.Equals("target sighted")) {
+			if (message.Type == RobotMessage.MessageType.TARGET_SIGHTED) {
 				sightingFound(message.Target, message.TargetPos);
 				trackTarget(message.Target);
 				evaluateActions();
-			}
-			else if (message.Type.Equals("target lost")) {
+			} else if(message.Type == RobotMessage.MessageType.TARGET_LOST) {
 				sightingLost(message.Target, message.TargetPos);
 				trackedTargets.Remove(message.Target);
 				evaluateActions();
 			}
-			else if (message.Type.Equals("action")) {
+			else if (message.Type == RobotMessage.MessageType.ACTION) {
 				foreach( Endeavour action in currentEndeavours) {
 					action.onMessage(message);
 				}
@@ -94,17 +94,33 @@ public class RobotController : MonoBehaviour {
 	}
 
 	public void trackTarget(LabelHandle target) {
-		trackedTargets.Add (target);
-		if(target.label == null)
-			return;
-		foreach (Endeavour action in target.label.getAvailableEndeavours(this)) {
-			availableEndeavours.Add(action);
+		trackedTargets.Add(target);
+		target.getPosition();
+		foreach(InherentEndeavourFactory factory in inherentEndeavours) {
+			if(factory.isApplicable(target)) {
+				Endeavour action = factory.constructEndeavour(this, target);
+				if(action != null) {
+					availableEndeavours.Add(action);
+					dirty = true;
+
+				}
+			}
 		}
-		dirty = true;
+		if(target.label != null) {
+			foreach(Endeavour action in target.label.getAvailableEndeavours(this)) {
+				availableEndeavours.Add(action);
+				dirty = true;
+
+			}
+		}
 	}
 
 	public bool knowsTarget(LabelHandle target) {
 		return getMentalModel ().canSee (target);
+	}
+
+	public System.Nullable<Vector3> getLastKnownPosition(LabelHandle target) {
+		return getMentalModel().getLastKnownPosition(target);
 	}
 
 	public void attachMentalModel(MentalModel model) {
@@ -193,7 +209,7 @@ public class RobotController : MonoBehaviour {
 							localMinPriority = priority;
 						}
 					}
-					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().name, priority, true));
+					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().getName(), priority, true));
 				}
 #endif
 				proposedEndeavours.Add(action);
@@ -215,7 +231,7 @@ public class RobotController : MonoBehaviour {
 							localMinPriority = priority;
 						}
 					}
-					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().name, priority, false));
+					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().getName(), priority, false));
 				}
 #endif
 				if(action.active) {

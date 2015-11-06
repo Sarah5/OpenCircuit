@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 public class DropKickAction : Endeavour {
 
-	Label dropPoint;
+	LabelHandle dropPoint;
 
-	public DropKickAction(RobotController controller, List<Goal> goals, Label dropPoint) : base(controller, goals, dropPoint.getGameObject()) {
+	public DropKickAction(RobotController controller, List<Goal> goals, LabelHandle dropPoint) : base(controller, goals, dropPoint) {
 		this.name = "dropKick";
 		this.dropPoint = dropPoint;
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
@@ -30,7 +30,7 @@ public class DropKickAction : Endeavour {
         base.stopExecution();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			jet.setTarget(null);
+			jet.setTarget(null, false);
 			jet.setAvailability(true);
 		}
 	}
@@ -49,7 +49,7 @@ public class DropKickAction : Endeavour {
 	protected override float getCost() {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			return jet.calculatePathCost(dropPoint);
+			return jet.calculatePathCost(dropPoint.label);
 		}
 		return 0;
 	}

@@ -37,7 +37,7 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 	public Dictionary<TagEnum, Tag> tagMap = new Dictionary<TagEnum, Tag>();
 
 	public void Awake() {
-		labelHandle = new LabelHandle();
+		labelHandle = new LabelHandle(transform.position, name);
 		labelHandle.label = this;
 
 		Label.labels.Add(this);

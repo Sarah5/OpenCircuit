@@ -6,7 +6,7 @@ public class PursueAction : Endeavour {
 
 	private Label target;
 
-	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.gameObject) {
+	public PursueAction (RobotController controller, List<Goal> goals, Label target) : base(controller, goals, target.labelHandle) {
 		this.target = target;
 		this.name = "pursue";
 		requiredComponents = new System.Type[] {typeof(HoverJet)};
@@ -15,14 +15,14 @@ public class PursueAction : Endeavour {
 	public override bool canExecute () {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
         RobotArms arms = controller.GetComponentInChildren<RobotArms>();
-        return arms != null && !arms.hasTarget() && controller.knowsTarget(target.labelHandle) && jet != null && jet.canReach(target);;
+        return arms != null && !arms.hasTarget() && controller.knowsTarget(target.labelHandle) && jet != null && jet.canReach(target);
 	}
 
 	public override void execute() {
         base.execute();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			jet.setTarget(target);
+			jet.setTarget(target.labelHandle);
 			jet.setAvailability(false);
 		}
 	}

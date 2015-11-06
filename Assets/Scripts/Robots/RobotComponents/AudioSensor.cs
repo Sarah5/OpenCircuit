@@ -4,14 +4,20 @@ using System.Collections.Generic;
 
 public class AudioSensor : AbstractRobotComponent {
 
+	public float range = 30f; 
 	private bool hasPower;
 
     public static List<AudioSensor> sensors = new List<AudioSensor>();
 
 	public void processAudioEvent(AudioEvent eventMessage) {
 		if(hasPower) {
-            Debug.Log("Sound heard!");
+			//Debug.Log("sound heard");
+			roboController.enqueueMessage(eventMessage);
 		}
+	}
+
+	public float getRange() {
+		return range;
 	}
 
 	// Use this for initialization
