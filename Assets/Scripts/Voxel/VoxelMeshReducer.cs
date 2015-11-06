@@ -5,12 +5,12 @@ using System.Collections.Generic;
 namespace Vox {
 	public class VoxelMeshReducer {
 
-		public static void blah(Vector3[] vertices, int[] triangles, float maxMergeCost) {
+		public static void reduce(Vector3[] vertices, int[] triangles, float maxMergeCost) {
 
 			/////////////////////////////////////////////////////
 			//  calculate merge costs and assemble merge list  //
 			/////////////////////////////////////////////////////
-			List<MergeOperation> mergeList = new List<MergeOperation>(vertices.Length /2);
+			HashSet<MergeOperation> mergeSet = new HashSet<MergeOperation>();
 			Vector3[] triangleNormals = new Vector3[triangles.Length /3];
 			List<int>[] vertexNeighbors = new List<int>[vertices.Length];
 			List<int>[] vertexTriangles = new List<int>[vertices.Length];
@@ -49,7 +49,7 @@ namespace Vox {
 
 				// add to merge list if cost is low enough
 				if (minMergeCost <= maxMergeCost)
-					mergeList.Add(new MergeOperation(i, mergetarget, minMergeCost));
+					mergeSet.Add(new MergeOperation(i, mergetarget, minMergeCost));
 			}
 
 
@@ -57,6 +57,8 @@ namespace Vox {
 			////////////////////////////////////
 			//  perform merges in merge list  //
 			////////////////////////////////////
+
+			// construct new vertex array
 
 		}
 
@@ -100,6 +102,32 @@ namespace Vox {
 				this.victomVertex = victomVertex;
 				this.targetVertex = targetVertex;
 				this.mergeCost = mergeCost;
+			}
+
+			public override bool Equals(object ob) {
+				if (ob == null || GetType() != ob.GetType())
+					return false;
+				return this == (MergeOperation)ob;
+			}
+
+			public static bool operator==(MergeOperation m1, MergeOperation m2) {
+				if (System.Object.ReferenceEquals(m1, m2))
+					return true;
+				if (((object)m1 == null) ^ ((object)m2 == null))
+					return false;
+				return (m1.victomVertex == m2.victomVertex && m1.targetVertex == m2.targetVertex);
+			}
+
+			public static bool operator!=(MergeOperation m1, MergeOperation m2) {
+				return !(m1 == m2);
+			}
+
+			public override int GetHashCode() {
+				long h = victomVertex ^ targetVertex;
+				h = (h^0xdeadbeef) + (h<<4);
+				h = h ^ (h>>10);
+				h = h + (h<<7);
+				return (int)(h ^ (h>>13));
 			}
 		}
 	}
