@@ -55,7 +55,7 @@ public class RobotControllerGUI : Editor {
 
 
 		GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-		labelStyle.font = font;
+		labelStyle.font = debugFont;
 		labelStyle.fontSize = 14;
 
 		GUIStyle blueStyle = new GUIStyle(GUI.skin.box);
