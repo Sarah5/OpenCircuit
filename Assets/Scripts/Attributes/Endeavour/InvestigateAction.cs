@@ -19,7 +19,15 @@ public class InvestigateAction : InherentEndeavour {
 
 
 	public override bool isStale() {
-		return completed || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds);
+		RoboEyes eyes = controller.GetComponentInChildren<RoboEyes>();
+		bool canSee = false;
+		if(eyes != null) {
+			canSee = (eyes.lookAt(parent.getPosition()) == null);
+			if(canSee) {
+				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition()));
+			}
+		}
+		return completed || (canSee) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds);
 	}
 
 	public override void onMessage(RobotMessage message) {
@@ -27,14 +35,14 @@ public class InvestigateAction : InherentEndeavour {
 			if(message.Target == parent) {
 				Debug.Log("investigate action complete");
 				completed = true;
+				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition()));
 			}
 		}
 	}
 
 	public override bool canExecute() {
-		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		System.Nullable<Vector3> pos = controller.getLastKnownPosition(parent);
-		return jet != null && pos != null && jet.canReach(pos.Value);
+		return pos != null;
 	}
 
 	public override void execute() {

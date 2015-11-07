@@ -21,6 +21,12 @@ public class HoverJet : AbstractRobotComponent {
 
     public void setTarget(LabelHandle target, bool matchRotation = false) {
 		this.target = target;
+		if(target == null) {
+			nav.Stop();
+		} else {
+			nav.Resume();
+		}
+
 		matchTargetRotation = matchRotation;
 	}
 

@@ -11,6 +11,7 @@ public class RobotController : MonoBehaviour {
 #if UNITY_EDITOR
 	public bool debug = false;
 	public bool shouldAlphabetize = false;
+	public List<GameObject> trackedObjects = new List<GameObject>();
 #endif
 
 	public Label[] locations;
@@ -56,6 +57,29 @@ public class RobotController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+//Leave this here, very useful!!
+//#if UNITY_EDITOR
+
+//		if(debug) {
+//			/* 
+//			* Draw tracked targets
+//			*/
+//			foreach(GameObject obj in trackedObjects) {
+//				Destroy(obj);
+//			}
+//			trackedObjects.Clear();
+//			foreach(LabelHandle handle in trackedTargets) {
+//				GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+//				capsule.transform.position = handle.getPosition();
+//				capsule.GetComponent<MeshRenderer>().material.color = Color.yellow;
+//				capsule.transform.localScale = new Vector3(.2f, .2f, .2f);
+//				Destroy(capsule.GetComponent<Rigidbody>());
+//				Destroy(capsule.GetComponent<CapsuleCollider>());
+//				trackedObjects.Add(capsule);
+//			}
+//		}
+//#endif
 		while (messageQueue.Count > 0) {
 			RobotMessage message = messageQueue.Dequeue();
 
@@ -424,7 +448,9 @@ public class RobotController : MonoBehaviour {
 				Rect sourceRect = new Rect(pos.x + size.x / 2 - sourceStringSize.x, Screen.height - pos.y - size.y + (i * lineHeight) + lineHeight/2, sourceStringSize.x, sourceStringSize.y);
 				GUI.Label(sourceRect, sourceString, style);
 			}
-
+			/* 
+			 * Draw the battery meter
+			*/
 			Battery battery = GetComponentInChildren<Battery>();
 			if(battery != null) {
 				Rect progressBar = new Rect(pos.x - size.x / 2, Screen.height - pos.y + 3, size.x, 20);

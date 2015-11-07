@@ -36,6 +36,22 @@ public class RoboEyes : AbstractRobotComponent {
 		}
 	}
 
+	public GameObject lookAt(Vector3 position) {
+		if(powerSource.hasPower(Time.deltaTime)) {
+			Vector3 direction = position - transform.position;
+			RaycastHit hitInfo;
+
+			if(Physics.Raycast(transform.position, direction, out hitInfo, direction.magnitude)) {
+				if(roboController.debug)
+					drawLine(transform.position, hitInfo.point, Color.green);
+				return hitInfo.collider.gameObject;
+			}
+		}
+		if(roboController.debug)
+			drawLine(transform.position, position, Color.red);
+		return null;
+	}
+
 	private bool canSee (Transform obj) {
 		Vector3 objPos = obj.position;
 		bool result = false;
@@ -72,7 +88,7 @@ public class RoboEyes : AbstractRobotComponent {
 
 	private void lookAround() {
 		clearLines();
-		bool hasPower = powerSource != null && powerSource.hasPower(Time.deltaTime);
+		bool hasPower = (powerSource != null) && powerSource.hasPower(Time.deltaTime);
 		foreach (Label label in Label.visibleLabels) {
 			bool targetInView = hasPower && canSee (label.transform);
 			if(targetInView) {
