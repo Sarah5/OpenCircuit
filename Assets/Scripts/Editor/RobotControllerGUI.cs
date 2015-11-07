@@ -9,9 +9,11 @@ public class RobotControllerGUI : Editor {
 
     private bool status = true;
     private int size = 0;
+	private Font debugFont;
 
     void onEnable() {
-        size = this.serializedObject.FindProperty("goals").arraySize;
+		debugFont = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
+		size = this.serializedObject.FindProperty("goals").arraySize;
     }
 
 	void OnSceneGUI() {
@@ -23,12 +25,11 @@ public class RobotControllerGUI : Editor {
 		RobotController robot = (RobotController)target;
 		Battery battery = robot.GetComponentInChildren<Battery>();
 
-		Font font = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
 		GUIStyle debugStyle = new GUIStyle(GUI.skin.textArea);
-		debugStyle.font = font;
+		debugStyle.font = debugFont;
 		debugStyle.fontSize = 14;
 		GUIStyle debugLabelStyle = new GUIStyle(GUI.skin.label);
-		debugLabelStyle.font = font;
+		debugLabelStyle.font = debugFont;
 		debugLabelStyle.fontSize = 14;
 
 		Texture2D blue = new Texture2D(1, 1);
