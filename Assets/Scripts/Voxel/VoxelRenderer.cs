@@ -40,7 +40,7 @@ namespace Vox {
 			//			lock (this) {
 			//MonoBehaviour.print("Deleted Renderer");
 				if (control != null) {
-					lock(control.renderers) {
+					lock(control) {
 						control.renderers.Remove(index);
 						if (control.getHead() != null) {
 							VoxelHolder block = control.getHead().get(index);
@@ -75,7 +75,7 @@ namespace Vox {
 			VERTS = new Vector3[0];
 			NORMS = new Vector3[0];
 			TRIS = new int[0];
-			lock(control.renderers) {
+			lock(control) {
 				control.renderers[index] = this;
 			}
 		}

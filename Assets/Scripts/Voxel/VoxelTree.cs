@@ -142,7 +142,7 @@ namespace Vox {
 			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 			while (jobQueue.Count > 0 && watch.ElapsedMilliseconds < 20) {
-				lock(jobQueue) {
+				lock(this) {
 					jobQueue.Dequeue().execute();
 				}
 			}
@@ -199,7 +199,7 @@ namespace Vox {
 		}
 
 		public void clearRenderers() {
-			lock(renderers) {
+			lock(this) {
 				while(renderers.Count > 0) {
 					Dictionary<VoxelIndex, VoxelRenderer>.ValueCollection.Enumerator e = renderers.Values.GetEnumerator();
 					e.MoveNext();
@@ -368,7 +368,7 @@ namespace Vox {
 		}
 
 		internal  void enqueueJob(VoxelJob job) {
-			lock(jobQueue) {
+			lock(this) {
 				generatingTrees.Add(this);
 				jobQueue.Enqueue(job);
 			}

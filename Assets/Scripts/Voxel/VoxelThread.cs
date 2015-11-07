@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
 using System.Threading;
-using System.Linq;
 
 namespace Vox {
 
@@ -15,6 +13,7 @@ namespace Vox {
 		private static Thread checkThread;
 		private static BlockingQueue<VoxelJob> checkQueue;
 		private static int jobStartCount = 0;
+		private static System.Object jobStartCountLock = new System.Object();
 		public static BlockingQueue<VoxelJob> updateQueue;
 
 		//private static VoxelThread threader;
@@ -54,7 +53,8 @@ namespace Vox {
 		public static void enqueueUpdate(VoxelJob job) {
 			initialize();
 			updateQueue.enqueue(job);
-			++jobStartCount;
+			lock(jobStartCountLock)
+				++jobStartCount;
 			//MonoBehaviour.print("WHO's your daddy?");
 		}
 
@@ -86,7 +86,8 @@ namespace Vox {
 			while (running) {
 				updateQueue.dequeue().execute();
 				if (updateQueue.count < 1)
-					jobStartCount = 0;
+					lock(jobStartCountLock)
+						jobStartCount = 0;
 			}
 		}
 
