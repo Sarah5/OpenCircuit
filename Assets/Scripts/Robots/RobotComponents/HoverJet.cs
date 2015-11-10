@@ -19,6 +19,10 @@ public class HoverJet : AbstractRobotComponent {
 
     public float powerDrawRate = 5f;
 
+#if UNITY_EDITOR
+	private GameObject dest;
+#endif
+
     public void setTarget(LabelHandle target, bool matchRotation = false) {
 		this.target = target;
 		if(target == null) {
@@ -48,8 +52,8 @@ public class HoverJet : AbstractRobotComponent {
 
 			float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
 											new Vector2(target.getPosition().x, target.getPosition().z));
-			float yDist = Mathf.Abs(roboController.transform.position.y - target.getPosition().y);
-			if (xzDist < .5f && yDist < 1.2f) {
+			float yDist = Mathf.Abs((roboController.transform.position.y -.4f) - target.getPosition().y);
+			if (xzDist < .5f && yDist < .8f) {
 				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.label.transform.forward) < .0001f)) {
 					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target reached", target, target.getPosition()));
 					target = null;
@@ -61,7 +65,20 @@ public class HoverJet : AbstractRobotComponent {
 
 			if (nav.enabled) {
 				if(target != null) {
+
 					nav.SetDestination(target.getPosition());
+
+#if UNITY_EDITOR
+					if(roboController.debug) {
+						Destroy(dest);
+						GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+						cube.transform.position = target.getPosition();
+						cube.GetComponent<MeshRenderer>().material.color = Color.green;
+						Destroy(cube.GetComponent<BoxCollider>());
+						cube.transform.localScale = new Vector3(.3f, .3f, .3f);
+						dest = cube;
+					}
+#endif
 				} 
 
 				if (myAnimator != null) {
