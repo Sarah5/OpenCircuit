@@ -16,7 +16,7 @@ public class RobotController : MonoBehaviour {
 
 	public Label[] locations;
     public Goal[] goals;
-	public InherentEndeavourFactory[] inherentEndeavours;
+	public InherentEndeavourFactory[] inherentEndeavours = new InherentEndeavourFactory[] { new Investigate() };
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
     public float reliability = 5f;
@@ -32,7 +32,6 @@ public class RobotController : MonoBehaviour {
 	private bool dirty = false;
 
 	void Start() {
-		inherentEndeavours = new InherentEndeavourFactory[] { new Investigate() };
         foreach(Goal goal in goals) {
             if(!goalMap.ContainsKey(goal.type)) {
                 goalMap.Add(goal.type, goal);
