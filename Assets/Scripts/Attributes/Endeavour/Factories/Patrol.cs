@@ -12,6 +12,7 @@ public class Patrol : EndeavourFactory {
 	private bool status = false;
 	private int size = 0;
 
+	[System.NonSerialized]
 	private List<LabelHandle> pointHandles;
 
 	public override Endeavour constructEndeavour (RobotController controller) {
