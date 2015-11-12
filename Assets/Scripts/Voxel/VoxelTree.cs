@@ -36,6 +36,8 @@ namespace Vox {
 		public bool createColliders = true;
 		public bool useStaticMeshes = true;
 		public bool saveMeshes = false;
+		public bool reduceMeshes = false;
+		public float reductionAmount = 0.1f;
 
 
 		// performance stats
@@ -51,6 +53,12 @@ namespace Vox {
 		public byte[] voxelData = new byte[0];
 		[System.NonSerialized]
 		public bool dirty = true;
+		[System.NonSerialized]
+		public int vertexCount = 0;
+		[System.NonSerialized]
+		public int triangleCount = 0;
+
+
 		[System.NonSerialized]
 		private Queue<VoxelJob> jobQueue = new Queue<VoxelJob>(100);
 		private Vector3 localCamPosition;
@@ -95,25 +103,25 @@ namespace Vox {
 		}
 
 		public void Update() {
-			if (Application.isPlaying) {
-				if (updateCounter == 0) {
-					if (useLod) {
-						if (curLodDetail < lodDetail) {
-							if (lodDetail - curLodDetail < 0.1f) {
-								if (lodDetail - curLodDetail > -0.1f)
-									curLodDetail = lodDetail;
-								else
-									curLodDetail -= 0.1f;
-							} else
-								curLodDetail += 0.1f;
-						}
-//						updateLocalCamPosition();
-					}
-					if (updateCheckJobs < 1)
-						enqueueCheck(new UpdateCheckJob(head, this, 0));
-				}
-				updateCounter = (updateCounter + 1) % 2;
-			}
+//			if (Application.isPlaying) {
+//				if (updateCounter == 0) {
+//					if (useLod) {
+//						if (curLodDetail < lodDetail) {
+//							if (lodDetail - curLodDetail < 0.1f) {
+//								if (lodDetail - curLodDetail > -0.1f)
+//									curLodDetail = lodDetail;
+//								else
+//									curLodDetail -= 0.1f;
+//							} else
+//								curLodDetail += 0.1f;
+//						}
+////						updateLocalCamPosition();
+//					}
+//					if (updateCheckJobs < 1)
+//						enqueueCheck(new UpdateCheckJob(head, this, 0));
+//				}
+//				updateCounter = (updateCounter + 1) % 2;
+//			}
 			applyQueuedMeshes();
 			if (jobQueue.Count < 1)
 				generatingTrees.Remove(this);

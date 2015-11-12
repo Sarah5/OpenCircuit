@@ -264,6 +264,8 @@ public class VoxelEditorGUI : Editor {
 		if (showStatistics) {
 			EditorGUILayout.LabelField("Chunk Count: " + editor.renderers.Count);
 			doTreeSizeGUI(editor);
+			EditorGUILayout.LabelField("Vertex Count: " + editor.vertexCount);
+			EditorGUILayout.LabelField("Triangle Count: " + editor.triangleCount);
 		}
 	}
 
@@ -374,6 +376,10 @@ public class VoxelEditorGUI : Editor {
 		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
 		editor.useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
 		editor.saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
+		editor.reduceMeshes = EditorGUILayout.Toggle(new GUIContent("Reduce Meshes"), editor.reduceMeshes);
+		if (editor.reduceMeshes) {
+			editor.reductionAmount = doSliderFloatField("Mesh Reduction Level", editor.reductionAmount, 0, 0.5f);
+		}
 		//editor.maxDetail = (byte)EditorGUILayout.IntField(new GUIContent("Voxel Power"), editor.maxDetail);
 		// if (createColliders != editor.createColliders || useStaticMeshes != editor.useStaticMeshes) {
 		// 	editor.createColliders = createColliders;
@@ -385,6 +391,11 @@ public class VoxelEditorGUI : Editor {
 	protected void doGeneralPropertiesGUI(VoxelEditorParameters editor) {
 		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
 		editor.useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
+		editor.saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
+		editor.reduceMeshes = EditorGUILayout.Toggle(new GUIContent("Reduce Meshes"), editor.reduceMeshes);
+		if (editor.reduceMeshes) {
+			editor.reductionAmount = doSliderFloatField("Mesh Reduction Level", editor.reductionAmount, 0, 0.5f);
+		}
 	}
 
 	protected void doFlatGenerationGUI() {
@@ -494,6 +505,9 @@ public class VoxelEditorGUI : Editor {
         public int proceduralSeed;
         public bool createColliders = true;
 		public bool useStaticMeshes = true;
+		public bool saveMeshes = false;
+		public bool reduceMeshes = false;
+		public float reductionAmount = 0;
 		public Texture2D[] heightmaps;
 		public byte[] heightmapSubstances;
 
@@ -504,6 +518,9 @@ public class VoxelEditorGUI : Editor {
             proceduralSeed = editor.proceduralSeed;
             createColliders = editor.createColliders;
             useStaticMeshes = editor.useStaticMeshes;
+            saveMeshes = editor.saveMeshes;
+            reduceMeshes = editor.reduceMeshes;
+            reductionAmount = editor.reductionAmount;
 			heightPercentage = editor.heightPercentage;
 			spherePercentage = editor.spherePercentage;
         }
@@ -513,6 +530,9 @@ public class VoxelEditorGUI : Editor {
             editor.maxDetail = maxDetail;
             editor.createColliders = createColliders;
             editor.useStaticMeshes = useStaticMeshes;
+            editor.saveMeshes = saveMeshes;
+            editor.reduceMeshes = reduceMeshes;
+            editor.reductionAmount = reductionAmount;
 			editor.heightPercentage = heightPercentage;
 			editor.spherePercentage = spherePercentage;
 		}

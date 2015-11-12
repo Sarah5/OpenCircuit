@@ -6,11 +6,11 @@ namespace Vox {
 	public class VoxelMeshReducer {
 
 		public static HashSet<int> reduce(ref Vector3[] vertices, ref int[] triangleVertices, float maxMergeCost) {
-
+			
 			HashSet<int> verticesMerged = new HashSet<int>();
 
 			// TODO: change this to be a smarter exit condition
-			for (int k = 0; k<1; ++k) {
+			for (int k = 0; k<20; ++k) {
 				/////////////////////////////////////////////////////
 				//  calculate merge costs and assemble merge list  //
 				/////////////////////////////////////////////////////
@@ -31,14 +31,16 @@ namespace Vox {
 					Vector3 surfNorm = Vector3.Cross(vertices[verts[1]] - vertices[verts[0]], vertices[verts[2]] - vertices[verts[0]]).normalized;
 					triangleNormals[i /3] = surfNorm;
 					for (int j = 0; j<3; ++j) {
-						addNeighbors(vertexNeighbors[verts[i]], verts, i);
-						vertexTriangles[verts[i]].Add(i /3);
+						addNeighbors(ref vertexNeighbors[verts[j]], verts, j);
+						vertexTriangles[verts[j]].Add(i /3);
 					}
 				}
 
 				// populate merge list
 				for (int i = 0; i<vertices.Length; ++i) {
-					List<int> neighboringTriangles = vertexNeighbors[i];
+					List<int> neighboringTriangles = vertexTriangles[i];
+					if (neighboringTriangles.Count < 1)
+						continue;
 
 					// the following makes sure we don't change vertices on the edges of a mesh
 					if (neighboringTriangles.Count != vertexNeighbors[i].Count)
@@ -49,7 +51,7 @@ namespace Vox {
 
 					// iterate through neighbors
 					foreach (int neighbor in vertexNeighbors[i]) {
-						float mergeCost = calculateMergeCost(i, neighbor, neighboringTriangles, triangleVertices, triangleNormals);
+						float mergeCost = calculateMergeCost(i, neighbor, neighboringTriangles, triangleVertices, triangleNormals, vertices);
 						if (mergeCost < minMergeCost) {
 							minMergeCost = mergeCost;
 							mergetarget = neighbor;
@@ -67,14 +69,20 @@ namespace Vox {
 				//  perform merges in merge list  //
 				////////////////////////////////////
 
+				// check if there are no merges left to do
+				if (mergeSet.Count < 1)
+					break;
+
 				HashSet<int> verticesNeighboringMerge = new HashSet<int>();
 				HashSet<int> trianglesDropped = new HashSet<int>();
 				foreach (MergeOperation op in mergeSet.Keys) {
 					if (verticesNeighboringMerge.Contains(op.victomVertex))
 						continue;
+					//MonoBehaviour.print("Merging " + vertices[op.victomVertex] + " into " + vertices[op.targetVertex]);
 					trianglesDropped.UnionWith(op.perform(vertexTriangles[op.victomVertex], ref triangleVertices));
 					verticesNeighboringMerge.UnionWith(vertexNeighbors[op.victomVertex]);
 					verticesMerged.Add(op.victomVertex);
+					//break;
 				}
 
 				// cleanup triangle list
@@ -92,31 +100,40 @@ namespace Vox {
 			}
 
 			// cleanup vertex list
-			Vector3[] reducedVertices = new Vector3[vertices.Length - verticesMerged.Count];
-			int b = 0;
-			for (int i = 0; i<vertices.Length; ++i) {
+			for(int i=vertices.Length-1; i>=0; --i) {
+				//MonoBehaviour.print("Removed " +vertices[i]);
 				if (verticesMerged.Contains(i)) {
-					for(int k=0; k<triangleVertices.Length; ++k) {
+					for (int k = 0; k < triangleVertices.Length; ++k) {
 						if (triangleVertices[k] > i)
 							--triangleVertices[k];
 					}
-					continue;
 				}
-				reducedVertices[b] = vertices[i];
-				++b;
 			}
-			vertices = reducedVertices;
+			vertices = removeEntries(vertices, verticesMerged);
 			return verticesMerged;
 		}
 
-		protected static void addNeighbors(List<int> vertexNeighbors, int[] verticesToAdd, int selfIndexInVerticesToAdd) {
+		public static T[] removeEntries<T>(T[] array, HashSet<int> entriesToRemove) {
+			T[] reducedArray = new T[array.Length - entriesToRemove.Count];
+			int j = 0;
+			for (int i = 0; i < array.Length; ++i) {
+				if (entriesToRemove.Contains(i)) {
+					continue;
+				}
+				reducedArray[j] = array[i];
+				++j;
+			}
+			return reducedArray;
+		}
+
+		protected static void addNeighbors(ref List<int> vertexNeighbors, int[] verticesToAdd, int selfIndexInVerticesToAdd) {
 			for(int i=0; i<verticesToAdd.Length; ++i)
 				if (i != selfIndexInVerticesToAdd &&
 					!vertexNeighbors.Contains(verticesToAdd[i]))
 						vertexNeighbors.Add(verticesToAdd[i]);
 		}
 
-		protected static float calculateMergeCost(int victom, int targetNeighbor, List<int> neighboringTriangles, int[] triangleVertices, Vector3[] triangleNormals) {
+		protected static float calculateMergeCost(int victom, int targetNeighbor, List<int> neighboringTriangles, int[] triangleVertices, Vector3[] triangleNormals, Vector3[] vertices) {
 			List<int> sharedTriangles = new List<int>(2);
 			List<int> unsharedTriangles = new List<int>(4);
 
@@ -135,8 +152,14 @@ namespace Vox {
 				float cost = float.PositiveInfinity;
 				foreach(int sharedTriangle in sharedTriangles)
 					cost = Mathf.Min(cost, 1 -Vector3.Dot(triangleNormals[sharedTriangle], triangleNormals[unsharedTriangle]));
-				totalCost += cost;
+				totalCost += cost *cost;
 			}
+
+			// calculate cost for distance
+			float distanceSquared = (vertices[victom] - vertices[targetNeighbor]).sqrMagnitude;
+			if (totalCost > distanceSquared)
+				totalCost = distanceSquared;
+
 			return totalCost;
 		}
 
@@ -156,7 +179,7 @@ namespace Vox {
 				foreach (int triangleIndex in victomTriangles) {
 					int[] verts = new int[] { triangleVertices[triangleIndex *3], triangleVertices[triangleIndex *3 +1], triangleVertices[triangleIndex *3 +2] };
 					if (System.Array.IndexOf(verts, targetVertex) < 0) {
-						triangleVertices[System.Array.IndexOf(verts, victomVertex)] = targetVertex;
+						triangleVertices[triangleIndex *3 +System.Array.IndexOf(verts, victomVertex)] = targetVertex;
 					} else {
 						droppedTriangles.Add(triangleIndex);
 					}
@@ -193,7 +216,8 @@ namespace Vox {
 
 		protected class MergeOperationComp: IComparer<MergeOperation> {
 			public int Compare(MergeOperation a, MergeOperation b) {
-				return a.mergeCost.CompareTo(b.mergeCost);
+				int comparison = a.mergeCost.CompareTo(b.mergeCost);
+				return comparison == 0 ? a.victomVertex.CompareTo(b.victomVertex) : comparison;
 			}
 		}
 	}

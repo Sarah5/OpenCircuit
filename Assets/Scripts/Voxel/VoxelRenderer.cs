@@ -10,8 +10,6 @@ namespace Vox {
 	public class VoxelRenderer {
 
 		public static int rendCount = 0;
-		public static int vertexCount = 0;
-		public static int triangleCount = 0;
 		public static int duplicateTriangleCount = 0;
 
 		public const byte VOXEL_COUNT_POWER = 4;
@@ -81,6 +79,9 @@ namespace Vox {
 		}
 
 		public void genMesh(VoxelUpdateInfo info) {
+			if (control == null)
+				return;
+
 			size = info.size;
 
 			Queue<int[]> triangleSet = new Queue<int[]>();
@@ -180,6 +181,7 @@ namespace Vox {
 			}
 
 			// create and initialize the game objects which will have the mesh renderers and colliders attached to them
+			removePolyCount();
 			GameObject[] oldObs = (obs == null)? new GameObject[0]: obs;
 			obs = new GameObject[substanceTriangles.Count];
 			if (oldObs.Length > obs.Length) {
@@ -205,12 +207,13 @@ namespace Vox {
 				++obIndex;
 			}
 
-//			// refresh collider
-//			if (control.createColliders) {
-//				collider.enabled = false;
-//				if (VoxelBlock.isRenderSize(size, control))
-//					collider.enabled = true;
-//			}
+			//			// refresh collider
+			//			if (control.createColliders) {
+			//				collider.enabled = false;
+			//				if (VoxelBlock.isRenderSize(size, control))
+			//					collider.enabled = true;
+			//			}
+			addPolyCount();
 			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
 			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
@@ -317,21 +320,30 @@ namespace Vox {
 			
 			Mesh m = meshObject.GetComponent<MeshFilter>().sharedMesh;
 			m.Clear();
+			int[] triangleArray = triangles.ToArray();
+
+			// reduce mesh
+			if (control.reduceMeshes) {
+				HashSet<int> verticesRemoved = VoxelMeshReducer.reduce(ref verts, ref triangleArray, control.reductionAmount);
+				norms = VoxelMeshReducer.removeEntries(norms, verticesRemoved);
+				uvs = VoxelMeshReducer.removeEntries(uvs, verticesRemoved);
+			}
+
 			m.vertices = verts;
 			m.normals = norms;
 			m.uv = uvs;
 
 			if (hasGrass) {
 				m.subMeshCount = 2;
-				int[] grassTriangles = new int[triangles.Count];
+				int[] grassTriangles = new int[triangleArray.Length];
 				for (int i = 0; i<grassTriangles.Length; ++i)
-					grassTriangles[i] = triangles[i] +vertices.Count;
+					grassTriangles[i] = triangleArray[i] +vertices.Count;
 				m.SetTriangles(grassTriangles, 1);
 			} else {
 				m.subMeshCount = 1;
 			}
 
-			m.SetTriangles(triangles, 0);
+			m.SetTriangles(triangleArray, 0);
 			m.RecalculateBounds();
 			m.Optimize();
 			rend.enabled = true;
@@ -879,25 +891,25 @@ namespace Vox {
 		}
 
 		private void removePolyCount() {
-//			lock(this) {
-//				if (obs != null) {
-//					foreach (GameObject ob in obs) {
-//						triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-//						vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
-//					}
-//				}
-//			}
+			lock (control) {
+				if (obs != null) {
+					foreach (GameObject ob in obs) {
+						control.triangleCount -= ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+						control.vertexCount -= ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+					}
+				}
+			}
 		}
 
 		private void addPolyCount() {
-//			lock(this) {
-//				if (obs != null) {
-//					foreach (GameObject ob in obs) {
-//						triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
-//						vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
-//					}
-//				}
-//			}
+			lock (control) {
+				if (obs != null) {
+					foreach (GameObject ob in obs) {
+						control.triangleCount += ob.GetComponent<MeshFilter>().sharedMesh.triangles.Length / 3;
+						control.vertexCount += ob.GetComponent<MeshFilter>().sharedMesh.vertexCount;
+					}
+				}
+			}
 		}
 	}
 
