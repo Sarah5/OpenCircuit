@@ -9,6 +9,7 @@ public class RobotArms : AbstractRobotComponent {
 
     public AudioClip pickUp;
 	public AudioClip drop;
+	public AudioClip zap;
 
 	public Vector3 throwForce = new Vector3(0, 150, 300);
 
@@ -109,14 +110,22 @@ public class RobotArms : AbstractRobotComponent {
                 rigidbody.velocity = new Vector3(0, 0, 0);
             }
             target.transform.parent = transform;
-            target.transform.localPosition = HOLD_POSITION;//new Vector3(0, .5f, .85f);
+            target.transform.localPosition = HOLD_POSITION;
 			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target grabbed", target.labelHandle, target.transform.position));
 			Player player = target.GetComponent<Player>();
 			if (player != null) {
 				player.inventory.pushContext(typeof(PocketEMP));
 			}
+			roboController.addEndeavour(new ElectrocuteAction(roboController, new List<Goal>(), target));
         }
     }
+
+	public void electrifyTarget() {
+		if(target != null) {
+			footstepEmitter.PlayOneShot(zap, 1);
+			target.sendTrigger(this.gameObject, new ElectricShock());
+		}
+	}
 
     public Label getProposedTarget() {
         return proposedTarget;

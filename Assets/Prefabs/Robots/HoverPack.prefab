@@ -73,7 +73,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4496f75761c237845a696753e2243c00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  distanceCost: .600000024
+  animSpeedAdjust: 1
+  powerDrawRate: 5
 --- !u!136 &13640036
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -93,7 +95,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: distanceCost
+      value: .600000024
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 167118}

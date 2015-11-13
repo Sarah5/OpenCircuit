@@ -13,6 +13,7 @@ public abstract class Operation: InspectorListElement {
 		typeof(DamageOperation),
 		typeof(EMPOp),
 		typeof(ShutdownOp),
+		typeof(Die)
 	};
 
 	[System.NonSerialized]

@@ -113,7 +113,8 @@ public class RobotController : MonoBehaviour {
 	
 	public void addEndeavour(Endeavour action) {
 		availableEndeavours.Add (action);
-		evaluateActions ();
+		//evaluateActions ();
+		dirty = true;
 	}
 
 	public void trackTarget(LabelHandle target) {
@@ -172,25 +173,24 @@ public class RobotController : MonoBehaviour {
 
 	private void evaluateActions() {
 		List<DecisionInfoObject> debugText = new List<DecisionInfoObject>();
-		if (debug)
-		//debugText.Add("****EVALUATE****");
+		//print("****EVALUATE****");
 		dirty = false;
-		PriorityQueue endeavourQueue = new PriorityQueue ();
+		PriorityQueue endeavourQueue = new PriorityQueue();
 		List<Endeavour> staleEndeavours = new List<Endeavour>();
 		//print("\tCurrent Endeavours");
-		foreach (Endeavour action in currentEndeavours) {
-			if (action.isStale ()) {
+		foreach(Endeavour action in currentEndeavours) {
+			if(action.isStale()) {
 				//print("\t\tstale: " + action.getName());
-				action.stopExecution ();
-				staleEndeavours.Add (action);	
+				action.stopExecution();
+				staleEndeavours.Add(action);
 			} else {
 				//print("\t\t++" + action.getName());
 				availableEndeavours.Add(action);
 			}
 		}
 		//print("\tAvailable Endeavours");
-		foreach (Endeavour action in availableEndeavours) {
-			if (action.isStale()) {
+		foreach(Endeavour action in availableEndeavours) {
+			if(action.isStale()) {
 				//print("\t\t--" + action.getName());
 				staleEndeavours.Add(action);
 			} else {
@@ -198,34 +198,34 @@ public class RobotController : MonoBehaviour {
 				endeavourQueue.Enqueue(action);
 			}
 		}
-		
-		foreach (Endeavour action in staleEndeavours) {
+
+		foreach(Endeavour action in staleEndeavours) {
+			//print("remove: " + action.getName());
 			availableEndeavours.Remove(action);
 			currentEndeavours.Remove(action);
 		}
-		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour> ();
-		
-		Dictionary<System.Type, int> componentMap = getComponentUsageMap ();
-		
+		HashSet<Endeavour> proposedEndeavours = new HashSet<Endeavour>();
+
+		Dictionary<System.Type, int> componentMap = getComponentUsageMap();
+
 #if UNITY_EDITOR
 		bool maxPrioritySet = false;
 		float localMaxPriority = 0;
 		float localMinPriority = 0;
 #endif
 
-		while (endeavourQueue.Count > 0) {
+		while(endeavourQueue.Count > 0) {
 			Endeavour action = (Endeavour)endeavourQueue.Dequeue();
-			if (action.isReady(componentMap)) {
+			if(action.isReady(componentMap)) {
 #if UNITY_EDITOR
 				if(debug) {
 					float priority = action.getPriority();
-					if (!maxPrioritySet) {
+					if(!maxPrioritySet) {
 						maxPrioritySet = true;
 						localMaxPriority = priority;
 						localMinPriority = priority;
-					}
-					else {
-						if(priority > localMaxPriority ) {
+					} else {
+						if(priority > localMaxPriority) {
 							localMaxPriority = priority;
 						}
 						if(priority < localMinPriority) {
@@ -235,10 +235,12 @@ public class RobotController : MonoBehaviour {
 					debugText.Add(new DecisionInfoObject(action.getName(), action.getParent().getName(), priority, true));
 				}
 #endif
+				if(proposedEndeavours.Contains(action)) {
+					Debug.LogError("action already proposed!!!");
+				}
 				proposedEndeavours.Add(action);
 				availableEndeavours.Remove(action);
-			}
-			else {
+			} else {
 #if UNITY_EDITOR
 				if(debug) {
 					float priority = action.getPriority();
