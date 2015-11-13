@@ -14,10 +14,14 @@ public class HoverJet : AbstractRobotComponent {
 	private Animation myAnimator;
 
 	private bool matchTargetRotation = false;
+	private bool isPursuit = false;
 
 	public float animSpeedAdjust = 1f;
 
     public float powerDrawRate = 5f;
+
+	public float regularSpeed = 5f;
+	public float pursueSpeed = 7f;
 
 #if UNITY_EDITOR
 	private GameObject dest;
@@ -27,11 +31,16 @@ public class HoverJet : AbstractRobotComponent {
 		this.target = target;
 		if(target == null) {
 			nav.Stop();
+			isPursuit = false;
 		} else {
 			nav.Resume();
 		}
-
 		matchTargetRotation = matchRotation;
+	}
+
+	public void pursueTarget(LabelHandle target) {
+		setTarget(target);
+		isPursuit = true;
 	}
 
 	public bool hasTarget() {
@@ -41,6 +50,7 @@ public class HoverJet : AbstractRobotComponent {
 	void Start() {
 		myAnimator = GetComponent<Animation> ();
 		nav = roboController.GetComponent<NavMeshAgent> ();
+		nav.speed = regularSpeed;
 	}
 
 	void Update () {
@@ -65,7 +75,11 @@ public class HoverJet : AbstractRobotComponent {
 
 			if (nav.enabled) {
 				if(target != null) {
-
+					if(isPursuit) {
+						nav.speed = pursueSpeed;
+					} else {
+						nav.speed = regularSpeed;
+					}
 					nav.SetDestination(target.getPosition());
 
 #if UNITY_EDITOR
@@ -152,23 +166,24 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	public bool canReach(Vector3 pos) {
-		if(nav.enabled) {
-			//Debug.Log("got here");
-			NavMeshPath path = new NavMeshPath();
+		//if(nav.enabled) {
+		//	//Debug.Log("got here");
+		//	NavMeshPath path = new NavMeshPath();
 
-			nav.CalculatePath(pos, path);
-			List<Vector3> corners = new List<Vector3>(path.corners);
-			corners.Add(pos);
-			for(int i = 0; i < corners.Count - 1; i++) {
-				NavMeshHit hit = new NavMeshHit();
+		//	nav.CalculatePath(pos, path);
+		//	List<Vector3> corners = new List<Vector3>(path.corners);
+		//	corners.Add(pos);
+		//	for(int i = 0; i < corners.Count - 1; i++) {
+		//		NavMeshHit hit = new NavMeshHit();
 
-				if(NavMesh.Raycast(corners[i], corners[i + 1], out hit, NavMesh.AllAreas)) {
-					return false;
-				}
-			}
-			return true;
-		} else {
-			return false;
-		}
+		//		if(NavMesh.Raycast(corners[i], corners[i + 1], out hit, NavMesh.AllAreas)) {
+		//			return false;
+		//		}
+		//	}
+		//	return true;
+		//} else {
+		//	return false;
+		//}
+		return true;
 	}
 }

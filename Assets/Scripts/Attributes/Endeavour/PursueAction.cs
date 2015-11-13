@@ -22,7 +22,7 @@ public class PursueAction : Endeavour {
         base.execute();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
-			jet.setTarget(target.labelHandle);
+			jet.pursueTarget(target.labelHandle);
 			jet.setAvailability(false);
 		}
 	}
