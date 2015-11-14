@@ -9,15 +9,18 @@ public class RoboEyes : AbstractRobotComponent {
 	public float sightDistance = 30.0f;
 	int size; //Total number of points in circle
 	float theta_scale = 0.01f;        //Set lower to add more points
+	private float currentScanTime = 0f;
 	
 	private Dictionary<Label, SensoryInfo> targetMap = new Dictionary<Label, SensoryInfo>();
 
 	private List<GameObject> lines = new List<GameObject>();
 	  LineRenderer lineRenderer;
 
+	  private LaserProjector scanner;
 
 	// Use this for initialization
 	void Start () {
+		scanner = GetComponent<LaserProjector>();
 		float sizeValue = 2f*Mathf.PI / theta_scale; 
 		size = (int)sizeValue;
 		size++;
@@ -50,6 +53,14 @@ public class RoboEyes : AbstractRobotComponent {
 		if(roboController.debug)
 			drawLine(transform.position, position, Color.red);
 		return null;
+	}
+
+	public bool hasScanner() {
+		return scanner != null;
+	}
+
+	public LaserProjector getScanner() {
+		return scanner;
 	}
 
 	private bool canSee (Transform obj) {

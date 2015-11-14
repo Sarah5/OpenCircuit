@@ -62,7 +62,7 @@ public class RobotArms : AbstractRobotComponent {
             proposedTargetStatus = true;
             if (proposedTarget != null && proposedTarget.hasTag(TagEnum.GrabTarget)) {
 
-                footstepEmitter.PlayOneShot(pickUp, 1);
+               // footstepEmitter.PlayOneShot(pickUp, 1);
                 roboController.addEndeavour(new HoldAction(roboController, proposedTarget, proposedTarget.labelHandle));
             }
         }
@@ -116,7 +116,7 @@ public class RobotArms : AbstractRobotComponent {
 			if (player != null) {
 				player.inventory.pushContext(typeof(PocketEMP));
 			}
-			roboController.addEndeavour(new ElectrocuteAction(roboController, new List<Goal>(), target));
+			roboController.addEndeavour(new ScanAction(roboController, new List<Goal>(), target));
         }
     }
 
