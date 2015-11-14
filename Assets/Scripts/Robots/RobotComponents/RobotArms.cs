@@ -81,6 +81,7 @@ public class RobotArms : AbstractRobotComponent {
 
 	public void dropTarget() {
 		if (target != null) {
+			target.clearTag(TagEnum.Grabbed);
 			Rigidbody rigidbody = target.GetComponent<Rigidbody> ();
 			if (rigidbody != null) {
 				rigidbody.isKinematic = false;
@@ -103,12 +104,14 @@ public class RobotArms : AbstractRobotComponent {
     public void attachTarget(Label obj) {
         if (target == null) {
             target = obj;
+			target.setTag(new Tag(TagEnum.Grabbed, 0));
             Rigidbody rigidbody = obj.GetComponent<Rigidbody>();
             if (rigidbody != null) {
                 rigidbody.isKinematic = true;
                 rigidbody.useGravity = false;
                 rigidbody.velocity = new Vector3(0, 0, 0);
             }
+
             target.transform.parent = transform;
             target.transform.localPosition = HOLD_POSITION;
 			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target grabbed", target.labelHandle, target.transform.position));

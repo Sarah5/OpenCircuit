@@ -15,7 +15,7 @@ public class PursueAction : Endeavour {
 	public override bool canExecute () {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
         RobotArms arms = controller.GetComponentInChildren<RobotArms>();
-        return arms != null && !arms.hasTarget() && controller.knowsTarget(target.labelHandle) && jet != null && jet.canReach(target);
+        return arms != null && !arms.hasTarget() && !target.hasTag(TagEnum.Grabbed) && controller.knowsTarget(target.labelHandle) && jet != null && jet.canReach(target);
 	}
 
 	public override void execute() {

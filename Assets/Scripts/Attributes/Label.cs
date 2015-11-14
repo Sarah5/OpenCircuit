@@ -135,6 +135,14 @@ public class Label : MonoBehaviour, ISerializationCallbackReceiver {
 		}
 	}
 
+	public void setTag(Tag tag) {
+		tagMap.Add(tag.type, tag);
+	}
+
+	public void clearTag(TagEnum type) {
+		tagMap.Remove(type);
+	}
+
 	public bool hasTag(TagEnum tagName) {
 		return tagMap.ContainsKey(tagName);
 	}
