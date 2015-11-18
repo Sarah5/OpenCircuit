@@ -10,12 +10,14 @@ public class RobotMessage {
 	MessageType type;
 	LabelHandle target;
 	Vector3 targetPos;
+	Vector3? targetVelocity;
 
-	public RobotMessage(MessageType type, string message, LabelHandle target, Vector3 targetPos) {
+	public RobotMessage(MessageType type, string message, LabelHandle target, Vector3 targetPos, Vector3? velocity) {
 		this.type = type;
 		this.message = message;
 		this.target = target;
 		this.targetPos = targetPos;
+		this.targetVelocity = velocity;
 	}
 
 	public Vector3 TargetPos {
@@ -48,5 +50,10 @@ public class RobotMessage {
 		set {
 			target = value;
 		}
+	}
+
+	public Vector3? TargetVelocity {
+		get { return targetVelocity; }
+		set { targetVelocity = value; }
 	}
 }

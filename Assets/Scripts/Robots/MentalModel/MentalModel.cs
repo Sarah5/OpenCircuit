@@ -7,7 +7,7 @@ public class MentalModel {
 
 	List<MentalModelUpdateListener> listeners = new List<MentalModelUpdateListener> ();
 
-	public void addSighting(LabelHandle target, Vector3 position) {
+	public void addSighting(LabelHandle target, Vector3 position, Vector3? direction) {
 		if (targetSightings.ContainsKey (target)) {
 			SensoryInfo info = targetSightings[target];
 			
@@ -21,14 +21,14 @@ public class MentalModel {
 				info.addSighting();
 			}
 			info.updatePosition(position);
-
+			info.updateDirection(direction);
 		} else {
-			targetSightings[target] = new SensoryInfo(position, 1);
+			targetSightings[target] = new SensoryInfo(position, direction,  1);
 			notifyListenersTargetFound(target);
 		}
 	}
 
-	public void removeSighting(LabelHandle target, Vector3 position) {
+	public void removeSighting(LabelHandle target, Vector3 position, Vector3? direction) {
 		if (targetSightings.ContainsKey (target)) {
 			SensoryInfo info = targetSightings[target];
 
@@ -39,7 +39,7 @@ public class MentalModel {
 			info.updatePosition(position);
 		} else {
 			//Realistically we should never get here. This case is stupid.
-			targetSightings[target] = new SensoryInfo(position, 0);
+			targetSightings[target] = new SensoryInfo(position, direction, 0);
 			notifyListenersTargetLost (target);
 			Debug.LogWarning("Target '" + target.label.name + "' that was never found has been lost. Shenanigans?");
 		}

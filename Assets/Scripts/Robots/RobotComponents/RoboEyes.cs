@@ -104,18 +104,24 @@ public class RoboEyes : AbstractRobotComponent {
 			bool targetInView = hasPower && canSee (label.transform);
 			if(targetInView) {
 				if(!targetMap.ContainsKey(label)) {
-					targetMap[label] = new SensoryInfo(label.transform.position, 0);
+					Rigidbody labelRB = label.GetComponent<Rigidbody>();
+					if (labelRB != null) {
+						targetMap[label] = new SensoryInfo(label.transform.position, labelRB.velocity, 0);
+
+					} else {
+						targetMap[label] = new SensoryInfo(label.transform.position, null, 0);
+					}
 				}
 				if(targetMap[label].getSightings() == 0) {
 					//print("target sighted: " + label.name);
-					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_SIGHTED, "target sighted", label.labelHandle, label.transform.position));
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_SIGHTED, "target sighted", label.labelHandle, label.transform.position, targetMap[label].getDirection()));
 					targetMap[label].addSighting();
 				}
 				targetMap[label].updatePosition(label.transform.position);
 			} else {
 				if (targetMap.ContainsKey(label) && targetMap [label].getSightings() == 1) {
 					//print("target lost: " + label.name);
-					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", label.labelHandle, targetMap[label].getPosition()));
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", label.labelHandle, targetMap[label].getPosition(), targetMap[label].getDirection()));
 					targetMap[label].removeSighting();
 				}
 			}

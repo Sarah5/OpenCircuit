@@ -32,7 +32,7 @@ public class CentralRobotController : MonoBehaviour, MentalModelUpdateListener {
 					continue;
 				}
 			} else {
-				mentalModel.addSighting(location.labelHandle, location.transform.position);
+				mentalModel.addSighting(location.labelHandle, location.transform.position, null);
 			}
 		}
 	}

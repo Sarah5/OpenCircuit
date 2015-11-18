@@ -58,54 +58,10 @@ public class HoverJet : AbstractRobotComponent {
 			Debug.LogWarning(roboController.name + " is missing a power source.");
 			return;
 		}
-		if (target != null) {
-
-			float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
-											new Vector2(target.getPosition().x, target.getPosition().z));
-			float yDist = Mathf.Abs((roboController.transform.position.y -.4f) - target.getPosition().y);
-			if (xzDist < .5f && yDist < .8f) {
-				if(!matchTargetRotation || (1 - Vector3.Dot(roboController.transform.forward, target.label.transform.forward) < .0001f)) {
-					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target reached", target, target.getPosition()));
-					target = null;
-					return;
-				} else {
-					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.label.transform.forward), nav.angularSpeed * Time.deltaTime);
-				}
-			}
-
-			if (nav.enabled) {
-				if(target != null) {
-					if(isPursuit) {
-						nav.speed = pursueSpeed;
-					} else {
-						nav.speed = regularSpeed;
-					}
-					nav.SetDestination(target.getPosition());
-
-#if UNITY_EDITOR
-					if(roboController.debug) {
-						Destroy(dest);
-						GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-						cube.transform.position = target.getPosition();
-						cube.GetComponent<MeshRenderer>().material.color = Color.green;
-						Destroy(cube.GetComponent<BoxCollider>());
-						cube.transform.localScale = new Vector3(.3f, .3f, .3f);
-						dest = cube;
-					}
-#endif
-				} 
-
-				if (myAnimator != null) {
-				if (!myAnimator.isPlaying) {
-					myAnimator.Play();
-				}
-
-				myAnimator["Armature.003|walk"].speed = nav.velocity.magnitude * animSpeedAdjust;//, nav.velocity * animSpeedAdjust, nav.velocity * animSpeedAdjust);
-				}
-			}
-
-			//if (!powerSource.drawPower (5 * Time.deltaTime)){
-		//}
+		if(isPursuit) {
+			pursueTarget();
+		} else {
+			goToTarget();
 		}
 		nav.enabled = powerSource.drawPower(powerDrawRate * Time.deltaTime);
 	}
@@ -185,5 +141,106 @@ public class HoverJet : AbstractRobotComponent {
 		//	return false;
 		//}
 		return true;
+	}
+
+	private void goToTarget() {
+		if(target != null) {
+
+			if(hasReachedTargetLocation()) {
+				if(!hasMatchedTargetRotation()) {
+					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.label.transform.forward), nav.angularSpeed * Time.deltaTime);
+				} else {
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target reached", target, target.getPosition(), null));
+					target = null;
+					return;
+				}
+			}
+
+			if(nav.enabled) {
+				nav.speed = regularSpeed;
+				nav.SetDestination(target.getPosition());
+
+#if UNITY_EDITOR
+				if(roboController.debug) {
+					Destroy(dest);
+					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					cube.transform.position = target.getPosition();
+					cube.GetComponent<MeshRenderer>().material.color = Color.green;
+					Destroy(cube.GetComponent<BoxCollider>());
+					cube.transform.localScale = new Vector3(.3f, .3f, .3f);
+					dest = cube;
+				}
+#endif
+			}
+		}
+	}
+
+	private void pursueTarget() {
+		if(target != null) {
+			if(hasReachedTargetLocation()) {
+				if(!hasMatchedTargetRotation()) {
+					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.label.transform.forward), nav.angularSpeed * Time.deltaTime);
+				} else {
+					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target reached", target, target.getPosition(), null));
+					target = null;
+					return;
+				}
+			}
+
+			if(nav.enabled) {
+				nav.speed = pursueSpeed;
+				if(target.getDirection().HasValue && Vector3.Distance(roboController.transform.position, target.getPosition()) > target.getDirection().Value.magnitude) {
+					print("correct!");
+					nav.SetDestination((target.getPosition()));// + 
+						//target.getDirection().Value
+						//* .08f
+						//* (1 + Vector3.Dot(target.getDirection().Value.normalized, (target.getPosition() - roboController.transform.position).normalized))
+						//*(target.getDirection().Value.magnitude/nav.speed) 
+						//* Vector3.Distance(roboController.transform.position, target.getPosition())));
+				} else {
+					nav.SetDestination(target.getPosition());
+				}
+
+#if UNITY_EDITOR
+				if(roboController.debug) {
+					Destroy(dest);
+					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					cube.transform.position = nav.destination;
+					cube.GetComponent<MeshRenderer>().material.color = Color.green;
+					Destroy(cube.GetComponent<BoxCollider>());
+					cube.transform.localScale = new Vector3(.3f, .3f, .3f);
+					dest = cube;
+
+				}
+#endif
+			}
+		}
+	}
+
+	private void animate() {
+		if(myAnimator != null) {
+			if(!myAnimator.isPlaying) {
+				myAnimator.Play();
+			}
+
+			myAnimator["Armature.003|walk"].speed = nav.velocity.magnitude * animSpeedAdjust;//, nav.velocity * animSpeedAdjust, nav.velocity * animSpeedAdjust);
+		}
+	}
+
+	private bool hasReachedTargetLocation() {
+		float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
+								new Vector2(target.getPosition().x, target.getPosition().z));
+		float yDist = Mathf.Abs((roboController.transform.position.y - .4f) - target.getPosition().y);
+		if(xzDist < .5f && yDist < .8f) {
+			return true;
+		}
+		return false;
+	}
+
+	private bool hasMatchedTargetRotation() {
+		if(!matchTargetRotation) {
+			return true;
+		}
+		return (1 - Vector3.Dot(roboController.transform.forward, target.label.transform.forward) < .0001f);
 	}
 }

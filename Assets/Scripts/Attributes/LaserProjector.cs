@@ -44,7 +44,7 @@ public class LaserProjector : MonoBehaviour {
 			currentScanTime = 0;
 			stopScan();
 			RobotController controller = GetComponentInParent<RobotController>();
-			controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target scanned", null, new Vector3()));
+			controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target scanned", null, new Vector3(), null));
 		}
 
 

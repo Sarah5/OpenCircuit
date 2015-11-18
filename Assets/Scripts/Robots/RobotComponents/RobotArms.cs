@@ -90,7 +90,7 @@ public class RobotArms : AbstractRobotComponent {
 				rigidbody.AddForce(transform.up * throwForce.y);
 			}
 			target.transform.parent = null;
-			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target dropped", target.labelHandle, target.transform.position));
+			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target dropped", target.labelHandle, target.transform.position, null));
 			footstepEmitter.PlayOneShot (drop, 1);
 			Player player = target.GetComponent<Player>();
 			if (player != null) {
@@ -114,7 +114,7 @@ public class RobotArms : AbstractRobotComponent {
 
             target.transform.parent = transform;
             target.transform.localPosition = HOLD_POSITION;
-			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target grabbed", target.labelHandle, target.transform.position));
+			roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target grabbed", target.labelHandle, target.transform.position, null));
 			Player player = target.GetComponent<Player>();
 			if (player != null) {
 				player.inventory.pushContext(typeof(PocketEMP));

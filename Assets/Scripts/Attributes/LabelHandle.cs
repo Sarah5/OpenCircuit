@@ -6,9 +6,9 @@ public class LabelHandle {
 	public Label label;
 	public Dictionary<TagEnum, Tag> tagMap = new Dictionary<TagEnum, Tag>();
 
-
 	private string name;
 	private Vector3 position;
+	private Vector3 direction;
 
 	public LabelHandle(Vector3 pos, string name) {
 		position = pos;
@@ -43,5 +43,15 @@ public class LabelHandle {
 			return label.transform.position;
 		}
 		return position;
+	}
+
+	public Vector3? getDirection() {
+		if(label != null) {
+			Rigidbody rigidBody = label.GetComponent<Rigidbody>();
+			if(rigidBody != null) {
+				return rigidBody.velocity;
+			}
+		}
+		return direction;
 	}
 }

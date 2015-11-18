@@ -152,7 +152,7 @@ MonoBehaviour:
   laserSpread: 1
   movementRange: .899999976
   laserLength: .699999988
-  verticalOffset: 1.5
+  verticalOffset: 1.20000005
   color: {r: .298000008, g: .270000011, b: 1, a: .5}
   scanTime: 3
   scanSound: {fileID: 8300000, guid: dee82de8b78f17f45aeb4119e0ed4f19, type: 3}
@@ -234,7 +234,7 @@ Prefab:
       objectReference: {fileID: 8300000, guid: dee82de8b78f17f45aeb4119e0ed4f19, type: 3}
     - target: {fileID: 0}
       propertyPath: verticalOffset
-      value: 1.5
+      value: 1.20000005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

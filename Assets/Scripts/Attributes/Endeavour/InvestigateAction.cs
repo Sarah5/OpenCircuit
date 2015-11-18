@@ -24,7 +24,7 @@ public class InvestigateAction : InherentEndeavour {
 		if(eyes != null) {
 			canSee = (eyes.lookAt(parent.getPosition()) == null);
 			if(canSee) {
-				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition()));
+				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition(), null));
 			}
 		}
 		return completed || (canSee) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds);
@@ -35,7 +35,7 @@ public class InvestigateAction : InherentEndeavour {
 			if(message.Target == parent) {
 				Debug.Log("investigate action complete");
 				completed = true;
-				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition()));
+				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition(), null));
 			}
 		}
 	}
