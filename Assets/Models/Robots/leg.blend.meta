@@ -1,47 +1,27 @@
 fileFormatVersion: 2
-guid: 2b350f78889a2a847b14747de76819dd
-timeCreated: 1446925831
+guid: a29676dbf6caf994e842a2ea2ffaa0ef
+timeCreated: 1448222765
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Cube
-    100002: Cube_001
-    100004: Cube_002
-    100006: Cube_003
-    100008: Cube_004
-    100010: Cylinder
-    100012: Cylinder_001
-    100014: //RootNode
-    400000: Cube
-    400002: Cube_001
-    400004: Cube_002
-    400006: Cube_003
-    400008: Cube_004
-    400010: Cylinder
-    400012: Cylinder_001
-    400014: //RootNode
-    2300000: Cube
-    2300002: Cube_001
-    2300004: Cube_002
-    2300006: Cube_003
-    2300008: Cube_004
-    2300010: Cylinder
-    2300012: Cylinder_001
-    3300000: Cube
-    3300002: Cube_001
-    3300004: Cube_002
-    3300006: Cube_003
-    3300008: Cube_004
-    3300010: Cylinder
-    3300012: Cylinder_001
-    4300000: Cylinder_001
-    4300002: Cube_004
-    4300004: Cube_002
-    4300006: Cylinder
-    4300008: Cube
-    4300010: Cube_001
-    4300012: Cube_003
+    100000: Hip
+    100002: //RootNode
+    100004: Lower_Leg
+    100006: Upper_Leg
+    400000: Hip
+    400002: //RootNode
+    400004: Lower_Leg
+    400006: Upper_Leg
+    2300000: Hip
+    2300002: Lower_Leg
+    2300004: Upper_Leg
+    3300000: Hip
+    3300002: Lower_Leg
+    3300004: Upper_Leg
+    4300000: Upper_Leg
+    4300002: Hip
+    4300004: Lower_Leg
     7400000: Default Take
     9500000: //RootNode
   materials:
