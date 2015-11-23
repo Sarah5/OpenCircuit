@@ -87,6 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbbe54a03360f564087f47cb81c763dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shutDownSound: {fileID: 8300000, guid: e53a1a15d0b853748804541ab7ad5c17, type: 3}
   maximumCapacity: 100
   currentCapacity: 100
 --- !u!136 &13687100
@@ -113,6 +114,10 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 20213c8ba6b1bde4989d4610fa0b090c, type: 2}
+    - target: {fileID: 0}
+      propertyPath: shutDownSound
+      value: 
+      objectReference: {fileID: 8300000, guid: e53a1a15d0b853748804541ab7ad5c17, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 151852}

@@ -41,7 +41,7 @@ public class MentalModel {
 			//Realistically we should never get here. This case is stupid.
 			targetSightings[target] = new SensoryInfo(position, direction, 0);
 			notifyListenersTargetLost (target);
-			Debug.LogWarning("Target '" + target.label.name + "' that was never found has been lost. Shenanigans?");
+			Debug.LogWarning("Target '" + target.getName() + "' that was never found has been lost. Shenanigans?");
 		}
 	}
 

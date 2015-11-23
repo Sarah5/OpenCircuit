@@ -6,9 +6,14 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 
 	public static List<AbstractPowerSource> powerSources = new List<AbstractPowerSource> ();
 
+	public AudioClip shutDownSound;
+	
+	private AudioSource soundEmitter;
+
 	protected bool isDisabled = false;
 
 	void Awake() {
+		soundEmitter = gameObject.AddComponent<AudioSource>();
 		powerSources.Add (this);
 	}
 
@@ -23,6 +28,9 @@ public abstract class AbstractPowerSource : MonoBehaviour {
 		CancelInvoke ();
 		if (Mathf.Abs(time) > .001f) {
 			Invoke ("enable", time);
+		}
+		if(shutDownSound != null) {
+			soundEmitter.PlayOneShot(shutDownSound);
 		}
 	}
 

@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 197a6491f8c454b41af164d7402c8209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shutDownSound: {fileID: 8300000, guid: e53a1a15d0b853748804541ab7ad5c17, type: 3}
 --- !u!114 &11443422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -241,6 +242,10 @@ Prefab:
       propertyPath: m_Height
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: shutDownSound
+      value: 
+      objectReference: {fileID: 8300000, guid: e53a1a15d0b853748804541ab7ad5c17, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170158}
