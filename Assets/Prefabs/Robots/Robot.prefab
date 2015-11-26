@@ -101,6 +101,7 @@ MonoBehaviour:
   - type: 2
     priority: 1
   reliability: 5
+  targetSightedSound: {fileID: 8300000, guid: 3ca3171149033ea4bbb64c22d29fa77f, type: 3}
   maxPriority: 0
   minPriority: 0
 --- !u!135 &13588166
@@ -430,6 +431,10 @@ Prefab:
       propertyPath: m_Acceleration
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: targetSightedSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 3ca3171149033ea4bbb64c22d29fa77f, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 135778}

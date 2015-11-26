@@ -23,7 +23,7 @@ public class MentalModel {
 			info.updatePosition(position);
 			info.updateDirection(direction);
 		} else {
-			targetSightings[target] = new SensoryInfo(position, direction,  1);
+			targetSightings[target] = new SensoryInfo(position, direction, System.DateTime.Now, 1);
 			notifyListenersTargetFound(target);
 		}
 	}
@@ -37,9 +37,10 @@ public class MentalModel {
 				notifyListenersTargetLost (target);
 			}
 			info.updatePosition(position);
+			info.updateTime(System.DateTime.Now);
 		} else {
 			//Realistically we should never get here. This case is stupid.
-			targetSightings[target] = new SensoryInfo(position, direction, 0);
+			targetSightings[target] = new SensoryInfo(position, direction, System.DateTime.Now, 0);
 			notifyListenersTargetLost (target);
 			Debug.LogWarning("Target '" + target.getName() + "' that was never found has been lost. Shenanigans?");
 		}
@@ -49,9 +50,20 @@ public class MentalModel {
 		return targetSightings.ContainsKey(target) && targetSightings[target].getSightings() > 0;
 	}
 
+	public bool knowsTarget(LabelHandle target) {
+		return targetSightings.ContainsKey(target);
+	}
+
 	public System.Nullable<Vector3> getLastKnownPosition(LabelHandle target) {
 		if (targetSightings.ContainsKey(target)) {
 			return targetSightings[target].getPosition();
+		}
+		return null;
+	}
+
+	public System.DateTime? getLastSightingTime(LabelHandle target) {
+		if(targetSightings.ContainsKey(target)) {
+			return targetSightings[target].getSightingTime();
 		}
 		return null;
 	}

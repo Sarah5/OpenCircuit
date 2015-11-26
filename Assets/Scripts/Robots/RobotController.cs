@@ -7,6 +7,7 @@ public class RobotController : MonoBehaviour {
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<LabelHandle> trackedTargets = new List<LabelHandle> ();
+	private AudioSource soundEmitter;
 
 #if UNITY_EDITOR
 	public bool debug = false;
@@ -22,6 +23,7 @@ public class RobotController : MonoBehaviour {
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
     public float reliability = 5f;
+	public AudioClip targetSightedSound;
 
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
 	private Dictionary<System.Type, AbstractRobotComponent> componentMap = new Dictionary<System.Type, AbstractRobotComponent> ();
@@ -33,7 +35,10 @@ public class RobotController : MonoBehaviour {
 
 	private bool dirty = false;
 
+	private float timeoutSeconds = 10;
+
 	void Start() {
+		soundEmitter = gameObject.AddComponent<AudioSource>();
         foreach(Goal goal in goals) {
             if(!goalMap.ContainsKey(goal.type)) {
                 goalMap.Add(goal.type, goal);
@@ -85,6 +90,9 @@ public class RobotController : MonoBehaviour {
 			RobotMessage message = messageQueue.Dequeue();
 
 			if (message.Type == RobotMessage.MessageType.TARGET_SIGHTED) {
+				if(targetSightedSound != null && message.Target.getName().Equals("Player") && (!getMentalModel().knowsTarget (message.Target) || (System.DateTime.Now - getMentalModel().getLastSightingTime(message.Target).Value).Seconds > timeoutSeconds)) {
+					soundEmitter.PlayOneShot(targetSightedSound);
+				}
 				sightingFound(message.Target, message.TargetPos, message.TargetVelocity);
 				trackTarget(message.Target);
 				evaluateActions();

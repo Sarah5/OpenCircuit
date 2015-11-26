@@ -280,7 +280,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 429714, guid: 812cf595312869644aff164215e609e0, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 11488416, guid: 812cf595312869644aff164215e609e0, type: 2}
       propertyPath: serializedData.Array.data[434]
@@ -6903,7 +6903,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11499298, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2397646, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
       propertyPath: m_ReceiveShadows
@@ -7091,7 +7091,7 @@ Prefab:
       objectReference: {fileID: 1551309821}
     - target: {fileID: 11499298, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19506382, guid: b045fdefde2f47f4ebee19cf703fffa6, type: 2}
       propertyPath: m_Acceleration

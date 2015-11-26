@@ -166,6 +166,7 @@ public class RobotControllerGUI : Editor {
 				}
 		}
         EditorGUILayout.PropertyField(serializedObject.FindProperty("locations"), true);
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("targetSightedSound"));
         serializedObject.ApplyModifiedProperties();
 	}
 }
