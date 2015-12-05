@@ -9,7 +9,6 @@ public class RoboEyes : AbstractRobotComponent {
 	public float sightDistance = 30.0f;
 	int size; //Total number of points in circle
 	float theta_scale = 0.01f;        //Set lower to add more points
-	private float currentScanTime = 0f;
 	
 	private Dictionary<Label, SensoryInfo> targetMap = new Dictionary<Label, SensoryInfo>();
 

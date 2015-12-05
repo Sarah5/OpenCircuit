@@ -3,12 +3,9 @@ using System.Collections;
 
 public class AudioEvent : RobotMessage {
 
-	private LabelHandle audioHandle;
-
 	//TODO velocity must not be null when we improve the investigate system!
 	public AudioEvent(Vector3 source, LabelHandle handle, Vector3 sourcePos)
 		: base(RobotMessage.MessageType.TARGET_SIGHTED, "sound heard", handle, sourcePos, null) {
-		this.audioHandle = handle;
     }
 
     public void broadcast(float volume) {

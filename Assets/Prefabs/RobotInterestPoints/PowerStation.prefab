@@ -128,6 +128,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rechargeRate: 20
+  itemRechargeRate: 1
+  requiredChargingProximity: 1.5
+  rechargeItemSound: {fileID: 8300000, guid: 006ba374c40428e40b3ba997d9d0b9e2, type: 3}
 --- !u!114 &11441520
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,7 +150,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: rechargeItemSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 006ba374c40428e40b3ba997d9d0b9e2, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 126292}
