@@ -6,11 +6,14 @@ public class SensoryInfo {
 	private int sensorCount;
 	private Vector3 position;
 	private Vector3? direction;
+	private System.DateTime lastSighting;
 
-	public SensoryInfo(Vector3 position, Vector3? direction, int sightingCount) {
+	public SensoryInfo(Vector3 position, Vector3? direction, System.DateTime time, int sightingCount) {
 		this.sensorCount = sightingCount;
 		this.position = position;
 		this.direction = direction;
+		this.lastSighting = time;
+
 	}
 
 	public void updatePosition(Vector3 pos) {
@@ -19,6 +22,10 @@ public class SensoryInfo {
 
 	public void updateDirection(Vector3? dir) {
 		this.direction = dir;
+	}
+
+	public void updateTime(System.DateTime time) {
+		this.lastSighting = time;
 	}
 
 	public void addSighting() {
@@ -39,5 +46,9 @@ public class SensoryInfo {
 
 	public Vector3? getDirection() {
 		return direction;
+	}
+
+	public System.DateTime getSightingTime() {
+		return lastSighting;
 	}
 }

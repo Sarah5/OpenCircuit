@@ -9,14 +9,13 @@ public class RoboEyes : AbstractRobotComponent {
 	public float sightDistance = 30.0f;
 	int size; //Total number of points in circle
 	float theta_scale = 0.01f;        //Set lower to add more points
-	private float currentScanTime = 0f;
 	
 	private Dictionary<Label, SensoryInfo> targetMap = new Dictionary<Label, SensoryInfo>();
 
 	private List<GameObject> lines = new List<GameObject>();
-	  LineRenderer lineRenderer;
+	LineRenderer lineRenderer;
 
-	  private LaserProjector scanner;
+	private LaserProjector scanner;
 
 	// Use this for initialization
 	void Start () {
@@ -106,10 +105,10 @@ public class RoboEyes : AbstractRobotComponent {
 				if(!targetMap.ContainsKey(label)) {
 					Rigidbody labelRB = label.GetComponent<Rigidbody>();
 					if (labelRB != null) {
-						targetMap[label] = new SensoryInfo(label.transform.position, labelRB.velocity, 0);
+						targetMap[label] = new SensoryInfo(label.transform.position, labelRB.velocity, System.DateTime.Now, 0);
 
 					} else {
-						targetMap[label] = new SensoryInfo(label.transform.position, null, 0);
+						targetMap[label] = new SensoryInfo(label.transform.position, null, System.DateTime.Now, 0);
 					}
 				}
 				if(targetMap[label].getSightings() == 0) {

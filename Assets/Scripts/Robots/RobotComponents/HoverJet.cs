@@ -30,10 +30,14 @@ public class HoverJet : AbstractRobotComponent {
     public void setTarget(LabelHandle target, bool matchRotation = false) {
 		this.target = target;
 		if(target == null) {
-			nav.Stop();
+			if(nav.enabled) {
+				nav.Stop();
+			}
 			isPursuit = false;
 		} else {
-			nav.Resume();
+			if(nav.enabled) {
+				nav.Resume();
+			}
 		}
 		matchTargetRotation = matchRotation;
 	}
@@ -190,7 +194,6 @@ public class HoverJet : AbstractRobotComponent {
 			if(nav.enabled) {
 				nav.speed = pursueSpeed;
 				if(target.getDirection().HasValue && Vector3.Distance(roboController.transform.position, target.getPosition()) > target.getDirection().Value.magnitude) {
-					print("correct!");
 					nav.SetDestination((target.getPosition()));// + 
 						//target.getDirection().Value
 						//* .08f

@@ -71,7 +71,7 @@ public class RobotControllerGUI : Editor {
 		}
 		GUILayout.Window(2, rectangle, (id) => {
 			robot.shouldAlphabetize = GUILayout.Toggle(robot.shouldAlphabetize, "Alphabetize?");
-			GUILayoutOption[] options = new GUILayoutOption[] { GUILayout.Width(windowWidth)};
+			//GUILayoutOption[] options = new GUILayoutOption[] { GUILayout.Width(windowWidth)};
 			for (int i = 0; i <robot.lines.Count; ++i) {
 				DecisionInfoObject obj = robot.lines[i];
 
@@ -83,9 +83,9 @@ public class RobotControllerGUI : Editor {
 				GUIContent label = new GUIContent(obj.getTitle().PadRight(10));
 
 				Vector2 labelSize = labelStyle.CalcSize(label);
-				GUILayoutOption[] labelOptions = new GUILayoutOption[] { 
-					GUILayout.Width(labelSize.x)
-				};
+				//GUILayoutOption[] labelOptions = new GUILayoutOption[] { 
+				//	GUILayout.Width(labelSize.x)
+				//};
 				float spaceBefore = 0;
 				if(robot.maxPriority > 0) {
 					spaceBefore = 125;
@@ -166,6 +166,7 @@ public class RobotControllerGUI : Editor {
 				}
 		}
         EditorGUILayout.PropertyField(serializedObject.FindProperty("locations"), true);
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("targetSightedSound"));
         serializedObject.ApplyModifiedProperties();
 	}
 }
