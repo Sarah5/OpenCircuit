@@ -95,11 +95,11 @@ public class RobotController : MonoBehaviour {
 				}
 				sightingFound(message.Target, message.TargetPos, message.TargetVelocity);
 				trackTarget(message.Target);
-				evaluateActions();
+				//evaluateActions();
 			} else if(message.Type == RobotMessage.MessageType.TARGET_LOST) {
 				sightingLost(message.Target, message.TargetPos, message.TargetVelocity);
 				trackedTargets.Remove(message.Target);
-				evaluateActions();
+				//evaluateActions();
 			}
 			else if (message.Type == RobotMessage.MessageType.ACTION) {
 				foreach( Endeavour action in currentEndeavours) {

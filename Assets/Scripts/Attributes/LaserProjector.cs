@@ -12,6 +12,7 @@ public class LaserProjector : MonoBehaviour {
 	public float verticalOffset = .25f;
 	public Color color = new Color(.298f, .27f, 1f, .5f);
 	public float scanTime = 3f;
+	public float zOffset = 0f;
 	private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 	private List<GameObject> gameObjects = new List<GameObject>();
 	private float upness=0;
@@ -21,6 +22,8 @@ public class LaserProjector : MonoBehaviour {
 	private AudioSource soundEmitter;
 	public AudioClip scanSound;
 	private float currentScanTime = 0f;
+
+	private RobotController currentController;
 
 	void Start() {
 		soundEmitter = gameObject.AddComponent<AudioSource>();
@@ -43,8 +46,10 @@ public class LaserProjector : MonoBehaviour {
 		if(currentScanTime > scanTime) {
 			currentScanTime = 0;
 			stopScan();
-			RobotController controller = GetComponentInParent<RobotController>();
-			controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target scanned", null, new Vector3(), null));
+			if(currentController == null) {
+				currentController = GetComponentInParent<RobotController>();
+			}
+			currentController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target scanned", null, new Vector3(), null));
 		}
 
 
@@ -74,6 +79,10 @@ public class LaserProjector : MonoBehaviour {
 		}
 	}
 
+	public void setController(RobotController controller) {
+		currentController = controller;
+	}
+
 	public void startScan() {
 		active = true;
 	}
@@ -93,7 +102,7 @@ public class LaserProjector : MonoBehaviour {
 			LineRenderer renderer = lineRenderers[i];
 			renderer.SetVertexCount(2);
 			float rightness = -(width / 2f) + ((float)i) * (width / numLasers);
-			renderer.SetPosition(0, transform.position);
+			renderer.SetPosition(0, transform.position+new Vector3(0f, 0f, zOffset));
 
 			renderer.SetPosition(1, line + transform.right * rightness + transform.up*upness + transform.up*verticalOffset);
 		}
