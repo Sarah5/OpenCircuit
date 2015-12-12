@@ -3,6 +3,8 @@ using System.Collections;
 
 public class LegController : MonoBehaviour {
 
+	public Vector3 defaultPos = new Vector3(2, -3, 2);
+
 	public float hipMinRotation = -90;
 	public float hipMaxRotation = 90;
 
@@ -16,28 +18,34 @@ public class LegController : MonoBehaviour {
 	public float lowerLegLength;
 	public float lowerMinRotation = -90;
 	public float lowerMaxRotation = 90;
+	
 
-	public Transform target;
-
+	private Transform leg;
 	private Transform hip;
 	private Transform upperLeg;
 	private Transform lowerLeg;
 
 	private float upperLegLength;
-
-	// Use this for initialization
-	void Start () {
-		hip = GetComponent<Transform>();
+	
+	public void Start () {
+		leg = GetComponent<Transform>();
+		hip = leg.FindChild("Hip");
 		upperLeg = hip.FindChild("Upper Leg");
 		lowerLeg = upperLeg.FindChild("Lower Leg");
 		upperLegLength = (upperOffset - lowerOffset).magnitude;
+		setPosition(getDefaultPos());
 	}
 
-	void Update() {
-		if (target == null)
-			return;
-		setPosition(target.position);
+	public Vector3 getDefaultPos() {
+		return leg.TransformPoint(defaultPos);
 	}
+
+	//void Update() {
+	//	if (target == null)
+	//		return;
+	//	setPosition(target.position);
+	//	setPosition(getDefaultPos());
+	//}
 
 	public bool setPosition(Vector3 worldPos) {
 		bool canReach = true;
@@ -73,7 +81,6 @@ public class LegController : MonoBehaviour {
 				eulerAngles.y = newAngle;
 			}
 		}
-		//eulerAngles.y += 90;
 		hip.localEulerAngles = eulerAngles;
 		return canReach;
 	}
@@ -85,13 +92,11 @@ public class LegController : MonoBehaviour {
 		upperLeg.localEulerAngles = eulerAngles;
 		upperLeg.localPosition = upperOffset;
 		Vector3 localPos = upperLeg.InverseTransformPoint(worldPos);
-		//print(getVectorAngle(localPos.z, localPos.x));
 		eulerAngles.y = (getVectorAngle(localPos.z, localPos.x) + 180 -upperMinRotation) % 360 - 180 +upperMinRotation +upperAngleOffset;
 
 		// calculate circle intersection
 		double midPointDistance = circleMidPointDistance(new Vector2(upperOffset.x, upperOffset.z), new Vector2(localPos.x, localPos.z), upperLegLength, lowerLegLength);
 		float angleOffset = (float) System.Math.Acos(midPointDistance / upperLegLength) *Mathf.Rad2Deg;
-		//print(angleOffset);
 		if (float.IsNaN(angleOffset) || angleOffset < 0)
 			angleOffset = 0;
 		eulerAngles.y += angleOffset;
@@ -114,7 +119,6 @@ public class LegController : MonoBehaviour {
 		lowerLeg.localPosition = lowerOffset;
 		Vector3 localPos = lowerLeg.InverseTransformPoint(worldPos);
 		eulerAngles.y = (getVectorAngle(localPos.z, localPos.x) + 180 -lowerMinRotation) % 360 -180 +lowerMinRotation +lowerAngleOffset;
-		print((getVectorAngle(localPos.z, localPos.x) + 180 - lowerMinRotation) % 360 - 180 + lowerMinRotation);
 
 		if (eulerAngles.y < lowerMinRotation || eulerAngles.y > lowerMaxRotation) {
 			eulerAngles.y = Mathf.Clamp(eulerAngles.y, lowerMinRotation, lowerMaxRotation);
