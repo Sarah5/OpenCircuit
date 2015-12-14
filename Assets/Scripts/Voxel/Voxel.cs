@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using System;
 
 namespace Vox {
 
@@ -72,6 +73,11 @@ namespace Vox {
 					}
 				}
 			}
+		}
+
+		public override int canSimplify(out Voxel simplification) {
+			simplification = this;
+			return 0;
 		}
 
 		public static VoxelHolder setSphere(VoxelHolder original, int x, int y, int z, Vector3 min, Vector3 max, VoxelHolder val) {

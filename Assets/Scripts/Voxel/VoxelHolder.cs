@@ -32,6 +32,8 @@ namespace Vox {
 
 		public abstract void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax);
 
+		public abstract int canSimplify(out Voxel simplification);
+
 		public static VoxelHolder deserialize(BinaryReader reader) {
 			byte type = reader.ReadByte();
 			switch(type) {

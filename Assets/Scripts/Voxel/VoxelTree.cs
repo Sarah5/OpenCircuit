@@ -250,7 +250,9 @@ namespace Vox {
 
 		public void OnBeforeSerialize() {
 			lock(this) {
+				//print("Serializing Voxels");
 				if (voxelData.Length < 1 || dirty || head == null) {
+					//print("Voxels dirty");
 					dirty = false;
 					voxelData = new byte[0];
 					if (getHead() != null) {

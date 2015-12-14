@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
+using System;
 
 namespace Vox {
 
 	[ExecuteInEditMode]
-//	[System.Serializable]
 	public class VoxelBlock : VoxelHolder {
 
 		public static int totalConsolidations = 0;
@@ -353,6 +353,36 @@ namespace Vox {
 					}
 				}
 			}
+		}
+
+		public override int canSimplify(out Voxel simplification) {
+			bool canSimplify = true;
+			int count = 0;
+			simplification = null;
+			for (int xi = 0; xi<CHILD_DIMENSION; ++xi) {
+				for (int yi = 0; yi<CHILD_DIMENSION; ++yi) {
+					for (int zi = 0; zi<CHILD_DIMENSION; ++zi) {
+						Voxel child = null;
+						count += children[xi, yi, zi].canSimplify(out child);
+						if (child != null) {
+							children[xi, yi, zi] = child;
+							if (simplification == null)
+								simplification = child;
+							else
+								canSimplify = simplification == child && canSimplify;
+						} else {
+							canSimplify = false;
+						}
+                    }
+				}
+			}
+			//if (canSimplify)
+			//	MonoBehaviour.print("Reduced Voxel Block.");
+			if (canSimplify)
+				++count;
+			else
+				simplification = null;
+			return count;
 		}
 
 		private bool filledWithSubRenderers(bool checkSelf) {

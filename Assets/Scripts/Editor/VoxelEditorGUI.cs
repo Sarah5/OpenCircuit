@@ -159,7 +159,7 @@ public class VoxelEditorGUI : Editor {
 		switch(editor.selectedBrush) {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
-			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, 100);
+			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, maxBrushSize(editor));
 			editor.sphereSubstanceOnly = GUILayout.Toggle(editor.sphereSubstanceOnly, "Change Substance Only");
 			GUILayout.Label("Substance", labelBigFont);
 			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
@@ -182,7 +182,7 @@ public class VoxelEditorGUI : Editor {
 			break;
 
 		case 2:
-			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, 100);
+			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, maxBrushSize(editor));
 			editor.smoothBrushStrength = doSliderFloatField("Strength", editor.smoothBrushStrength, 0, 5);
 			editor.smoothBrushBlurRadius = EditorGUILayout.IntField("Blur Radius", editor.smoothBrushBlurRadius);
 			break;
@@ -210,6 +210,12 @@ public class VoxelEditorGUI : Editor {
 			}
 			if (editor.hasRenderers() && GUILayout.Button("Clear Skin") && validateSubstances(editor)) {
 				editor.clearRenderers();
+			}
+			if (GUILayout.Button("Compress Data")) {
+				Vox.Voxel v;
+				int count = editor.getHead().canSimplify(out v);
+				editor.dirty = true;
+				EditorUtility.DisplayDialog("Compression Result", "Compression removed " +count +" nodes from the voxel tree.", "OK");
 			}
 			if (GUILayout.Button("Export")) {
 				editor.export(EditorUtility.SaveFilePanel("Choose File to Export To", "", "Voxels", "vox"));
@@ -488,6 +494,10 @@ public class VoxelEditorGUI : Editor {
 		}
 		return true;
 	}
+
+	protected static float maxBrushSize(Vox.VoxelEditor editor) {
+		return Mathf.Max(editor.voxelSize() *20, 50);
+    }
 
     protected class VoxelEditorParameters {
 		public float baseSize = 32;
