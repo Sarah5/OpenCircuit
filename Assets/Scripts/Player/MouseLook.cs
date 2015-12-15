@@ -28,6 +28,10 @@ public class MouseLook : MonoBehaviour {
 	public float minimumY = -60F;
 	public float maximumY = 60F;
 
+	private Vector3 lookPoint;
+	private bool isAuto = false;
+	private float autoLookSpeed = 1f;
+
 	float rotationY = 0F;
 
 	public void rotate(float xRotate, float yRotate) {
@@ -47,11 +51,30 @@ public class MouseLook : MonoBehaviour {
 			transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
 		}
 	}
+
+	public void lookAtPoint(Vector3 point, float lookSpeed) {
+		lookPoint = point;
+		isAuto = true;
+		autoLookSpeed = lookSpeed;
+	}
 	
 	void Start ()
 	{
 		// Make the rigid body not change rotation
 		if (GetComponent<Rigidbody>())
 			GetComponent<Rigidbody>().freezeRotation = true;
+	}
+
+	void Update() {
+		if(isAuto) {
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookPoint - transform.position), Time.deltaTime*autoLookSpeed);
+			if(1-Mathf.Abs(Vector3.Dot(transform.forward, (lookPoint - transform.position).normalized)) < .05f) {
+				isAuto = false;
+			}
+		}
+	}
+
+	public bool isAutoMode() {
+		return isAuto;
 	}
 }

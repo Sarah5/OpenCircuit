@@ -8,12 +8,13 @@ public class Movement : MonoBehaviour {
 	private Player myPlayer;
 	private Vector3 groundNormal;
 	private Vector3 groundSpeed;
-	private Vector3 desiredVel;
+	private Vector3 navPoint; 
 	private float forwardSpeed = 0;
 	private float rightSpeed = 0;
 	private bool grounded;
 	private bool sprinting = false;
 	private bool crouching = false;
+	private bool autoMove = false;
 	private GameObject floor = null;
 	private CapsuleCollider col;
 	private AudioSource footstepEmitter;
@@ -113,9 +114,9 @@ public class Movement : MonoBehaviour {
 			rightSpeed = 0;
 			forwardSpeed = 0;
 		}
-		desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
+		Vector3 desiredVel = getDesiredVel();
+
 		float speed = desiredVel.magnitude * (sprinting ? calculateSprintMultiplier() : 1) *(crouching? crouchSpeedMultiplier: 1);
-		desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
 		desiredVel.y = 0;
 		desiredVel.Normalize();
 
@@ -181,6 +182,31 @@ public class Movement : MonoBehaviour {
 		// check for no more floor, in case it was deleted
 		//if (floor == null)
 			groundNormal = Vector3.zero;
+	}
+
+	public float minDist = .1f;
+	private Vector3 getDesiredVel() {
+		Vector3 desiredVel;
+		if(autoMove) {
+			//Vector3 dir = (this.navPoint - transform.position);
+			//print(dir);
+			Vector3 dir = this.navPoint -transform.position;
+			//print("direction: " + dir);
+			//print("point: " + this.navPoint);
+			dir.y = 0;
+			//dir.Normalize();
+			if(dir.magnitude < minDist) {
+				//print("reached the location");
+				desiredVel = Vector3.zero;
+				autoMove = false;
+			} else {
+				desiredVel = dir.normalized * walkSpeedf;
+			}
+		} else {
+			desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
+			desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
+		}
+		return desiredVel;
 	}
 
 	protected float calculateSprintMultiplier() {
@@ -385,4 +411,14 @@ public class Movement : MonoBehaviour {
 	public void unlockMovement() {
 		canMove = true;
 	}
+
+	public void moveToPoint(Vector3 point) {
+		navPoint = point;
+		autoMove = true;
+	}
+
+	public bool isAutoMoving() {
+		return autoMove;
+	}
+
 }

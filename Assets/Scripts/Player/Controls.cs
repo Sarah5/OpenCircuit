@@ -111,6 +111,8 @@ public class Controls : MonoBehaviour {
 	
 	public void disablePlayerControls() {
 		playerControlsEnabled = false;
+		myPlayer.mover.setForward(0);
+		myPlayer.mover.setRight(0);
 	}
 	
 	public void enablePlayerControls() {
