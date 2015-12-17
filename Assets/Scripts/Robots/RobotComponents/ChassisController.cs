@@ -10,11 +10,14 @@ public class ChassisController : MonoBehaviour {
 	public float stanceHeight = 3;
 	public float strideLength = 1;
 	public float stepHeight = 0.5f;
+	public float maxStepHeight = .8f;
 
 	public float minMoveSpeed = 0.01f;
 	public int minimumFramesPerSwitch = 2;
 
 	public AudioSource footstep;
+
+	public bool debug = false;
 
 	private Dictionary<LegController, LegInfo> legInfo = new Dictionary<LegController, LegInfo>();
 	private Vector3 lastPos;
@@ -59,24 +62,62 @@ public class ChassisController : MonoBehaviour {
 
 			Vector3 normalizedVelocity = info.getVelocity().normalized;
 			Vector3 offset = info.foot - leg.getDefaultPos();
-			//print(Vector3.Dot(offset.normalized, -normalizedVelocity));
 			offsetMagnitude = Mathf.Max(offsetMagnitude, Vector3.Dot(offset /strideLength, -normalizedVelocity) +1);
 		}
 		return offsetMagnitude / 2;
 	}
 
 	protected void updateSteppingGroup(LegController[] steppingGroup, float stepPercent) {
-		//print(stepOffset);
 		foreach (LegController leg in steppingGroup) {
 			LegInfo info = getLegInfo(leg);
-			Vector3 stepOffset = info.getVelocity().normalized * strideLength;
-			Vector3 target = Vector3.Lerp(info.getLastPlanted(), leg.getDefaultPos() +stepOffset, stepPercent);
-			target.y += (1 -Mathf.Abs(stepPercent - 0.5f) *2) *stepHeight;
+			Vector3 stepOffset = leg.getDefaultPos() +info.getVelocity().normalized * strideLength;
+
+
+			stepOffset.y += calculateAltitudeAdjustment(stepOffset, leg);
+			Vector3 target = Vector3.Lerp(info.getLastPlanted(), stepOffset, stepPercent);
+
+			target.y += Mathf.Min((1 - Mathf.Abs(stepPercent - 0.5f) * 2) * stepHeight, maxStepHeight);
 			Vector3 diff = (target - info.foot);
 			info.foot += diff.normalized * Mathf.Min(Mathf.Max(0.5f, diff.magnitude /8), diff.magnitude);
-			//info.foot = target;
+
+#if UNITY_EDITOR
+			if(debug) {
+				drawPoint(info.foot, Color.blue, leg + "three");
+			}
+#endif
 		}
 	}
+#if UNITY_EDITOR
+	private Dictionary<string, GameObject> footPos = new Dictionary<string,GameObject>();
+	private void drawPoint(Vector3 point, Color color, string id) {
+		if (footPos.ContainsKey(id))
+		Destroy(footPos[id]);
+		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		cube.transform.position = point;
+		cube.GetComponent<MeshRenderer>().material.color = color;
+		Destroy(cube.GetComponent<BoxCollider>());
+		cube.transform.localScale = new Vector3(.2f, .2f, .2f);
+		footPos[id] = cube;
+	}
+#endif
+
+	protected float calculateAltitudeAdjustment(Vector3 stepOffset, LegController leg) {
+		Vector3 maxStepPos = stepOffset + new Vector3(0, maxStepHeight, 0);
+		RaycastHit hitInfo = new RaycastHit();
+		float yOffset = 0f;
+		if(Physics.Raycast(new Ray(maxStepPos, new Vector3(0, -1, 0)), out hitInfo, maxStepHeight * 10)) {
+#if UNITY_EDITOR
+			if(debug) {
+				drawPoint(hitInfo.point, Color.green, leg + "one");
+				drawPoint(stepOffset, Color.red, leg + "two");
+			}
+#endif
+
+			yOffset = hitInfo.point.y - stepOffset.y;
+		}
+		return yOffset;
+	}
+
 
 	protected void updateLegs(LegController[] group, bool planted) {
 		foreach(LegController leg in group) {
