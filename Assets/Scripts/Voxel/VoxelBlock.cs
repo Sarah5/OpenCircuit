@@ -14,6 +14,7 @@ namespace Vox {
 		public static int skippedSubdivisions = 0;
 		public const byte CHILD_COUNT_POWER = 1;
 		public const int CHILD_DIMENSION = 1 << (CHILD_COUNT_POWER);
+		public const int CHILD_COUNT = CHILD_DIMENSION *CHILD_DIMENSION *CHILD_DIMENSION;
 
 		public VoxelHolder[, ,] children;
 		[System.NonSerialized]
@@ -51,7 +52,7 @@ namespace Vox {
 						children[xi, yi, zi] = fillValue;
 		}
 
-		public void set(byte detailLevel, int x, int y, int z, Voxel value, VoxelTree control) {
+		public void set(byte detailLevel, int x, int y, int z, Voxel value, Tree control) {
 			if (detailLevel > 0) {
 				short factor = (short)(1 << (detailLevel - CHILD_COUNT_POWER));
 				byte xi = (byte)(x / factor);
@@ -70,20 +71,20 @@ namespace Vox {
 				set(value);
 		}
 		
-		public override VoxelHolder get(VoxelIndex i) {
+		public override VoxelHolder get(Index i) {
 			return get(i.depth, i.x, i.y, i.z);
 		}
 
-		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
+		public override VoxelHolder get(byte detailLevel, uint x, uint y, uint z) {
 
 			if (detailLevel > 0) {
-				short factor = (short)(1 << (detailLevel - CHILD_COUNT_POWER));
+				ushort factor = (ushort)(1 << (detailLevel - CHILD_COUNT_POWER));
 				byte xi = (byte)(x / factor);
 				byte yi = (byte)(y / factor);
 				byte zi = (byte)(z / factor);
 				if (detailLevel == CHILD_COUNT_POWER)
 					return children[xi, yi, zi];
-				return children[xi, yi, zi].get((byte)(detailLevel - CHILD_COUNT_POWER), x - xi * factor, y - yi * factor, z - zi * factor);
+				return children[xi, yi, zi].get((byte)(detailLevel - CHILD_COUNT_POWER), (uint)(x - xi * factor), (uint)(y - yi * factor), (uint)(z - zi * factor));
 			} else
 				return this;
 		}
@@ -121,7 +122,13 @@ namespace Vox {
 			return new Voxel(averageMaterialType(), averageOpacity());
 		}
 
-		public void setToHeightmap(byte detailLevel, int x, int y, int z, ref float[,] map, byte material, VoxelTree control) {
+		public VoxelBlock expand(uint x, uint y, uint z) {
+			if (children[x, y, z].GetType() == typeof(Voxel))
+				children[x, y, z] = new VoxelBlock((Voxel)children[x, y, z]);
+			return (VoxelBlock)children[x, y, z];
+		}
+
+		public void setToHeightmap(byte detailLevel, int x, int y, int z, ref float[,] map, byte material, Tree control) {
 			if (detailLevel <= CHILD_COUNT_POWER) {
 				for (int xi = 0; xi < CHILD_DIMENSION; ++xi) {
 					for (int zi = 0; zi < CHILD_DIMENSION; ++zi) {
@@ -178,7 +185,7 @@ namespace Vox {
 			control.dirty = true;
 		}
 
-		public void setToHeightmap(byte detailLevel, int x, int y, int z, ref float[,] map, byte[,] mats, VoxelTree control) {
+		public void setToHeightmap(byte detailLevel, int x, int y, int z, ref float[,] map, byte[,] mats, Tree control) {
 			if (detailLevel <= CHILD_COUNT_POWER) {
 				for (int xi = 0; xi < CHILD_DIMENSION; ++xi) {
 					for (int zi = 0; zi < CHILD_DIMENSION; ++zi) {
@@ -239,7 +246,7 @@ namespace Vox {
 			control.dirty = true;
 		}
 
-		public void updateAll(int x, int y, int z, byte detailLevel, VoxelTree control, bool force = false) {
+		public void updateAll(uint x, uint y, uint z, byte detailLevel, Tree control, bool force = false) {
 			// check if this is a high enough detail level.  If not, call the childrens' update methods
 			if (!isRenderSize(control.sizes[detailLevel], control) && (!isRenderLod(x, y, z, control.sizes[detailLevel], control))) {
 				for (byte xi = 0; xi < CHILD_DIMENSION; ++xi) {
@@ -272,7 +279,7 @@ namespace Vox {
 			// check if we already have a mesh
 			if (renderer == null) {
 				//clearSubRenderers();
-				renderer = new VoxelRenderer(new VoxelIndex(x, y, z, detailLevel), control);
+				renderer = new VoxelRenderer(new Index(detailLevel, x, y, z), control);
 				//info.renderers[1, 1, 1] = renderer;
 			} else {
 				renderer.old = false;
@@ -285,11 +292,11 @@ namespace Vox {
 			control.enqueueUpdate(updateJob);
 		}
 
-		public void clearSubRenderers(VoxelTree control) {
+		public void clearSubRenderers(Tree control) {
 			clearSubRenderers(true, control);
 		}
 
-		public void clearSubRenderers(bool clearSelf, VoxelTree control) {
+		public void clearSubRenderers(bool clearSelf, Tree control) {
 			if (clearSelf && renderer != null) {
 				//control.enqueueJob(new DropRendererJob(renderer));
 				renderer.clear();
@@ -319,17 +326,17 @@ namespace Vox {
 			return children[xi, yi, zi].getRenderer((byte)(detailLevel - CHILD_COUNT_POWER), x - xi * factor, y - yi * factor, z - zi * factor);
 		}
 
-		public static bool isRenderSize(float size, VoxelTree control) {
+		public static bool isRenderSize(float size, Tree control) {
 			return control.sizes[control.maxDetail - VoxelRenderer.VOXEL_COUNT_POWER] == size;
 		}
 
-		public static bool isRenderLod(float x, float y, float z, float size, VoxelTree control) {
+		public static bool isRenderLod(float x, float y, float z, float size, Tree control) {
 			if (!control.useLod)
 				return size == control.sizes[control.maxDetail];
 			return getDistSquare(control.getLocalCamPosition(), new Vector3(x + 0.5f, y + 0.5f, z + 0.5f), size) >= size * size * control.getLodDetail();
 		}
 
-		public void clearSuperRenderers(byte detailLevel, int x, int y, int z, VoxelTree control) {
+		public void clearSuperRenderers(byte detailLevel, int x, int y, int z, Tree control) {
 			if (detailLevel > 0) {
 				short factor = (short)(1 << (detailLevel - CHILD_COUNT_POWER));
 				byte xi = (byte)(x / factor);

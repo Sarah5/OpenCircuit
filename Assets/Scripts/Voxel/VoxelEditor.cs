@@ -9,7 +9,7 @@ namespace Vox {
 
 	[AddComponentMenu("Scripts/Voxel/VoxelEditor")]
 	[ExecuteInEditMode]
-	public class VoxelEditor : VoxelTree {
+	public class VoxelEditor : Tree {
 
 		public const string DEFAULT_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBase.mat";
 		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
@@ -82,7 +82,7 @@ namespace Vox {
 			this.masks = new VoxelMask[0];
 			float radius = spherePercentage / 200f * baseSize;
 			float center = baseSize /2f;
-			new SphereModifier(this, transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue), false);
+			new SphereModifier(transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue)).apply(this);
 			this.masks = masks;
 		}
 

@@ -46,11 +46,11 @@ namespace Vox {
 			return matType;
 		}
 
-		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
+		public override VoxelHolder get(byte detailLevel, uint x, uint y, uint z) {
 			return this;
 		}
 		
-		public override VoxelHolder get(VoxelIndex i) {
+		public override VoxelHolder get(Index i) {
 			return this;
 		}
 

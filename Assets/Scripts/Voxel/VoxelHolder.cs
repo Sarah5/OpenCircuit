@@ -20,9 +20,9 @@ namespace Vox {
 		public abstract byte averageMaterialType();
 
 		// relative to me.  detail level 1 means go one further, no matter what. index also relative to me
-		public abstract VoxelHolder get(byte detailLevel, int x, int y, int z);
+		public abstract VoxelHolder get(byte detailLevel, uint x, uint y, uint z);
 
-		public abstract VoxelHolder get(VoxelIndex i);
+		public abstract VoxelHolder get(Index i);
 
 		public abstract VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z);
 

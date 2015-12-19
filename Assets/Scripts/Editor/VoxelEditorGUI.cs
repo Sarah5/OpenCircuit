@@ -462,19 +462,19 @@ public class VoxelEditorGUI : Editor {
         Vector3 point = editor.getBrushPoint(mouseLocation);
         switch(editor.selectedBrush) {
 		case 0:
-			Vox.SphereModifier sphereMod = new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
+			Vox.SphereModifier sphereMod = new Vox.SphereModifier(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
 			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
-			sphereMod.apply();
+			sphereMod.apply(editor);
 			break;
 		case 1:
 			Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
 			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
-			cubeMod.apply();
+			cubeMod.apply(editor);
 			break;
 		case 2:
 			Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
 			blur.blurRadius = editor.smoothBrushBlurRadius;
-			blur.apply();
+			blur.apply(editor);
 			break;
 		}
 	}

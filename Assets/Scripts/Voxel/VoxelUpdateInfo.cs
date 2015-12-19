@@ -11,7 +11,7 @@ namespace Vox {
 		public float size;
 		public VoxelHolder[, ,] blocks;
 		public VoxelRenderer[, ,] renderers;
-		public VoxelTree control;
+		public Tree control;
 		public int x, y, z;
 
 		private VoxelUpdateInfo() {
@@ -19,7 +19,7 @@ namespace Vox {
 			renderers = new VoxelRenderer[DIMENSION, DIMENSION, DIMENSION];
 		}
 
-		public VoxelUpdateInfo(float size, VoxelHolder main, VoxelTree control)
+		public VoxelUpdateInfo(float size, VoxelHolder main, Tree control)
 			: this() {
 			this.size = size;
 			this.detailLevel = 0;
@@ -60,9 +60,9 @@ namespace Vox {
 			}
 		}
 
-		public VoxelUpdateInfo getSubInfo(byte detail, int xi, int yi, int zi) {
+		public VoxelUpdateInfo getSubInfo(byte detail, uint xi, uint yi, uint zi) {
 			if (detail < 1) return this;
-			int dimension = 1 << (detail - 1);
+			uint dimension = (uint) 1 << (detail - 1);
 			return new VoxelUpdateInfo(this, (byte)(xi / dimension), (byte)(yi / dimension), (byte)(zi / dimension)).getSubInfo((byte)(detail - 1), xi % dimension, yi % dimension, zi % dimension);
 		}
 
@@ -96,8 +96,8 @@ namespace Vox {
 			return true;
 		}
 
-		public VoxelHolder getSub(byte detailLevel, int x, int y, int z) {
-			int dimension = 1 << detailLevel;
+		public VoxelHolder getSub(byte detailLevel, uint x, uint y, uint z) {
+			uint dimension = (uint)(1 << detailLevel);
 			return blocks[x / dimension, y / dimension, z / dimension].get(detailLevel, x % dimension, y % dimension, z % dimension);
 		}
 

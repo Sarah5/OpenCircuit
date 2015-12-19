@@ -6,12 +6,12 @@ namespace Vox {
 
 	public class GenMeshJob : VoxelJob {
 
-		public int xOff, yOff, zOff;
+		public uint xOff, yOff, zOff;
 		public byte detailLevel;
 		private VoxelBlock block;
-		private VoxelTree control;
+		private Tree control;
 
-		public GenMeshJob(VoxelBlock block, VoxelTree control, byte detailLevel) {
+		public GenMeshJob(VoxelBlock block, Tree control, byte detailLevel) {
 			this.block = block;
 			this.control = control;
 			this.detailLevel = detailLevel;
@@ -32,7 +32,7 @@ namespace Vox {
 			return block.getRenderer(0, 0, 0, 0);
 		}
 
-		public void setOffset(int xOff, int yOff, int zOff) {
+		public void setOffset(uint xOff, uint yOff, uint zOff) {
 			this.xOff = xOff;
 			this.yOff = yOff;
 			this.zOff = zOff;
@@ -67,9 +67,9 @@ namespace Vox {
 		public byte xOff, yOff, zOff;
 		public byte detailLevel;
 		private VoxelBlock block;
-		private VoxelTree control;
+		private Tree control;
 		
-		public UpdateCheckJob(VoxelBlock block, VoxelTree control, byte detailLevel) {
+		public UpdateCheckJob(VoxelBlock block, Tree control, byte detailLevel) {
 			this.block = block;
 			this.control = control;
 			this.detailLevel = detailLevel;
@@ -106,9 +106,9 @@ namespace Vox {
 	}
 
 	public class LinkRenderersJob: VoxelJob {
-		private VoxelTree control;
+		private Tree control;
 
-		public LinkRenderersJob(VoxelTree control) {
+		public LinkRenderersJob(Tree control) {
 			this.control = control;
 		}
 
