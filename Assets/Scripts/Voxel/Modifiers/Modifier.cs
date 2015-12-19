@@ -114,8 +114,8 @@ namespace Vox {
 		}
 
 		protected class Application {
-			bool updateMesh;
-			//public Index min, max;
+			public bool updateMesh;
+			public Index min, max;
 			public Tree tree;
 		}
 
