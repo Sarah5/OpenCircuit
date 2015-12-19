@@ -40,11 +40,6 @@ namespace Vox {
 				if (control != null) {
 					lock(control) {
 						control.renderers.Remove(index);
-						if (control.getHead() != null) {
-							VoxelHolder block = control.getHead().get(index);
-							if (block.GetType() == typeof(VoxelBlock) && ((VoxelBlock)block).renderer == this)
-								((VoxelBlock)block).renderer = null;
-						}
 					}
 				}
 				removePolyCount();
@@ -214,8 +209,6 @@ namespace Vox {
 			//					collider.enabled = true;
 			//			}
 			addPolyCount();
-			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
-			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
 
 		protected GameObject createRendererGameObject() {

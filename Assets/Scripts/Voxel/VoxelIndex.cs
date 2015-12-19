@@ -69,5 +69,9 @@ namespace Vox {
 			h = h + (h<<7);
 			return (int)(h ^ (h>>13));
 		}
+
+		public override string ToString() {
+			return "(" +depth +"; " +x +", " +y +", " +z +")";
+		}
 	}
 }

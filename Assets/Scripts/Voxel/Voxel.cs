@@ -54,10 +54,6 @@ namespace Vox {
 			return this;
 		}
 
-		public override VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z) {
-			return null;
-		}
-
 		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
 			int size = 1 << (VoxelBlock.CHILD_COUNT_POWER *level);
 			int xStart = Mathf.Max(x, xMin);

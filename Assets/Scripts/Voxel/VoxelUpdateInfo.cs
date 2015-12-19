@@ -47,14 +47,10 @@ namespace Vox {
 				for (byte yii = 0; yii < DIMENSION; ++yii) {
 					for (byte zii = 0; zii < DIMENSION; ++zii) {
 						blocks[xii, yii, zii] = super.getSub(VoxelBlock.CHILD_COUNT_POWER, (byte)(xii + xi + VoxelBlock.CHILD_DIMENSION - 1), (byte)(yii + yi + VoxelBlock.CHILD_DIMENSION - 1), (byte)(zii + zi + VoxelBlock.CHILD_DIMENSION - 1));
-						renderers[xii, yii, zii] = super.renderers[(int)((xii + xi + 1) * 0.5), (int)((yii + yi + 1) * 0.5), (int)((zii + zi + 1) * 0.5)];
-						if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old) {
-							renderers[xii, yii, zii] = super.blocks[(int)((xii + xi + 1) * 0.5), (int)((yii + yi + 1) * 0.5), (int)((zii + zi + 1) * 0.5)].getRenderer(0, 0, 0, 0);
-							if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old)
-								renderers[xii, yii, zii] = blocks[xii, yii, zii].getRenderer(0, 0, 0, 0);
-							if (renderers[xii, yii, zii] != null && renderers[xii, yii, zii].old)
-								renderers[xii, yii, zii] = null;
-						}
+						if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old)
+							renderers[xii, yii, zii] = control.getRenderer(new Index((byte)(detailLevel), (uint)(x -1 +xii), (uint)(y -1 +yii), (uint)(z -1 +zii)));
+						if (renderers[xii, yii, zii] != null && renderers[xii, yii, zii].old)
+							renderers[xii, yii, zii] = null;
 					}
 				}
 			}

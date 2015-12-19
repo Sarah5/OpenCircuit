@@ -165,6 +165,12 @@ namespace Vox {
 			return head;
 		}
 
+		public VoxelRenderer getRenderer(Index index) {
+			VoxelRenderer rend = null;
+			return renderers.TryGetValue(index, out rend)?
+				rend : null;
+		}
+
 //		public void updateLocalCamPosition() {
 //			lock(this) {
 //				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
@@ -317,13 +323,6 @@ namespace Vox {
 						renderers[index] = rend;
 					//} else {
 					//	print("already had renderer");
-					}
-					VoxelHolder block = head.get(index);
-					if (block is VoxelBlock) {
-						//print("linking");
-						((VoxelBlock)block).renderer = rend;
-					//} else {
-					//	print("NOT BLOCK!");
 					}
 					rend.obs = objects.ToArray();
 				}

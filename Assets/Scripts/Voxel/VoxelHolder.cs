@@ -24,8 +24,6 @@ namespace Vox {
 
 		public abstract VoxelHolder get(Index i);
 
-		public abstract VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z);
-
 		public abstract Voxel toVoxel();
 
 		public abstract void serialize(BinaryWriter writer);

@@ -17,8 +17,6 @@ namespace Vox {
 		public const int CHILD_COUNT = CHILD_DIMENSION *CHILD_DIMENSION *CHILD_DIMENSION;
 
 		public VoxelHolder[, ,] children;
-		[System.NonSerialized]
-		public VoxelRenderer renderer;
 
 		public VoxelBlock(Voxel fillValue) {
 			children = new VoxelHolder[CHILD_DIMENSION, CHILD_DIMENSION, CHILD_DIMENSION];
@@ -248,6 +246,7 @@ namespace Vox {
 
 		public void updateAll(uint x, uint y, uint z, byte detailLevel, Tree control, bool force = false) {
 			// check if this is a high enough detail level.  If not, call the childrens' update methods
+			VoxelRenderer renderer = control.getRenderer(new Index(detailLevel, x, y, z));
 			if (!isRenderSize(control.sizes[detailLevel], control) && (!isRenderLod(x, y, z, control.sizes[detailLevel], control))) {
 				for (byte xi = 0; xi < CHILD_DIMENSION; ++xi) {
 					for (byte yi = 0; yi < CHILD_DIMENSION; ++yi) {
@@ -292,40 +291,6 @@ namespace Vox {
 			control.enqueueUpdate(updateJob);
 		}
 
-		public void clearSubRenderers(Tree control) {
-			clearSubRenderers(true, control);
-		}
-
-		public void clearSubRenderers(bool clearSelf, Tree control) {
-			if (clearSelf && renderer != null) {
-				//control.enqueueJob(new DropRendererJob(renderer));
-				renderer.clear();
-				renderer = null;
-				return;
-			}
-			for (byte xi = 0; xi < CHILD_DIMENSION; ++xi) {
-				for (byte yi = 0; yi < CHILD_DIMENSION; ++yi) {
-					for (byte zi = 0; zi < CHILD_DIMENSION; ++zi) {
-						if (children[xi, yi, zi].GetType() != typeof(Voxel))
-							((VoxelBlock)children[xi, yi, zi]).clearSubRenderers(true, control);
-					}
-				}
-			}
-		}
-
-		public override VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z) {
-			if (renderer != null || detailLevel < 1) {
-				return renderer;
-			}
-			short factor = (short)(1 << (detailLevel - CHILD_COUNT_POWER));
-			byte xi = (byte)(x / factor);
-			byte yi = (byte)(y / factor);
-			byte zi = (byte)(z / factor);
-			if (children[xi, yi, zi].GetType() == typeof(Voxel))
-				return null;
-			return children[xi, yi, zi].getRenderer((byte)(detailLevel - CHILD_COUNT_POWER), x - xi * factor, y - yi * factor, z - zi * factor);
-		}
-
 		public static bool isRenderSize(float size, Tree control) {
 			return control.sizes[control.maxDetail - VoxelRenderer.VOXEL_COUNT_POWER] == size;
 		}
@@ -334,21 +299,6 @@ namespace Vox {
 			if (!control.useLod)
 				return size == control.sizes[control.maxDetail];
 			return getDistSquare(control.getLocalCamPosition(), new Vector3(x + 0.5f, y + 0.5f, z + 0.5f), size) >= size * size * control.getLodDetail();
-		}
-
-		public void clearSuperRenderers(byte detailLevel, int x, int y, int z, Tree control) {
-			if (detailLevel > 0) {
-				short factor = (short)(1 << (detailLevel - CHILD_COUNT_POWER));
-				byte xi = (byte)(x / factor);
-				byte yi = (byte)(y / factor);
-				byte zi = (byte)(z / factor);
-
-				if (renderer != null && filledWithSubRenderers(false)) {
-					control.enqueueJob(new DropRendererJob(renderer));
-					renderer = null;
-				}
-				((VoxelBlock)children[xi, yi, zi]).clearSuperRenderers((byte)(detailLevel - CHILD_COUNT_POWER), x - xi * factor, y - yi * factor, z - zi * factor, control);
-			}
 		}
 
 		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
@@ -390,24 +340,6 @@ namespace Vox {
 			else
 				simplification = null;
 			return count;
-		}
-
-		private bool filledWithSubRenderers(bool checkSelf) {
-			if (checkSelf && renderer != null && renderer.applied) {
-				return true;
-			}
-			for (byte xi = 0; xi < CHILD_DIMENSION; ++xi) {
-				for (byte yi = 0; yi < CHILD_DIMENSION; ++yi) {
-					for (byte zi = 0; zi < CHILD_DIMENSION; ++zi) {
-						if (children[xi, yi, zi].GetType() == typeof(VoxelBlock)) {
-							if (!((VoxelBlock)children[xi, yi, zi]).filledWithSubRenderers(true))
-								return false;
-						} else
-							return false;
-					}
-				}
-			}
-			return true;
 		}
 
 		private static float getDistSquare(Vector3 otherPos, Vector3 myPos, float size) {

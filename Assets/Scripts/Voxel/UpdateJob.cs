@@ -29,8 +29,9 @@ namespace Vox {
 		}
 
 		public VoxelRenderer getRenderer() {
-			return block.getRenderer(0, 0, 0, 0);
-		}
+			Index i = new Index(detailLevel, xOff, yOff, zOff);
+			return control.getRenderer(i);
+        }
 
 		public void setOffset(uint xOff, uint yOff, uint zOff) {
 			this.xOff = xOff;
