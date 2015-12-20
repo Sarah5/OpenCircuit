@@ -4,7 +4,7 @@ using System;
 
 namespace Vox {
 
-	public class SphereModifier : Mutator {
+	public class SphereMutator : LocalMutator {
 
 		public Voxel value;
 		public bool overwriteSubstance = true;
@@ -12,7 +12,7 @@ namespace Vox {
 		public float worldRadius;
 		public Vector3 worldPosition;
 
-		public SphereModifier(Vector3 worldPosition, float worldRadius, Voxel value) {
+		public SphereMutator(Vector3 worldPosition, float worldRadius, Voxel value) {
 			this.value = value;
 			this.worldPosition = worldPosition;
 			this.worldRadius = worldRadius;
@@ -22,7 +22,7 @@ namespace Vox {
 
 			float radius = worldRadius / target.voxelSize();
 			Vector3 radiusCube = new Vector3(radius, radius, radius);
-			Vector3 center = target.transform.InverseTransformPoint(worldPosition) / target.voxelSize();// - Vector3.one * 0.5f;
+			Vector3 center = target.transform.InverseTransformPoint(worldPosition) / target.voxelSize();
 			Vector3 exactMin = center - radiusCube;
 			Vector3 exactMax = center + radiusCube;
 			SphereApp app = new SphereApp();
@@ -31,15 +31,15 @@ namespace Vox {
 			app.max = new Index(target.maxDetail, (uint)exactMax.x, (uint)exactMax.y, (uint)exactMax.z);
 			app.minRadius = radius -1;
 			app.maxRadius = radius +1;
-			app.center = center;
+			app.position = center;
 			app.radius = radius;
 			return app;
 		}
 
-		protected override Action mutate(Application app, Index p, VoxelBlock parent) {
+		protected override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff) {
 			SphereApp sApp = (SphereApp)app;
 			float voxelSize = (1 << (app.tree.maxDetail -p.depth));
-			float disSqr = (sApp.center - new Vector3(p.x +0.5f, p.y +0.5f, p.z +0.5f) * voxelSize).sqrMagnitude;
+			float disSqr = diff.sqrMagnitude;
 			float maxRadius = sApp.radius + voxelSize * 0.75f;
 			float maxRadSqr = maxRadius * maxRadius;
 			if (disSqr > maxRadSqr)
@@ -68,9 +68,8 @@ namespace Vox {
 			return new Action(false, true);
 		}
 
-		protected class SphereApp: Application {
+		protected class SphereApp: LocalApplication {
 			public float minRadius, maxRadius;
-			public Vector3 center;
 			public float radius;
 		}
 

@@ -462,7 +462,7 @@ public class VoxelEditorGUI : Editor {
         Vector3 point = editor.getBrushPoint(mouseLocation);
         switch(editor.selectedBrush) {
 		case 0:
-			Vox.SphereModifier sphereMod = new Vox.SphereModifier(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
+			Vox.SphereMutator sphereMod = new Vox.SphereMutator(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
 			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
 			sphereMod.apply(editor);
 			break;

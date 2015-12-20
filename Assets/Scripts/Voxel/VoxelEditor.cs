@@ -82,7 +82,7 @@ namespace Vox {
 			this.masks = new VoxelMask[0];
 			float radius = spherePercentage / 200f * baseSize;
 			float center = baseSize /2f;
-			new SphereModifier(transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue)).apply(this);
+			new SphereMutator(transform.TransformPoint(center, center, center), radius, new Voxel(0, byte.MaxValue)).apply(this);
 			this.masks = masks;
 		}
 
