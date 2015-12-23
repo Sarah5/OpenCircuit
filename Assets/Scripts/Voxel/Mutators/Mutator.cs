@@ -47,7 +47,7 @@ namespace Vox {
 		//	app.tree.dirty = true;
 		//}
 
-		protected virtual Application setup(Tree target) {
+		public virtual Application setup(Tree target) {
 			Application app = new Application();
 			uint width = (uint) (1 << (target.maxDetail)) - 1;
 			app.tree = target;
@@ -113,13 +113,13 @@ namespace Vox {
 			// TODO implement
 		}
 
-		protected class Application {
+		public class Application {
 			public bool updateMesh;
 			public Index min, max;
 			public Tree tree;
 		}
 
-		protected struct Action {
+		public struct Action {
 			public bool doTraverse;
 			public bool modified;
 			public Action(bool doTraverse, bool modified) {

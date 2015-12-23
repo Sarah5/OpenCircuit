@@ -13,9 +13,9 @@ namespace Vox {
 			return mutate(lApp, p, parent, diff);
 		}
 
-		protected abstract Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff);
+		public abstract Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff);
 
-		protected class LocalApplication: Application {
+		public class LocalApplication: Application {
 			public Vector3 position;
 		}
 

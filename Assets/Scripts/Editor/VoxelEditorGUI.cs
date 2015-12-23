@@ -27,8 +27,9 @@ public class VoxelEditorGUI : Editor {
 	private bool showMasks;
 	private bool showStatistics;
     private VoxelEditorParameters generationParameters;
+	private Vector3 lastBrushPoint = Vector3.zero;
 
-    [MenuItem("GameObject/3D Object/Voxel Object")]
+	[MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
 		Vox.VoxelEditor.createEmpty();
 	}
@@ -454,29 +455,36 @@ public class VoxelEditorGUI : Editor {
         setupGeneration = false;
     }
 
-    protected static void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+    protected void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
 		byte opacity = byte.MaxValue;
 		if (UnityEngine.Event.current.shift) {
 			opacity = byte.MinValue;
 		}
         Vector3 point = editor.getBrushPoint(mouseLocation);
+		Vox.LocalMutator mutator = null;
         switch(editor.selectedBrush) {
 		case 0:
 			Vox.SphereMutator sphereMod = new Vox.SphereMutator(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
 			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
-			sphereMod.apply(editor);
+			mutator = sphereMod;
 			break;
-		case 1:
-			Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
-			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
-			cubeMod.apply(editor);
-			break;
-		case 2:
-			Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
-			blur.blurRadius = editor.smoothBrushBlurRadius;
-			blur.apply(editor);
-			break;
+		//case 1:
+		//	Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+		//	cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
+		//	cubeMod.apply(editor);
+		//	break;
+		//case 2:
+		//	Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
+		//	blur.blurRadius = editor.smoothBrushBlurRadius;
+		//	blur.apply(editor);
+		//	break;
 		}
+		if (mutator == null)
+			return;
+		if (UnityEngine.Event.current.control)
+			mutator = new Vox.LineMutator(lastBrushPoint, point, mutator);
+		mutator.apply(editor);
+		lastBrushPoint = point;
 	}
 
 	protected bool validateSubstances(Vox.VoxelEditor editor) {
