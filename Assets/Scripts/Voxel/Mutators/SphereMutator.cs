@@ -47,7 +47,9 @@ namespace Vox {
 			float minRadius = Mathf.Max(0, sApp.radius - voxelSize * 0.75f);
 			float minRadSqr = minRadius * minRadius;
 			if (disSqr < minRadSqr) {
-				parent.children[p.xLocal, p.yLocal, p.zLocal] = value;
+				parent.children[p.xLocal, p.yLocal, p.zLocal] =
+					new Voxel(value.averageMaterialType(), overwriteShape ? value.averageOpacity() :
+					parent.children[p.xLocal, p.yLocal, p.zLocal].averageOpacity());
 				return new Action(false, true);
 			}
 
@@ -58,7 +60,7 @@ namespace Vox {
 			
 			VoxelHolder original = parent.children[p.xLocal, p.yLocal, p.zLocal];
 			byte newOpacity = (byte)((original.averageOpacity() * (dis - sApp.minRadius) + value.averageOpacity() * (sApp.maxRadius - dis)) / 2);
-			byte newSubstance = value.averageMaterialType();
+			byte newSubstance = original.averageMaterialType();
 			if (newOpacity >= 2 * original.averageOpacity() ||
 				(overwriteSubstance && dis < sApp.radius))
 				newSubstance = value.averageMaterialType();

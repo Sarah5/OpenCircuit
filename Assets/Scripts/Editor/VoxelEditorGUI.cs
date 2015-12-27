@@ -468,11 +468,11 @@ public class VoxelEditorGUI : Editor {
 			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
 			mutator = sphereMod;
 			break;
-		//case 1:
-		//	Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
-		//	cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
-		//	cubeMod.apply(editor);
-		//	break;
+		case 1:
+			Vox.CubeMutator cubeMod = new Vox.CubeMutator(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
+			mutator = cubeMod;
+			break;
 		//case 2:
 		//	Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
 		//	blur.blurRadius = editor.smoothBrushBlurRadius;

@@ -11,6 +11,7 @@ namespace Vox {
 			Application app = setup(target);
 			applyMasksToApplication(app, target);
 			apply(app, target.getHead(), new Index());
+			target.dirty = true;
 		}
 
 		protected void apply(Application app, VoxelBlock block, Index pos) {
