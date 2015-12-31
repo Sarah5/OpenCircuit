@@ -20,10 +20,8 @@ namespace Vox {
 			this.value = value.toVoxel();
 		}
 
-
-
 		public override Application setup(Tree target) {
-			Vector3 halfDimension = worldDimensions / target.voxelSize() /2;
+			Vector3 halfDimension = worldDimensions / target.voxelSize() /2f;
 			Vector3 center = target.transform.InverseTransformPoint(worldPosition) / target.voxelSize();
 			Vector3 exactMin = center - halfDimension;
 			Vector3 exactMax = center + halfDimension;
@@ -39,33 +37,33 @@ namespace Vox {
 
 		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff) {
 			CubeApp cApp = (CubeApp)app;
-			double halfVoxelSize = (1 << (app.tree.maxDetail - p.depth)) *0.5;
+			double halfVoxelSize = (1 << (app.tree.maxDetail - p.depth));// *0.5;
+			if (p.depth >= app.tree.maxDetail)
+				halfVoxelSize *= 0.5;
 
-			// TODO: for huge voxels, this calculation won't be accurate enough to tell us we need to dive deeper into the voxel
 			double percentInside = 1;
+			bool outside = false;
+			bool inside = true;
 
-			percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, halfVoxelSize)
-				- percentOverlapping(-diff.x, cApp.halfDimension.x, halfVoxelSize));
-			percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, halfVoxelSize)
-				- percentOverlapping(-diff.y, cApp.halfDimension.y, halfVoxelSize));
-			percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, halfVoxelSize)
-				- percentOverlapping(-diff.z, cApp.halfDimension.z, halfVoxelSize));
+			percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, halfVoxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.x, cApp.halfDimension.x, halfVoxelSize, ref outside, ref inside));
+			if (outside) return new Action(false, false);
+			percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, halfVoxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.y, cApp.halfDimension.y, halfVoxelSize, ref outside, ref inside));
+			if (outside) return new Action(false, false);
+			percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, halfVoxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.z, cApp.halfDimension.z, halfVoxelSize, ref outside, ref inside));
+			if (outside) return new Action(false, false);
 
-			if (percentInside <= 0.00000001)
-				return new Action(false, false);
-			if (percentInside >= 0.99999999) {
+			if (inside) {
 				parent.children[p.xLocal, p.yLocal, p.zLocal] =
 					new Voxel(value.averageMaterialType(), overwriteShape ? value.averageOpacity() :
 					parent.children[p.xLocal, p.yLocal, p.zLocal].averageOpacity());
 				return new Action(false, true);
 			}
 
-			//MonoBehaviour.print("here? " +percentInside);
-
 			if (p.depth < app.tree.maxDetail)
 				return new Action(true, false);
-
-			//MonoBehaviour.print("here!");
 
 			VoxelHolder original = parent.children[p.xLocal, p.yLocal, p.zLocal];
 			byte newOpacity = (byte)((original.averageOpacity() * (1 - percentInside) + value.averageOpacity() * (percentInside)));
@@ -79,11 +77,18 @@ namespace Vox {
 			return new Action(false, true);
 		}
 
-		protected double percentOverlapping(double lower, double upper, double halfVoxelSize) {
-			if (upper > lower + halfVoxelSize)
+		protected double percentOverlapping(double lower, double upper, double halfVoxelSize, ref bool outside, ref bool inside) {
+            if (upper > lower + halfVoxelSize) {
+				outside |= false;
+				inside &= true;
 				return 1;
-			else if (upper < lower - halfVoxelSize)
+			} else if (upper < lower - halfVoxelSize) {
+				outside = true;
+				inside = false;
 				return 0;
+			}
+			outside |= false;
+			inside = false;
 			return (upper - lower + halfVoxelSize) /halfVoxelSize /2.0;
 		}
 

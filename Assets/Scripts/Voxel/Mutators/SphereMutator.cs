@@ -40,11 +40,11 @@ namespace Vox {
 			SphereApp sApp = (SphereApp)app;
 			float voxelSize = (1 << (app.tree.maxDetail -p.depth));
 			float disSqr = diff.sqrMagnitude;
-			float maxRadius = sApp.radius + voxelSize * 0.75f;
+			float maxRadius = sApp.radius + voxelSize;
 			float maxRadSqr = maxRadius * maxRadius;
 			if (disSqr > maxRadSqr)
 				return new Action(false, false);
-			float minRadius = Mathf.Max(0, sApp.radius - voxelSize * 0.75f);
+			float minRadius = Mathf.Max(0, sApp.radius - voxelSize);
 			float minRadSqr = minRadius * minRadius;
 			if (disSqr < minRadSqr) {
 				parent.children[p.xLocal, p.yLocal, p.zLocal] =

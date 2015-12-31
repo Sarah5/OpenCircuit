@@ -460,16 +460,18 @@ public class VoxelEditorGUI : Editor {
 		if (UnityEngine.Event.current.shift) {
 			opacity = byte.MinValue;
 		}
-        Vector3 point = editor.getBrushPoint(mouseLocation);
+        System.Nullable<Vector3> point = editor.getBrushPoint(mouseLocation);
+		if (point == null)
+			return;
 		Vox.LocalMutator mutator = null;
         switch(editor.selectedBrush) {
 		case 0:
-			Vox.SphereMutator sphereMod = new Vox.SphereMutator(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
+			Vox.SphereMutator sphereMod = new Vox.SphereMutator(point.Value, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
 			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
 			mutator = sphereMod;
 			break;
 		case 1:
-			Vox.CubeMutator cubeMod = new Vox.CubeMutator(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+			Vox.CubeMutator cubeMod = new Vox.CubeMutator(editor, point.Value, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
 			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
 			mutator = cubeMod;
 			break;
@@ -482,9 +484,9 @@ public class VoxelEditorGUI : Editor {
 		if (mutator == null)
 			return;
 		if (UnityEngine.Event.current.control)
-			mutator = new Vox.LineMutator(lastBrushPoint, point, mutator);
+			mutator = new Vox.LineMutator(lastBrushPoint, point.Value, mutator);
 		mutator.apply(editor);
-		lastBrushPoint = point;
+		lastBrushPoint = point.Value;
 	}
 
 	protected bool validateSubstances(Vox.VoxelEditor editor) {

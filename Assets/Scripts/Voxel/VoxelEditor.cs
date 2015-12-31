@@ -160,7 +160,7 @@ namespace Vox {
 			}
 		}
 
-		public static RaycastHit getRayCollision(Ray ray) {
+		public static System.Nullable<Vector3> getRayCollision(Ray ray) {
 			RaycastHit firstHit = new RaycastHit();
 			firstHit.distance = float.PositiveInfinity;
 			foreach(RaycastHit hit in Physics.RaycastAll(ray)) {
@@ -168,19 +168,21 @@ namespace Vox {
 					firstHit = hit;
 				}
 			}
-			return firstHit;
+			if (firstHit.distance == float.PositiveInfinity)
+				return null;
+			return firstHit.point;
 		}
 
-	    public Vector3 getBrushPoint(Ray mouseLocation) {
-			Vector3 point = getRayCollision(mouseLocation).point;
-	        if (gridEnabled) {
-	            point = transform.InverseTransformPoint(point);
+	    public System.Nullable<Vector3> getBrushPoint(Ray mouseLocation) {
+			System.Nullable<Vector3> point = getRayCollision(mouseLocation);
+	        if (point != null && gridEnabled) {
+	            Vector3 actualPoint = transform.InverseTransformPoint(point.Value);
 	            double halfGrid = gridSize / 2.0;
-	            Vector3 mod = new Vector3(point.x %gridSize, point.y %gridSize, point.z %gridSize);
-				point.x += (mod.x > halfGrid) ? gridSize -mod.x: -mod.x;
-				point.y += (mod.y > halfGrid) ? gridSize -mod.y: -mod.y;
-	            point.z += (mod.z > halfGrid) ? gridSize -mod.z: -mod.z;
-	            point = transform.TransformPoint(point);
+	            Vector3 mod = new Vector3(actualPoint.x %gridSize, actualPoint.y %gridSize, actualPoint.z %gridSize);
+				actualPoint.x += (mod.x > halfGrid) ? gridSize -mod.x: -mod.x;
+				actualPoint.y += (mod.y > halfGrid) ? gridSize -mod.y: -mod.y;
+				actualPoint.z += (mod.z > halfGrid) ? gridSize -mod.z: -mod.z;
+	            point = transform.TransformPoint(actualPoint);
 	        }
 	        return point;
 	    }
@@ -238,16 +240,19 @@ namespace Vox {
 				Ray mouseRay = UnityEditor.HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
 				brushGhostColor.a = ghostBrushAlpha;
 				Gizmos.color = brushGhostColor;
-				switch (selectedBrush) {
-					case 0:
-						Gizmos.DrawSphere(getBrushPoint(mouseRay), sphereBrushSize);
-						break;
-					case 1:
-						Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), getBrushPoint(mouseRay));
-						break;
-					case 2:
-						Gizmos.DrawSphere(getBrushPoint(mouseRay), smoothBrushSize);
-						break;
+				System.Nullable<Vector3> point = getBrushPoint(mouseRay);
+				if (point != null) {
+					switch (selectedBrush) {
+						case 0:
+							Gizmos.DrawSphere(point.Value, sphereBrushSize);
+							break;
+						case 1:
+							Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), point.Value);
+							break;
+						case 2:
+							Gizmos.DrawSphere(point.Value, smoothBrushSize);
+							break;
+					}
 				}
 			}
 			if (maskDisplayAlpha > 0 && masks != null) {
