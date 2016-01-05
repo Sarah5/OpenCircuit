@@ -35,24 +35,23 @@ namespace Vox {
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff) {
+		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
 			CubeApp cApp = (CubeApp)app;
-			double halfVoxelSize = (1 << (app.tree.maxDetail - p.depth));// *0.5;
 			if (p.depth >= app.tree.maxDetail)
-				halfVoxelSize *= 0.5;
+				voxelSize *= 0.5f;
 
 			double percentInside = 1;
 			bool outside = false;
 			bool inside = true;
 
-			percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, halfVoxelSize, ref outside, ref inside)
-				- percentOverlapping(-diff.x, cApp.halfDimension.x, halfVoxelSize, ref outside, ref inside));
+			percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, voxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.x, cApp.halfDimension.x, voxelSize, ref outside, ref inside));
 			if (outside) return new Action(false, false);
-			percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, halfVoxelSize, ref outside, ref inside)
-				- percentOverlapping(-diff.y, cApp.halfDimension.y, halfVoxelSize, ref outside, ref inside));
+			percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, voxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.y, cApp.halfDimension.y, voxelSize, ref outside, ref inside));
 			if (outside) return new Action(false, false);
-			percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, halfVoxelSize, ref outside, ref inside)
-				- percentOverlapping(-diff.z, cApp.halfDimension.z, halfVoxelSize, ref outside, ref inside));
+			percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, voxelSize, ref outside, ref inside)
+				- percentOverlapping(-diff.z, cApp.halfDimension.z, voxelSize, ref outside, ref inside));
 			if (outside) return new Action(false, false);
 
 			if (inside) {

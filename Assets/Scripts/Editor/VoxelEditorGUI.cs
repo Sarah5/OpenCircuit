@@ -475,11 +475,11 @@ public class VoxelEditorGUI : Editor {
 			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
 			mutator = cubeMod;
 			break;
-		//case 2:
-		//	Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
-		//	blur.blurRadius = editor.smoothBrushBlurRadius;
-		//	blur.apply(editor);
-		//	break;
+		case 2:
+			Vox.BlurMutator blur = new Vox.BlurMutator(editor, point.Value, editor.smoothBrushSize, editor.smoothBrushStrength);
+			blur.blurRadius = editor.smoothBrushBlurRadius;
+			blur.apply(editor);
+			break;
 		}
 		if (mutator == null)
 			return;

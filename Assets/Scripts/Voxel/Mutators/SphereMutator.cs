@@ -19,7 +19,6 @@ namespace Vox {
 		}
 
 		public override Application setup(Tree target) {
-
 			float radius = worldRadius / target.voxelSize();
 			Vector3 radiusCube = new Vector3(radius, radius, radius);
 			Vector3 center = target.transform.InverseTransformPoint(worldPosition) / target.voxelSize();
@@ -36,9 +35,8 @@ namespace Vox {
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff) {
+		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
 			SphereApp sApp = (SphereApp)app;
-			float voxelSize = (1 << (app.tree.maxDetail -p.depth));
 			float disSqr = diff.sqrMagnitude;
 			float maxRadius = sApp.radius + voxelSize;
 			float maxRadSqr = maxRadius * maxRadius;

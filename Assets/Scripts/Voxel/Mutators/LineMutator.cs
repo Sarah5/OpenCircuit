@@ -24,10 +24,10 @@ namespace Vox {
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff) {
+		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
 			Vector3 closestPoint = closetPoint(Vector3.zero, start -end, diff);
 			Vector3 virtualDiff = diff -closestPoint;
-			return child.mutate(((LineApplication)app).childApp, p, parent, virtualDiff);
+			return child.mutate(((LineApplication)app).childApp, p, parent, virtualDiff, voxelSize);
 		}
 
 		protected class LineApplication: LocalApplication {
