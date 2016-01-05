@@ -24,10 +24,25 @@ namespace Vox {
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
-			Vector3 closestPoint = closetPoint(Vector3.zero, start -end, diff);
-			Vector3 virtualDiff = diff -closestPoint;
-			return child.mutate(((LineApplication)app).childApp, p, parent, virtualDiff, voxelSize);
+		protected override Action checkMutation(Application app, Index p) {
+			LocalApplication lApp = (LocalApplication)app;
+			float voxelSize = calculateVoxelSize(app, p);
+			Vector3 diff = calculateDiff(lApp.position, p, voxelSize);
+			LocalAction action = checkMutation(lApp, p, diff, voxelSize);
+			action.voxelSize = voxelSize;
+			return action;
+		}
+
+		public override LocalAction checkMutation(LocalApplication app, Index p, Vector3 diff, float voxelSize) {
+			Vector3 closestPoint = closetPoint(Vector3.zero, start - end, diff);
+			Vector3 virtualDiff = diff - closestPoint;
+			LocalAction action = child.checkMutation(((LineApplication)app).childApp, p, virtualDiff, voxelSize);
+			action.diff = virtualDiff;
+			return action;
+		}
+
+		public override Voxel mutate(LocalApplication app, Index p, LocalAction action, Voxel original) {
+			return child.mutate(((LineApplication)app).childApp, p, action, original);
 		}
 
 		protected class LineApplication: LocalApplication {

@@ -35,45 +35,42 @@ namespace Vox {
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
+		public override LocalAction checkMutation(LocalApplication app, Index p, Vector3 diff, float voxelSize) {
 			CubeApp cApp = (CubeApp)app;
+			CubeAction action = new CubeAction();
 			if (p.depth >= app.tree.maxDetail)
 				voxelSize *= 0.5f;
 
-			double percentInside = 1;
+			action.percentInside = 1;
 			bool outside = false;
 			bool inside = true;
 
-			percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, voxelSize, ref outside, ref inside)
+			action.percentInside *= 1 - (2 - percentOverlapping(diff.x, cApp.halfDimension.x, voxelSize, ref outside, ref inside)
 				- percentOverlapping(-diff.x, cApp.halfDimension.x, voxelSize, ref outside, ref inside));
-			if (outside) return new Action(false, false);
-			percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, voxelSize, ref outside, ref inside)
+			if (outside) return action;
+			action.percentInside *= 1 - (2 - percentOverlapping(diff.y, cApp.halfDimension.y, voxelSize, ref outside, ref inside)
 				- percentOverlapping(-diff.y, cApp.halfDimension.y, voxelSize, ref outside, ref inside));
-			if (outside) return new Action(false, false);
-			percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, voxelSize, ref outside, ref inside)
+			if (outside) return action;
+			action.percentInside *= 1 - (2 - percentOverlapping(diff.z, cApp.halfDimension.z, voxelSize, ref outside, ref inside)
 				- percentOverlapping(-diff.z, cApp.halfDimension.z, voxelSize, ref outside, ref inside));
-			if (outside) return new Action(false, false);
+			if (outside) return action;
 
-			if (inside) {
-				parent.children[p.xLocal, p.yLocal, p.zLocal] =
-					new Voxel(value.averageMaterialType(), overwriteShape ? value.averageOpacity() :
-					parent.children[p.xLocal, p.yLocal, p.zLocal].averageOpacity());
-				return new Action(false, true);
-			}
+			action.modify = true;
+			if (!inside)
+				action.doTraverse = true;
+			return action;
+		}
 
-			if (p.depth < app.tree.maxDetail)
-				return new Action(true, false);
-
-			VoxelHolder original = parent.children[p.xLocal, p.yLocal, p.zLocal];
-			byte newOpacity = (byte)((original.averageOpacity() * (1 - percentInside) + value.averageOpacity() * (percentInside)));
+		public override Voxel mutate(LocalApplication app, Index p, LocalAction action, Voxel original) {
+			CubeAction cAction = (CubeAction)action;
+			byte newOpacity = (byte)((original.averageOpacity() * (1 - cAction.percentInside) + value.averageOpacity() * (cAction.percentInside)));
 			byte newSubstance = original.averageMaterialType();
 			if (newOpacity >= 2 * original.averageOpacity() ||
-				(overwriteSubstance && percentInside > 0.5))
+				(overwriteSubstance && cAction.percentInside > 0.5))
 				newSubstance = value.averageMaterialType();
 			if (!overwriteShape)
 				newOpacity = original.averageOpacity();
-			parent.children[p.xLocal, p.yLocal, p.zLocal] = new Voxel(newSubstance, newOpacity);
-			return new Action(false, true);
+			return new Voxel(newSubstance, newOpacity);
 		}
 
 		protected double percentOverlapping(double lower, double upper, double halfVoxelSize, ref bool outside, ref bool inside) {
@@ -93,6 +90,11 @@ namespace Vox {
 
 		protected class CubeApp : LocalApplication {
 			public Vector3 halfDimension;
+		}
+
+		protected class CubeAction: LocalAction {
+			public double percentInside;
+			public CubeAction() : base(false, false) { }
 		}
 
 	}

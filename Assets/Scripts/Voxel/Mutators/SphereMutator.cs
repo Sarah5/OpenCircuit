@@ -28,49 +28,50 @@ namespace Vox {
 			app.tree = target;
 			app.min = new Index(target.maxDetail, (uint)exactMin.x, (uint)exactMin.y, (uint)exactMin.z);
 			app.max = new Index(target.maxDetail, (uint)exactMax.x, (uint)exactMax.y, (uint)exactMax.z);
-			app.minRadius = radius -1;
-			app.maxRadius = radius +1;
 			app.position = center;
 			app.radius = radius;
 			return app;
 		}
 
-		public override Action mutate(LocalApplication app, Index p, VoxelBlock parent, Vector3 diff, float voxelSize) {
+		public override LocalAction checkMutation(LocalApplication app, Index p, Vector3 diff, float voxelSize) {
 			SphereApp sApp = (SphereApp)app;
-			float disSqr = diff.sqrMagnitude;
-			float maxRadius = sApp.radius + voxelSize;
-			float maxRadSqr = maxRadius * maxRadius;
-			if (disSqr > maxRadSqr)
-				return new Action(false, false);
-			float minRadius = Mathf.Max(0, sApp.radius - voxelSize);
-			float minRadSqr = minRadius * minRadius;
-			if (disSqr < minRadSqr) {
-				parent.children[p.xLocal, p.yLocal, p.zLocal] =
-					new Voxel(value.averageMaterialType(), overwriteShape ? value.averageOpacity() :
-					parent.children[p.xLocal, p.yLocal, p.zLocal].averageOpacity());
-				return new Action(false, true);
-			}
+			SphereAction action = new SphereAction();
+			action.disSqr = diff.sqrMagnitude;
+			action.maxRadius = sApp.radius + voxelSize;
+			float maxRadSqr = action.maxRadius * action.maxRadius;
+			if (action.disSqr > maxRadSqr)
+				return action;
+			action.modify = true;
+			action.minRadius = Mathf.Max(0, sApp.radius - voxelSize);
+			float minRadSqr = action.minRadius * action.minRadius;
+			if (action.disSqr >= minRadSqr)
+				action.doTraverse = true;
+			return action;
+		}
 
-			if (p.depth < app.tree.maxDetail)
-				return new Action(true, false);
+		public override Voxel mutate(LocalApplication app, Index p, LocalAction action, Voxel original) {
+			SphereApp sApp = (SphereApp)app;
+			SphereAction sAction = (SphereAction)action;
 
-			float dis = Mathf.Sqrt(disSqr);
-			
-			VoxelHolder original = parent.children[p.xLocal, p.yLocal, p.zLocal];
-			byte newOpacity = (byte)((original.averageOpacity() * (dis - sApp.minRadius) + value.averageOpacity() * (sApp.maxRadius - dis)) / 2);
+			float dis = Mathf.Sqrt(sAction.disSqr);
+			byte newOpacity = (byte)Mathf.Min(((original.averageOpacity() * (dis - sAction.minRadius) + value.averageOpacity() * (sAction.maxRadius - dis)) / 2), byte.MaxValue);
 			byte newSubstance = original.averageMaterialType();
 			if (newOpacity >= 2 * original.averageOpacity() ||
 				(overwriteSubstance && dis < sApp.radius))
 				newSubstance = value.averageMaterialType();
 			if (!overwriteShape)
 				newOpacity = original.averageOpacity();
-			parent.children[p.xLocal, p.yLocal, p.zLocal] = new Voxel(newSubstance, newOpacity);
-			return new Action(false, true);
+			return new Voxel(newSubstance, newOpacity);
 		}
 
 		protected class SphereApp: LocalApplication {
-			public float minRadius, maxRadius;
 			public float radius;
+		}
+
+		protected class SphereAction: LocalAction {
+			public float disSqr, minRadius, maxRadius;
+
+			public SphereAction(): base(false, false) {}
 		}
 
 	}

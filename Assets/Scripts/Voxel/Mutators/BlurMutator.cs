@@ -35,29 +35,31 @@ namespace Vox {
 			return app;
 		}
 
-		protected override Action mutate(Application app, Index pos, VoxelBlock parent) {
+		protected override Action checkMutation(Application app, Index pos) {
 			BlurApp bApp = (BlurApp)app;
+			BlurAction action = new BlurAction();
 			float voxelSize = LocalMutator.calculateVoxelSize(app, pos);
 			Vector3 diff = LocalMutator.calculateDiff(bApp.position, pos, voxelSize);
 
-			float disSqr = diff.sqrMagnitude;
+			action.disSqr = diff.sqrMagnitude;
 			float maxRadius = bApp.radius + voxelSize;
 			float maxRadSqr = maxRadius * maxRadius;
-			if (disSqr > maxRadSqr)
-				return new Action(false, false);
+			if (action.disSqr > maxRadSqr)
+				return action;
+			action.doTraverse = true;
+			action.modify = true;
+			return action;
+		}
 
-			if (pos.depth < app.tree.maxDetail)
-				return new Action(true, false);
-
-			float dis = Mathf.Sqrt(disSqr);
+		protected override Voxel mutate(Application app, Index pos, Action action, Voxel original) {
+			BlurApp bApp = (BlurApp)app;
+			BlurAction bAction = (BlurAction)action;
+			float dis = Mathf.Sqrt(bAction.disSqr);
 			float actualStrength = strength * (1 - (dis / bApp.radius));
 			if (actualStrength <= 0)
-				return new Action(false, false);
+				return original;
 			byte newOpacity = calculateOpacity(bApp.original, pos.x - app.min.x, pos.y - app.min.y, pos.z - app.min.z, actualStrength);
-			Voxel original = parent.children[pos.xLocal, pos.yLocal, pos.zLocal].toVoxel();
-
-			parent.children[pos.xLocal, pos.yLocal, pos.zLocal] = new Voxel(original.averageMaterialType(), newOpacity);
-			return new Action(false, true);
+			return new Voxel(original.averageMaterialType(), newOpacity);
 		}
 
 		protected class BlurApp: LocalMutator.LocalApplication {
@@ -68,6 +70,12 @@ namespace Vox {
 			public void setOriginal(Tree target) {
 				original = target.getArray((int)min.x, (int)min.y, (int)min.z, (int)max.x + 1, (int)max.y + 1, (int)max.z + 1);
 			}
+		}
+
+		protected class BlurAction: Action {
+			public float disSqr;
+
+			public BlurAction() : base(false, false) { }
 		}
 
 		protected byte calculateOpacity(Voxel[,,] original, uint x, uint y, uint z, float strength) {

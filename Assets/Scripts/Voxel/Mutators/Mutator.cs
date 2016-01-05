@@ -9,7 +9,7 @@ namespace Vox {
 
 		public void apply(Tree target) {
 			Application app = setup(target);
-			applyMasksToApplication(app, target);
+			//applyMasksToApplication(app, target);
 			apply(app, target.getHead(), new Index());
 			target.dirty = true;
 		}
@@ -19,11 +19,18 @@ namespace Vox {
 			for(byte c = 0; c<VoxelBlock.CHILD_COUNT; ++c) {
 				// TODO: use min and max to reduce number of values considered
 				Index childPos = cornerChild.getNeighbor(c);
-				Action action = mutate(app, childPos, block);
-				//UnityEngine.MonoBehaviour.print(action.doTraverse);
-				if (action.doTraverse && childPos.depth < app.tree.maxDetail)
+				Action action = checkMutation(app, childPos);
+				if (!action.modify)
+					continue;
+				Action maskAction = checkMasks(app.tree, pos);
+				if (!maskAction.modify)
+					continue;
+				if (childPos.depth < app.tree.maxDetail && (maskAction.doTraverse || action.doTraverse))
 					apply(app, block.expand(childPos.xLocal, childPos.yLocal, childPos.zLocal), childPos);
-				if (childPos.depth == app.tree.maxDetail - VoxelRenderer.VOXEL_COUNT_POWER && (action.modified || action.doTraverse))
+				else
+					block.children[childPos.xLocal, childPos.yLocal, childPos.zLocal] =
+						mutate(app, childPos, action, block.children[childPos.xLocal, childPos.yLocal, childPos.zLocal].toVoxel());
+				if (childPos.depth == app.tree.maxDetail - VoxelRenderer.VOXEL_COUNT_POWER && (action.modify))
 					block.updateAll(childPos.x, childPos.y, childPos.z, childPos.depth, app.tree, true);
 			}
 		}
@@ -57,7 +64,9 @@ namespace Vox {
 			return app;
 		}
 
-		protected abstract Action mutate(Application app, Index pos, VoxelBlock parent);
+		protected abstract Action checkMutation(Application app, Index pos);
+
+		protected abstract Voxel mutate(Application app, Index pos, Action action, Voxel original);
 
 		//protected void setMinMax(Vector3 min, Vector3 max) {
 		//	minX = (int)(min.x + 0.01f);
@@ -87,7 +96,7 @@ namespace Vox {
 		//		    (info.y *VoxelBlock.CHILD_DIMENSION +yi) > maskMaxY /scale +1) {
 		//			continue;
 		//		}
-				
+
 		//		for (byte xi = xiMin; xi <= xiMax; ++xi) {
 		//			for (byte zi = ziMin; zi <= ziMax; ++zi) {
 		//				if (detailLevel <= VoxelBlock.CHILD_COUNT_POWER) {
@@ -101,7 +110,7 @@ namespace Vox {
 		//			}
 		//		}
 		//	}
-			
+
 		//	if (updateMesh && info != null && (VoxelBlock.isRenderSize(info.size, control) || VoxelBlock.isRenderLod(info.x, info.y, info.z, info.size, control))) {
 		//		//block.clearSubRenderers(control);
 		//		block.updateAll(info.x, info.y, info.z, info.detailLevel, control, true);
@@ -110,8 +119,34 @@ namespace Vox {
 
 		//protected abstract VoxelHolder modifyVoxel(VoxelHolder original, int x, int y, int z);
 
-		protected void applyMasksToApplication(Application app, Tree tree) {
-			// TODO implement
+		protected Action checkMasks(Tree tree, Index p) {
+			if (tree.masks == null)
+				return new Action(false, true);
+			int voxelSize = 1 << (tree.maxDetail - p.depth);
+			Action action = new Action(false, true);
+			foreach (VoxelMask mask in tree.masks) {
+				if (mask.active) {
+					int comparison;
+					if (mask.maskAbove) {
+						comparison = compareToVoxel(-(int)mask.yPosition, -(int)p.y, voxelSize);
+						if (maskMaxY > mask.yPosition)
+							maskMaxY = mask.yPosition;
+					} else {
+						comparison = compareToVoxel((int)mask.yPosition, (int)p.y, voxelSize);
+					}
+					if (comparison == 0)
+						action.doTraverse = true;
+					else if (comparison < 0)
+						return new Action(false, false);
+				}
+			}
+			return action;
+		}
+
+		protected static int compareToVoxel(int pos, int voxelPos, int voxelSize) {
+            int min = voxelPos * voxelSize;
+			int max = min + voxelSize;
+			return min > pos ? max <= pos ? 1 : -1 : 0;
 		}
 
 		public class Application {
@@ -120,12 +155,12 @@ namespace Vox {
 			public Tree tree;
 		}
 
-		public struct Action {
+		public class Action {
 			public bool doTraverse;
-			public bool modified;
-			public Action(bool doTraverse, bool modified) {
+			public bool modify;
+			public Action(bool doTraverse, bool modify) {
 				this.doTraverse = doTraverse;
-				this.modified = modified;
+				this.modify = modify;
 			}
 		}
 
