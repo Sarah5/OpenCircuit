@@ -54,7 +54,9 @@ namespace Vox {
 			SphereAction sAction = (SphereAction)action;
 
 			float dis = Mathf.Sqrt(sAction.disSqr);
-			byte newOpacity = (byte)Mathf.Min(((original.averageOpacity() * (dis - sAction.minRadius) + value.averageOpacity() * (sAction.maxRadius - dis)) / 2), byte.MaxValue);
+			byte newOpacity = (dis <= sAction.minRadius) ?
+				value.averageOpacity() :
+                (byte)((original.averageOpacity() * (dis - sAction.minRadius) + value.averageOpacity() * (sAction.maxRadius - dis)) / 2);
 			byte newSubstance = original.averageMaterialType();
 			if (newOpacity >= 2 * original.averageOpacity() ||
 				(overwriteSubstance && dis < sApp.radius))
