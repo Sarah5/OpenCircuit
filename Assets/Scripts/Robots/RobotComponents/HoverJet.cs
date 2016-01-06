@@ -40,11 +40,13 @@ public class HoverJet : AbstractRobotComponent {
 			}
 		}
 		matchTargetRotation = matchRotation;
+		nav.autoBraking = true;
 	}
 
 	public void pursueTarget(LabelHandle target) {
 		setTarget(target);
 		isPursuit = true;
+		nav.autoBraking = false;
 	}
 
 	public bool hasTarget() {
