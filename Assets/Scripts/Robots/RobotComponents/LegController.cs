@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode]
 public class LegController : MonoBehaviour {
 
 	public Vector3 defaultPos = new Vector3(2, -3, 2);

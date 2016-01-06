@@ -1301,9 +1301,11 @@ MonoBehaviour:
   stanceHeight: 3
   strideLength: .800000012
   stepHeight: .300000012
+  maxStepHeight: .800000012
   minMoveSpeed: .00999999978
   minimumFramesPerSwitch: 2
   footstep: {fileID: 8289408}
+  debug: 0
 --- !u!114 &11460476
 MonoBehaviour:
   m_ObjectHideFlags: 1

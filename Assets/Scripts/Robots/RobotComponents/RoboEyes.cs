@@ -74,12 +74,14 @@ public class RoboEyes : AbstractRobotComponent {
 //			print (angle);
 			if(angle < fieldOfViewAngle * 0.5f) {
 				Physics.Raycast (transform.position, dir, out hit, sightDistance);
-
 				if (hit.transform == obj ) {//&& Vector3.Dot (transform.forward.normalized, (objPos - transform.position).normalized) > 0) {
 					result = true;
 					if(roboController.debug)
 						drawLine(transform.position, hit.point, Color.green);
 				} else {
+					//print("looking for: " + obj.gameObject.name);
+					//print("blocked by: " + hit.collider.gameObject.name);
+
 					if(roboController.debug)
 						drawLine(transform.position, hit.point, Color.red);
 					//print("lost: " + obj.gameObject.name + "obscured by: " + hit.transform.gameObject.name);

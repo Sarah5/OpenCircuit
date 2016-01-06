@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[ExecuteInEditMode]
 public class ChassisController : MonoBehaviour {
 
 	public LegController[] legGroup1;
