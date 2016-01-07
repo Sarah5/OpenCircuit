@@ -461,14 +461,14 @@ public class VoxelEditorGUI : Editor {
 			return;
 
 		// check if control pressed.  If so, add point to pathList
-		if (UnityEngine.Event.current.control) {
+		if (editor.isPathing()) {
 			editor.addPathPoint(point.Value);
 			return;
 		}
 
 		// check for subtraction mode
 		byte opacity = byte.MaxValue;
-		if (UnityEngine.Event.current.shift) {
+		if (editor.isSubtracting()) {
 			opacity = byte.MinValue;
 		}
 

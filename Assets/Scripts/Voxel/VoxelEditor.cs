@@ -15,7 +15,9 @@ namespace Vox {
 		public const string DEFAULT_BLEND_MATERIAL_PATH = "Assets/Materials/Voxel/VoxelBaseBlend.mat";
 		public const string DEFAULT_PHYSICS_MATERIAL_PATH = "Assets/Materials/Voxel/Rock.physicMaterial";
 
-		protected static Color brushGhostColor = new Color(0f, 0.8f, 1f, 0.4f);
+		protected static Color brushGhostColor = new Color(0f, 1f, 0.4f, 1f);
+		protected static Color brushGhostSubtractColor = new Color(1f, 0.2f, 0.2f, 1f);
+		protected static Color brushGhostPaintColor = new Color(0f, 0.2f, 1f, 1f);
 
 		public byte[] heightmapSubstances;
         public Texture2D[] heightmaps;
@@ -243,26 +245,47 @@ namespace Vox {
 			return editor;
 		}
 
+		public bool isSubtracting() {
+			return UnityEngine.Event.current.shift;
+		}
+
+		public bool isPathing() {
+			return UnityEngine.Event.current.control && isSelectedBrushPathable();
+		}
+
+		public bool isSelectedBrushPathable() {
+			return selectedBrush == 0 || selectedBrush == 1;
+		}
+
 		public void OnDrawGizmosSelected() {
 			if (selectedMode == 0)
 				return;
 			if (ghostBrushAlpha > 0 && selectedMode == 1) {
 				Ray mouseRay = UnityEditor.HandleUtility.GUIPointToWorldRay(UnityEngine.Event.current.mousePosition);
-				brushGhostColor.a = ghostBrushAlpha;
-				Gizmos.color = brushGhostColor;
+				Color brushColor = getBrushColor();
+				brushColor.a = ghostBrushAlpha;
 				System.Nullable<Vector3> point = getBrushPoint(mouseRay);
 				if (point != null) {
-					switch (selectedBrush) {
-						case 0:
-							Gizmos.DrawSphere(point.Value, sphereBrushSize);
-							break;
-						case 1:
-							Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), point.Value);
-							break;
-						case 2:
-							Gizmos.DrawSphere(point.Value, smoothBrushSize);
-							break;
+					Gizmos.color = brushColor;
+					drawBrushGizmo(point.Value);
+					if (isPathing()) {
+						drawPathPoint(point.Value);
 					}
+				}
+
+				// draw path points
+				if (pathPoints != null && pathPoints.Length > 0 && isSelectedBrushPathable()) {
+					for(int i=0; i<pathPoints.Length; ++i) {
+						Gizmos.color = brushColor;
+						drawBrushGizmo(pathPoints[i]);
+						drawPathPoint(pathPoints[i]);
+					}
+					Gizmos.color = Color.yellow;
+					for (int i = 0; i < pathPoints.Length -1; ++i) {
+						Gizmos.DrawLine(pathPoints[i], pathPoints[i +1]);
+					}
+					if (point != null)
+						Gizmos.DrawLine(pathPoints[pathPoints.Length -1], point.Value);
 				}
 			}
 			if (maskDisplayAlpha > 0 && masks != null) {
@@ -274,6 +297,39 @@ namespace Vox {
 				}
 				Gizmos.color = Color.gray;
 			}
+		}
+
+		protected void drawBrushGizmo(Vector3 location) {
+			switch (selectedBrush) {
+				case 0:
+					Gizmos.DrawSphere(location, sphereBrushSize);
+					break;
+				case 1:
+					Gizmos.DrawMesh(generateRectangleMesh(cubeBrushDimensions), location);
+					break;
+				case 2:
+					Gizmos.DrawSphere(location, smoothBrushSize);
+					break;
+			}
+		}
+
+		protected void drawPathPoint(Vector3 point) {
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawWireCube(point, new Vector3(0.5f, 0.5f, 0.5f) *voxelSize());
+		}
+
+		protected Color getBrushColor() {
+			switch (selectedBrush) {
+				case 0:
+					if (sphereSubstanceOnly)
+						return brushGhostPaintColor;
+					return isSubtracting() ? brushGhostSubtractColor : brushGhostColor;
+				case 1:
+					if (cubeSubstanceOnly)
+						return brushGhostPaintColor;
+					return isSubtracting() ? brushGhostSubtractColor : brushGhostColor;
+			}
+			return brushGhostColor;
 		}
 #endif
 
