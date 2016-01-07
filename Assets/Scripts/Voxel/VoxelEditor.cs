@@ -44,7 +44,7 @@ namespace Vox {
 		public int smoothBrushBlurRadius = 3;
 		public float ghostBrushAlpha = 0.3f;
 		public Vector3[] pathPoints = null;
-
+		public bool showPositionHandles = false;
 
 		public void Awake() {
 			if (hasVoxelData() && findRendererObjects().Count < 1) {
@@ -279,6 +279,9 @@ namespace Vox {
 						Gizmos.color = brushColor;
 						drawBrushGizmo(pathPoints[i]);
 						drawPathPoint(pathPoints[i]);
+						if(showPositionHandles) {
+							pathPoints[i] = UnityEditor.Handles.PositionHandle(pathPoints[i], Quaternion.identity);
+						}
 					}
 					Gizmos.color = Color.yellow;
 					for (int i = 0; i < pathPoints.Length -1; ++i) {

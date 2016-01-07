@@ -188,6 +188,27 @@ public class VoxelEditorGUI : Editor {
 			break;
 		}
 
+		//PATH GUI
+		if(editor.selectedBrush != 0 && editor.selectedBrush != 1)
+			return;
+		GUILayout.Label("Path Tool", labelBigFont);
+		GUILayout.Label("Hold 'Control' to place path point.");
+
+
+		if(editor.pathPoints != null && editor.pathPoints.Length > 0) {
+			editor.showPositionHandles = GUILayout.Toggle(editor.showPositionHandles, "blah");
+			SerializedProperty prop = serializedObject.FindProperty("pathPoints");
+			InspectorList.doArrayGUISimple(ref prop);
+			serializedObject.ApplyModifiedProperties();
+			if(GUILayout.Button("Clear Path")) {
+				editor.pathPoints = null;
+			}
+			if(GUILayout.Button("Apply Path")) {
+				
+			}
+		}
+
+
 	}
 
 	protected void doManageGUI(Vox.VoxelEditor editor) {
@@ -455,13 +476,16 @@ public class VoxelEditorGUI : Editor {
     }
 
     protected void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+		if(editor.showPositionHandles && editor.isSelectedBrushPathable()) {
+			return;
+		}
 		// get point clicked on
 		System.Nullable<Vector3> point = editor.getBrushPoint(mouseLocation);
 		if (point == null)
 			return;
 
 		// check if control pressed.  If so, add point to pathList
-		if (editor.isPathing()) {
+		if(editor.isPathing()) {
 			editor.addPathPoint(point.Value);
 			return;
 		}
