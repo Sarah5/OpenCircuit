@@ -29,7 +29,7 @@ namespace Vox {
 		}
 
 		public static Vector3 calculateDiff(Vector3 position, Index p, float voxelSize) {
-			Vector3 diff = position - new Vector3(p.x + 0.5f, p.y + 0.5f, p.z + 0.5f) * voxelSize;
+			Vector3 diff = new Vector3(p.x + 0.5f, p.y + 0.5f, p.z + 0.5f) * voxelSize -position;
 			return diff;
 		}
 

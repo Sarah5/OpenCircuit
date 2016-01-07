@@ -27,7 +27,6 @@ public class VoxelEditorGUI : Editor {
 	private bool showMasks;
 	private bool showStatistics;
     private VoxelEditorParameters generationParameters;
-	private Vector3 lastBrushPoint = Vector3.zero;
 
 	[MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
@@ -456,13 +455,24 @@ public class VoxelEditorGUI : Editor {
     }
 
     protected void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+		// get point clicked on
+		System.Nullable<Vector3> point = editor.getBrushPoint(mouseLocation);
+		if (point == null)
+			return;
+
+		// check if control pressed.  If so, add point to pathList
+		if (UnityEngine.Event.current.control) {
+			editor.addPathPoint(point.Value);
+			return;
+		}
+
+		// check for subtraction mode
 		byte opacity = byte.MaxValue;
 		if (UnityEngine.Event.current.shift) {
 			opacity = byte.MinValue;
 		}
-        System.Nullable<Vector3> point = editor.getBrushPoint(mouseLocation);
-		if (point == null)
-			return;
+
+		// create mutator (and maybe apply)
 		Vox.LocalMutator mutator = null;
         switch(editor.selectedBrush) {
 		case 0:
@@ -481,12 +491,16 @@ public class VoxelEditorGUI : Editor {
 			blur.apply(editor);
 			break;
 		}
+
+		// apply mutator
 		if (mutator == null)
 			return;
-		if (UnityEngine.Event.current.control)
-			mutator = new Vox.LineMutator(lastBrushPoint, point.Value, mutator);
+		if (editor.pathPoints != null && editor.pathPoints.Length > 0) {
+			editor.addPathPoint(point.Value);
+			mutator = new Vox.LineMutator(editor.pathPoints, mutator);
+			editor.pathPoints = null;
+		}
 		mutator.apply(editor);
-		lastBrushPoint = point.Value;
 	}
 
 	protected bool validateSubstances(Vox.VoxelEditor editor) {

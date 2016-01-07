@@ -189,6 +189,14 @@ namespace Vox {
 			return new VoxelUpdateInfo(sizes[0], head, this);
 		}
 
+		public Vector3 globalToVoxelPosition(Vector3 globalPosition) {
+			return transform.InverseTransformPoint(globalPosition) / voxelSize();
+		}
+
+		public Vector3 voxelToGlobalPosition(Vector3 voxelPosition) {
+			return transform.TransformPoint(voxelPosition * voxelSize());
+		}
+
 		public float voxelSize() {
 			return sizes[maxDetail];
 		}

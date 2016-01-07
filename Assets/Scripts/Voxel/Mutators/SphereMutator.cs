@@ -21,7 +21,7 @@ namespace Vox {
 		public override Application setup(Tree target) {
 			float radius = worldRadius / target.voxelSize();
 			Vector3 radiusCube = new Vector3(radius, radius, radius);
-			Vector3 center = target.transform.InverseTransformPoint(worldPosition) / target.voxelSize();
+			Vector3 center = target.globalToVoxelPosition(worldPosition);
 			Vector3 exactMin = center - radiusCube;
 			Vector3 exactMax = center + radiusCube;
 			SphereApp app = new SphereApp();

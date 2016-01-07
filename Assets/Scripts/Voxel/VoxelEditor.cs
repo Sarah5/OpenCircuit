@@ -41,6 +41,7 @@ namespace Vox {
 		public float smoothBrushStrength = 1;
 		public int smoothBrushBlurRadius = 3;
 		public float ghostBrushAlpha = 0.3f;
+		public Vector3[] pathPoints = null;
 
 
 		public void Awake() {
@@ -186,6 +187,15 @@ namespace Vox {
 	        }
 	        return point;
 	    }
+
+		public void addPathPoint(Vector3 point) {
+			if (pathPoints == null || pathPoints.Length < 1) {
+				pathPoints = new Vector3[] { point };
+			} else {
+				System.Array.Resize(ref pathPoints, pathPoints.Length + 1);
+				pathPoints[pathPoints.Length - 1] = point;
+			}
+		}
 
 		protected Mesh generateRectangleMesh(Vector3 scale) {
 			Mesh mesh = new Mesh();

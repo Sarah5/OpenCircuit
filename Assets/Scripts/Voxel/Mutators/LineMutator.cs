@@ -5,11 +5,12 @@ namespace Vox {
 	public class LineMutator : LocalMutator {
 
 		public LocalMutator child;
-		public Vector3 start, end;
+		public Vector3[] globalPoints;
 
-		public LineMutator(Vector3 start, Vector3 end, LocalMutator child) {
-			this.start = start;
-			this.end = end;
+		public LineMutator(Vector3[] globalPoints, LocalMutator child) {
+			if (globalPoints.Length < 2)
+				throw new System.ArgumentException("Must have at least two points specified.", "globalPoints");
+			this.globalPoints = globalPoints;
 			this.child = child;
 		}
 
@@ -17,8 +18,11 @@ namespace Vox {
 
 			LineApplication app = new LineApplication();
 			app.tree = target;
-			app.position = start;
-			app.childApp = (LocalApplication) child.setup(target);
+			app.position = target.globalToVoxelPosition(globalPoints[0]);
+			app.points = new Vector3[globalPoints.Length];
+			for (int i = 0; i < globalPoints.Length; ++i)
+				app.points[i] = target.globalToVoxelPosition(globalPoints[i]) -app.position;
+            app.childApp = (LocalApplication) child.setup(target);
 			// TODO: set min, max and updateMesh.
 
 			return app;
@@ -34,8 +38,9 @@ namespace Vox {
 		}
 
 		public override LocalAction checkMutation(LocalApplication app, Index p, Vector3 diff, float voxelSize) {
-			Vector3 closestPoint = closetPoint(Vector3.zero, start - end, diff);
-			Vector3 virtualDiff = diff - closestPoint;
+			LineApplication lApp = (LineApplication) app;
+			Vector3 cp = closestPointToPath(lApp.points, diff);
+			Vector3 virtualDiff = diff - cp;
 			LocalAction action = child.checkMutation(((LineApplication)app).childApp, p, virtualDiff, voxelSize);
 			action.diff = virtualDiff;
 			return action;
@@ -45,18 +50,31 @@ namespace Vox {
 			return child.mutate(((LineApplication)app).childApp, p, action, original);
 		}
 
-		protected class LineApplication: LocalApplication {
-			public Vector3 start, end;
-			public LocalApplication childApp;
+		protected Vector3 closestPointToPath(Vector3[] points, Vector3 point) {
+			float leastSqrDistance = float.PositiveInfinity;
+			Vector3 closestPoint = Vector3.zero;
+			for (int i = 0; i < points.Length - 1; ++i) {
+				Vector3 newClosestPoint = this.closestPointToLine(points[i], points[i + 1], point);
+				float sqrDistance = (point - newClosestPoint).sqrMagnitude;
+				if (sqrDistance < leastSqrDistance) {
+					leastSqrDistance = sqrDistance;
+					closestPoint = newClosestPoint;
+				}
+			}
+			return closestPoint;
 		}
 
-
-		protected Vector3 closetPoint(Vector3 start, Vector3 end, Vector3 point) {
+		protected Vector3 closestPointToLine(Vector3 start, Vector3 end, Vector3 point) {
 			Vector3 line = end -start;
-			float percent = Vector3.Dot(point -start, line) / Vector3.Dot(line, line);
+			float percent = Vector3.Dot(point - start, line) / line.sqrMagnitude;
 			percent = Mathf.Clamp01(percent);
 			Vector3 closest = start +line *percent;
 			return closest;
+		}
+
+		protected class LineApplication : LocalApplication {
+			public Vector3[] points;
+			public LocalApplication childApp;
 		}
 
 	}
