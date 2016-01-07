@@ -4,7 +4,7 @@ using System.Collections;
 namespace Vox {
 
 	[AddComponentMenu("")]
-	public class VoxelBall : VoxelTree {
+	public class VoxelBall : Tree {
 
 		public void Awake() {
 			initialize();

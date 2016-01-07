@@ -8,16 +8,16 @@ namespace Vox {
 
 	[ExecuteInEditMode]
 	[System.Serializable]
-	public class RendererDict : SerializableDictionary<VoxelIndex, VoxelRenderer> { }
+	public class RendererDict : SerializableDictionary<Index, VoxelRenderer> { }
 
 	[AddComponentMenu("")]
 	[ExecuteInEditMode]
-	public class VoxelTree : MonoBehaviour, ISerializationCallbackReceiver {
+	public class Tree : MonoBehaviour, ISerializationCallbackReceiver {
 
 		public const ulong FILE_FORMAT_VERSION = 1;
 
 		[System.NonSerialized]
-		public readonly static HashSet<VoxelTree> generatingTrees = new HashSet<VoxelTree>();
+		public readonly static HashSet<Tree> generatingTrees = new HashSet<Tree>();
 
 		// basic stats
 		public float baseSize = 128;
@@ -157,17 +157,18 @@ namespace Vox {
 			watch.Stop();
 		}
 
-		public float subtractSphere(Vector3 worldLocation, float radius) {
-			new SphereModifier(this, worldLocation, radius, new Voxel(0, 0), true);
-			return 0;
-		}
-
 		public float getLodDetail() {
 			return curLodDetail;
 		}
 
 		public VoxelBlock getHead() {
 			return head;
+		}
+
+		public VoxelRenderer getRenderer(Index index) {
+			VoxelRenderer rend = null;
+			return renderers.TryGetValue(index, out rend)?
+				rend : null;
 		}
 
 //		public void updateLocalCamPosition() {
@@ -186,6 +187,14 @@ namespace Vox {
 
 		public VoxelUpdateInfo getBaseUpdateInfo() {
 			return new VoxelUpdateInfo(sizes[0], head, this);
+		}
+
+		public Vector3 globalToVoxelPosition(Vector3 globalPosition) {
+			return transform.InverseTransformPoint(globalPosition) / voxelSize();
+		}
+
+		public Vector3 voxelToGlobalPosition(Vector3 voxelPosition) {
+			return transform.TransformPoint(voxelPosition * voxelSize());
 		}
 
 		public float voxelSize() {
@@ -209,7 +218,7 @@ namespace Vox {
 		public void clearRenderers() {
 			lock(this) {
 				while(renderers.Count > 0) {
-					Dictionary<VoxelIndex, VoxelRenderer>.ValueCollection.Enumerator e = renderers.Values.GetEnumerator();
+					Dictionary<Index, VoxelRenderer>.ValueCollection.Enumerator e = renderers.Values.GetEnumerator();
 					e.MoveNext();
 					e.Current.clear();
 				}
@@ -283,8 +292,8 @@ namespace Vox {
 			}
 		}
 
-		public Dictionary<VoxelIndex, List<GameObject>> findRendererObjects() {
-			Dictionary<VoxelIndex, List<GameObject>> meshes = new Dictionary<VoxelIndex, List<GameObject>>();
+		public Dictionary<Index, List<GameObject>> findRendererObjects() {
+			Dictionary<Index, List<GameObject>> meshes = new Dictionary<Index, List<GameObject>>();
 			foreach (Transform child in transform) {
 				VoxelMeshObject meshObject = child.GetComponent<VoxelMeshObject>();
 				if (meshObject == null)
@@ -309,10 +318,10 @@ namespace Vox {
 			relinkRenderers(findRendererObjects());
 		}
 
-		public void relinkRenderers(Dictionary<VoxelIndex, List<GameObject>> meshes) {
+		public void relinkRenderers(Dictionary<Index, List<GameObject>> meshes) {
 			lock(this) {
 				//print("Start Renderers: " + renderers.Count);
-				foreach (VoxelIndex index in meshes.Keys) {
+				foreach (Index index in meshes.Keys) {
 					List<GameObject> objects = meshes[index];
 					//print("Mesh object count: " + objects.Count);
 					VoxelRenderer rend;
@@ -322,13 +331,6 @@ namespace Vox {
 						renderers[index] = rend;
 					//} else {
 					//	print("already had renderer");
-					}
-					VoxelHolder block = head.get(index);
-					if (block is VoxelBlock) {
-						//print("linking");
-						((VoxelBlock)block).renderer = rend;
-					//} else {
-					//	print("NOT BLOCK!");
 					}
 					rend.obs = objects.ToArray();
 				}

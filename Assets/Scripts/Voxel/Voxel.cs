@@ -46,16 +46,12 @@ namespace Vox {
 			return matType;
 		}
 
-		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
+		public override VoxelHolder get(byte detailLevel, uint x, uint y, uint z) {
 			return this;
 		}
 		
-		public override VoxelHolder get(VoxelIndex i) {
+		public override VoxelHolder get(Index i) {
 			return this;
-		}
-
-		public override VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z) {
-			return null;
 		}
 
 		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
