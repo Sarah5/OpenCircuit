@@ -121,7 +121,8 @@ public class VoxelEditorGUI : Editor {
 			SceneView.RepaintAll();
 			break;
 		case EventType.KeyDown:
-			editor.pathPoints = null;
+			if (UnityEngine.Event.current.keyCode == KeyCode.Escape)
+				editor.pathPoints = null;
 			break;
 		}
 	}
