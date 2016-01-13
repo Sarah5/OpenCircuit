@@ -30,7 +30,7 @@ public class Player : MonoBehaviour {
 	private Grab myGrabber;
 	private Interact myInteractor;
 	private Inventory myInventory;
-	private Movement myMover;
+	private MovementController myMover;
 	private Camera myCam;
 	private MouseLook myLooker;
 	/*private Heat myHeat;
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour {
 	public Grab grabber { get { return myGrabber; } set { myGrabber = value; } }
 	public Interact interactor { get { return myInteractor; } set { myInteractor = value; } }
 	public Inventory inventory { get { return myInventory; } set { myInventory = value; } }
-	public Movement mover { get { return myMover; } set { myMover = value; } }
+	public MovementController mover { get { return myMover; } set { myMover = value; } }
 	public Camera cam { get { return myCam; } set { myCam = value; } }
 	public MouseLook looker { get { return myLooker; } set { myLooker = value; } }
 	/*public Heat heat { get { return myHeat; } set { myHeat = value; } }
@@ -74,7 +74,7 @@ public class Player : MonoBehaviour {
 		grabber = GetComponent<Grab>();
 		interactor = GetComponent<Interact>();
 		inventory = GetComponent<Inventory>();
-		mover = GetComponent<Movement>();
+		mover = GetComponent<MovementController>();
 		cam = GetComponentInChildren<Camera>();
 		looker = GetComponentInChildren<MouseLook>();
 		/*heat = GetComponent<Heat>();

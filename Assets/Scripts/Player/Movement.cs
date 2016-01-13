@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [AddComponentMenu("Scripts/Player/Movement")]
-public class Movement : MonoBehaviour {
+public class Movement : MovementController {
 
 	private Player myPlayer;
 	private Vector3 groundNormal;
@@ -350,31 +350,31 @@ public class Movement : MonoBehaviour {
 		}
     }
 
-	public void setForward(float percent) {
+	public override void setForward(float percent) {
 		if (percent > 0)
 			forwardSpeed = percent *walkSpeedf;
 		else
 			forwardSpeed = percent *walkSpeedb;
 	}
 
-	public void setRight(float percent) {
+	public override void setRight(float percent) {
 		if (percent > 0)
 			rightSpeed = percent *walkSpeedr;
 		else
 			rightSpeed = percent *walkSpeedl;
 	}
 
-	public void setSprinting(bool sprint) {
+	public override void setSprinting(bool sprint) {
 		//if (recovering && myPlayer.oxygen < oxygenBeginSprint)
 		//	return;
 		sprinting = sprint;
 	}
 
-	public void setCrouching(bool crouch) {
+	public override void setCrouching(bool crouch) {
 		crouching = crouch;
 	}
 
-	public void jump() {
+	public override void jump() {
 		if (!canMove) return;
 		if (freeFallDelay == 0 && !isGrounded())
 			return;
@@ -404,20 +404,20 @@ public class Movement : MonoBehaviour {
 	//	GUI.Box(new Rect(100, 30, 100, 20), thing.ToString());
 	//}
 
-	public void lockMovement() {
+	public override void lockMovement() {
 		canMove = false;
 	}
 
-	public void unlockMovement() {
+	public override void unlockMovement() {
 		canMove = true;
 	}
 
-	public void moveToPoint(Vector3 point) {
+	public override void moveToPoint(Vector3 point) {
 		navPoint = point;
 		autoMove = true;
 	}
 
-	public bool isAutoMoving() {
+	public override bool isAutoMoving() {
 		return autoMove;
 	}
 
