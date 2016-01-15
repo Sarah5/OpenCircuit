@@ -156,6 +156,18 @@ public class Inventory : MonoBehaviour {
 		return contextStack.Count > 0;
     }
 
+	public List<T> getItemsExtending<T>() where T : Item {
+		List<T> results = new List<T>();
+		foreach (List<Item> itemList in items.Values) {
+			foreach(Item item in itemList) {
+				if(item.GetType().IsSubclassOf(typeof(T))) {
+					results.Add((T)item);
+				}
+			}
+		}
+		return results;
+	}
+
     protected void showSlottedItems() {
         float offset = (Screen.width / 2f) - (iconDimensions.x * 1.5f + iconSpacing);
         for (int i = 0; i < slots.Length; ++i) {

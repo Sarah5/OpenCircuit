@@ -13,7 +13,8 @@ public abstract class Operation: InspectorListElement {
 		typeof(DamageOperation),
 		typeof(EMPOp),
 		typeof(ShutdownOp),
-		typeof(Die)
+		typeof(Die),
+		typeof(RechargeOperation)
 	};
 
 	[System.NonSerialized]
@@ -23,8 +24,7 @@ public abstract class Operation: InspectorListElement {
 		return new System.Type[0];
 	}
 
-	public virtual void perform(GameObject instigator, Trigger trig) {
-	}
+	public abstract void perform(GameObject instigator, Trigger trig);
 	
 	public virtual void doGUI() {}
 

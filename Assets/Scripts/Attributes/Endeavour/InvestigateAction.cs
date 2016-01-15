@@ -33,7 +33,6 @@ public class InvestigateAction : InherentEndeavour {
 	public override void onMessage(RobotMessage message) {
 		if(message.Type == RobotMessage.MessageType.ACTION) {
 			if(message.Target == parent) {
-				Debug.Log("investigate action complete");
 				completed = true;
 				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition(), null));
 			}

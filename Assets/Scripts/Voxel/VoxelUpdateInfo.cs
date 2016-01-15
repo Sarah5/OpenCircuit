@@ -11,7 +11,7 @@ namespace Vox {
 		public float size;
 		public VoxelHolder[, ,] blocks;
 		public VoxelRenderer[, ,] renderers;
-		public VoxelTree control;
+		public Tree control;
 		public int x, y, z;
 
 		private VoxelUpdateInfo() {
@@ -19,7 +19,7 @@ namespace Vox {
 			renderers = new VoxelRenderer[DIMENSION, DIMENSION, DIMENSION];
 		}
 
-		public VoxelUpdateInfo(float size, VoxelHolder main, VoxelTree control)
+		public VoxelUpdateInfo(float size, VoxelHolder main, Tree control)
 			: this() {
 			this.size = size;
 			this.detailLevel = 0;
@@ -47,22 +47,18 @@ namespace Vox {
 				for (byte yii = 0; yii < DIMENSION; ++yii) {
 					for (byte zii = 0; zii < DIMENSION; ++zii) {
 						blocks[xii, yii, zii] = super.getSub(VoxelBlock.CHILD_COUNT_POWER, (byte)(xii + xi + VoxelBlock.CHILD_DIMENSION - 1), (byte)(yii + yi + VoxelBlock.CHILD_DIMENSION - 1), (byte)(zii + zi + VoxelBlock.CHILD_DIMENSION - 1));
-						renderers[xii, yii, zii] = super.renderers[(int)((xii + xi + 1) * 0.5), (int)((yii + yi + 1) * 0.5), (int)((zii + zi + 1) * 0.5)];
-						if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old) {
-							renderers[xii, yii, zii] = super.blocks[(int)((xii + xi + 1) * 0.5), (int)((yii + yi + 1) * 0.5), (int)((zii + zi + 1) * 0.5)].getRenderer(0, 0, 0, 0);
-							if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old)
-								renderers[xii, yii, zii] = blocks[xii, yii, zii].getRenderer(0, 0, 0, 0);
-							if (renderers[xii, yii, zii] != null && renderers[xii, yii, zii].old)
-								renderers[xii, yii, zii] = null;
-						}
+						if (renderers[xii, yii, zii] == null || renderers[xii, yii, zii].old)
+							renderers[xii, yii, zii] = control.getRenderer(new Index((byte)(detailLevel), (uint)(x -1 +xii), (uint)(y -1 +yii), (uint)(z -1 +zii)));
+						if (renderers[xii, yii, zii] != null && renderers[xii, yii, zii].old)
+							renderers[xii, yii, zii] = null;
 					}
 				}
 			}
 		}
 
-		public VoxelUpdateInfo getSubInfo(byte detail, int xi, int yi, int zi) {
+		public VoxelUpdateInfo getSubInfo(byte detail, uint xi, uint yi, uint zi) {
 			if (detail < 1) return this;
-			int dimension = 1 << (detail - 1);
+			uint dimension = (uint) 1 << (detail - 1);
 			return new VoxelUpdateInfo(this, (byte)(xi / dimension), (byte)(yi / dimension), (byte)(zi / dimension)).getSubInfo((byte)(detail - 1), xi % dimension, yi % dimension, zi % dimension);
 		}
 
@@ -96,8 +92,8 @@ namespace Vox {
 			return true;
 		}
 
-		public VoxelHolder getSub(byte detailLevel, int x, int y, int z) {
-			int dimension = 1 << detailLevel;
+		public VoxelHolder getSub(byte detailLevel, uint x, uint y, uint z) {
+			uint dimension = (uint)(1 << detailLevel);
 			return blocks[x / dimension, y / dimension, z / dimension].get(detailLevel, x % dimension, y % dimension, z % dimension);
 		}
 

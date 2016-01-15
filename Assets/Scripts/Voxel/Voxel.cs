@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using System;
 
 namespace Vox {
 
@@ -45,16 +46,12 @@ namespace Vox {
 			return matType;
 		}
 
-		public override VoxelHolder get(byte detailLevel, int x, int y, int z) {
+		public override VoxelHolder get(byte detailLevel, uint x, uint y, uint z) {
 			return this;
 		}
 		
-		public override VoxelHolder get(VoxelIndex i) {
+		public override VoxelHolder get(Index i) {
 			return this;
-		}
-
-		public override VoxelRenderer getRenderer(byte detailLevel, int x, int y, int z) {
-			return null;
 		}
 
 		public override void putInArray(byte level, ref Voxel[,,] array, int x, int y, int z, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
@@ -72,6 +69,11 @@ namespace Vox {
 					}
 				}
 			}
+		}
+
+		public override int canSimplify(out Voxel simplification) {
+			simplification = this;
+			return 0;
 		}
 
 		public static VoxelHolder setSphere(VoxelHolder original, int x, int y, int z, Vector3 min, Vector3 max, VoxelHolder val) {

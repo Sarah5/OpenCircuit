@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33069f5e53c33334ba68331482dce891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprintMult: 1.75
+  sprintMult: 1.5
   walkSpeedf: 4
   walkSpeedb: 3
   walkSpeedr: 3
@@ -409,6 +409,7 @@ MonoBehaviour:
   foostepSpeedScale: .0299999993
   fallHurtSpeed: 12
   fallDeathSpeed: 30
+  minDist: .100000001
 --- !u!114 &11420722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -549,7 +550,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: sprintMult
-      value: 1.75
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: highlightMaterial

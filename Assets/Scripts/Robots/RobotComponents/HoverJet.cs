@@ -30,17 +30,23 @@ public class HoverJet : AbstractRobotComponent {
     public void setTarget(LabelHandle target, bool matchRotation = false) {
 		this.target = target;
 		if(target == null) {
-			nav.Stop();
+			if(nav.enabled) {
+				nav.Stop();
+			}
 			isPursuit = false;
 		} else {
-			nav.Resume();
+			if(nav.enabled) {
+				nav.Resume();
+			}
 		}
 		matchTargetRotation = matchRotation;
+		nav.autoBraking = true;
 	}
 
 	public void pursueTarget(LabelHandle target) {
 		setTarget(target);
 		isPursuit = true;
+		nav.autoBraking = false;
 	}
 
 	public bool hasTarget() {
@@ -83,32 +89,32 @@ public class HoverJet : AbstractRobotComponent {
 		//corners
 		float pathLength = 0;
 		foreach (LabelHandle item in roboController.getTrackedTargets()) {
-				//print ("checking path cost against item: " + item.name);
-				//print ("target threatLevel " + item.threatLevel);
-				float minDist = -1;
-				//Vector3 prevVertex;
-				//Debug.Log("numCorners: " + corners.Count);
-				for(int i = 0; i < corners.Count; i++) {
-					Vector3 vertex = corners[i];
-					if(i > 0) {
-						//Debug.Log("adding path length");
-						pathLength += Vector3.Distance(corners[i - 1], vertex);
-					}
-					float curDist = Vector3.Distance(vertex, item.getPosition());
-					if(minDist == -1) {
-						minDist = curDist;
-					} else if(curDist < minDist) {
-						minDist = curDist;
-					}
+			//print ("checking path cost against item: " + item.name);
+			//print ("target threatLevel " + item.threatLevel);
+			float minDist = -1;
+			//Vector3 prevVertex;
+			//Debug.Log("numCorners: " + corners.Count);
+			for(int i = 0; i < corners.Count; i++) {
+				Vector3 vertex = corners[i];
+				if(i > 0) {
+					//Debug.Log("adding path length");
+					pathLength += Vector3.Distance(corners[i - 1], vertex);
 				}
-				if(item.hasTag(TagEnum.Threat)) {
-					float threatLevel = item.getTag(TagEnum.Threat).severity;
+				float curDist = Vector3.Distance(vertex, item.getPosition());
+				if(minDist == -1) {
+					minDist = curDist;
+				} else if(curDist < minDist) {
+					minDist = curDist;
+				}
+			}
+			if(item.hasTag(TagEnum.Threat)) {
+				float threatLevel = item.getTag(TagEnum.Threat).severity;
 
-					RoboEyes eyes = roboController.GetComponentInChildren<RoboEyes>();
-					if(eyes != null) {
-						cost += threatLevel * (minDist/eyes.sightDistance);	
-					}
+				RoboEyes eyes = roboController.GetComponentInChildren<RoboEyes>();
+				if(eyes != null) {
+					cost += threatLevel * (minDist/eyes.sightDistance);	
 				}
+			}
 		}
 		//if (cost > 0) {
 		//	print ("path cost: " + cost);

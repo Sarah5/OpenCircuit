@@ -72,7 +72,7 @@ public class Interact : MonoBehaviour {
 				if(canInteract) {
 					InteractTrigger trig = new InteractTrigger();
 					trig.setPoint(point);
-					trgt.sendTrigger(nearest, trig);
+					trgt.sendTrigger(myPlayer.gameObject, trig);
 				} else {
 					grabber.grabObject(nearest, point);
 				}

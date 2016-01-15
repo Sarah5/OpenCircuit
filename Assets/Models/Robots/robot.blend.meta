@@ -33,6 +33,24 @@ ModelImporter:
     100050: Upper_Leg_proxy_0
     100052: Upper_Leg_proxy_1
     100054: Upper_Leg_proxy_2
+    100056: Back_Left
+    100058: Back_Right
+    100060: Front_Left
+    100062: Front_Right
+    100064: Robot_Armature
+    100066: backLeftLeg
+    100068: backRightLeg
+    100070: frontLeftLeg
+    100072: frontRightLeg
+    100074: Hip_proxy_001
+    100076: Hip_proxy_002
+    100078: Hip_proxy_003
+    100080: Lower_Leg_proxy_001
+    100082: Lower_Leg_proxy_002
+    100084: Lower_Leg_proxy_003
+    100086: Upper_Leg_proxy_001
+    100088: Upper_Leg_proxy_002
+    100090: Upper_Leg_proxy_003
     400000: Attach_Point_proxy
     400002: back_left_foot
     400004: back_left_leg_armature
@@ -61,6 +79,24 @@ ModelImporter:
     400050: Upper_Leg_proxy_0
     400052: Upper_Leg_proxy_1
     400054: Upper_Leg_proxy_2
+    400056: Back_Left
+    400058: Back_Right
+    400060: Front_Left
+    400062: Front_Right
+    400064: Robot_Armature
+    400066: backLeftLeg
+    400068: backRightLeg
+    400070: frontLeftLeg
+    400072: frontRightLeg
+    400074: Hip_proxy_001
+    400076: Hip_proxy_002
+    400078: Hip_proxy_003
+    400080: Lower_Leg_proxy_001
+    400082: Lower_Leg_proxy_002
+    400084: Lower_Leg_proxy_003
+    400086: Upper_Leg_proxy_001
+    400088: Upper_Leg_proxy_002
+    400090: Upper_Leg_proxy_003
     2300000: Attach_Point_proxy
     2300002: Gear_Box_proxy
     2300004: Hip_proxy
@@ -75,6 +111,15 @@ ModelImporter:
     2300022: Upper_Leg_proxy_0
     2300024: Upper_Leg_proxy_1
     2300026: Upper_Leg_proxy_2
+    2300028: Hip_proxy_001
+    2300030: Hip_proxy_002
+    2300032: Hip_proxy_003
+    2300034: Lower_Leg_proxy_001
+    2300036: Lower_Leg_proxy_002
+    2300038: Lower_Leg_proxy_003
+    2300040: Upper_Leg_proxy_001
+    2300042: Upper_Leg_proxy_002
+    2300044: Upper_Leg_proxy_003
     3300000: Attach_Point_proxy
     3300002: Gear_Box_proxy
     3300004: Hip_proxy
@@ -89,6 +134,15 @@ ModelImporter:
     3300022: Upper_Leg_proxy_0
     3300024: Upper_Leg_proxy_1
     3300026: Upper_Leg_proxy_2
+    3300028: Hip_proxy_001
+    3300030: Hip_proxy_002
+    3300032: Hip_proxy_003
+    3300034: Lower_Leg_proxy_001
+    3300036: Lower_Leg_proxy_002
+    3300038: Lower_Leg_proxy_003
+    3300040: Upper_Leg_proxy_001
+    3300042: Upper_Leg_proxy_002
+    3300044: Upper_Leg_proxy_003
     4300000: Lower_Leg_proxy
     4300002: Upper_Leg_proxy
     4300004: Hip_proxy
@@ -103,7 +157,18 @@ ModelImporter:
     4300022: Hip_proxy_2
     4300024: Attach_Point_proxy
     4300026: Gear_Box_proxy
+    4300028: Hip_proxy_003
+    4300030: Upper_Leg_proxy_003
+    4300032: Lower_Leg_proxy_003
+    4300034: Hip_proxy_002
+    4300036: Upper_Leg_proxy_002
+    4300038: Lower_Leg_proxy_002
+    4300040: Hip_proxy_001
+    4300042: Upper_Leg_proxy_001
+    4300044: Lower_Leg_proxy_001
     7400000: Default Take
+    7400002: Stand
+    7400004: Walk
     9500000: //RootNode
   materials:
     importMaterials: 1

@@ -20,7 +20,7 @@ namespace Vox {
 		public Dictionary<int, object> vertices;
 		public Dictionary<int, byte> vertexSubstances;
 		[System.NonSerialized]
-		public VoxelTree control;
+		public Tree control;
 //		public MeshCollider collider;
 		public float size;
 		public Vector3 position;
@@ -31,7 +31,7 @@ namespace Vox {
 		public int[] TRIS;
 		public bool applied = false;
 		public bool old = false;
-		public VoxelIndex index;
+		public Index index;
 
 
 		public void clear() {
@@ -40,11 +40,6 @@ namespace Vox {
 				if (control != null) {
 					lock(control) {
 						control.renderers.Remove(index);
-						if (control.getHead() != null) {
-							VoxelHolder block = control.getHead().get(index);
-							if (block.GetType() == typeof(VoxelBlock) && ((VoxelBlock)block).renderer == this)
-								((VoxelBlock)block).renderer = null;
-						}
 					}
 				}
 				removePolyCount();
@@ -57,14 +52,14 @@ namespace Vox {
 //			}
 		}
 
-		public VoxelRenderer(VoxelIndex index, VoxelTree control):
+		public VoxelRenderer(Index index, Tree control):
 			this(index, control, new Vector3(
 				index.x * control.sizes[index.depth],
 				index.y * control.sizes[index.depth],
 				index.z * control.sizes[index.depth])) {
 		}
 
-		public VoxelRenderer(VoxelIndex index, VoxelTree control, Vector3 localPosition) {
+		public VoxelRenderer(Index index, Tree control, Vector3 localPosition) {
 			this.index = index;
 			this.position = localPosition;
 			this.control = control;
@@ -95,7 +90,7 @@ namespace Vox {
 				for (byte y = (byte)(1 - yExtend), y1 = (byte)(y + 1); y1 < yDim; y = y1++) {
 					for (byte z = (byte)(1 - zExtend), z1 = (byte)(z + 1); z1 < zDim; z = z1++) {
 						lock (control) {
-							VoxelHolder block = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION + x, VOXEL_DIMENSION + y, VOXEL_DIMENSION + z);
+							VoxelHolder block = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION + x), (uint)(VOXEL_DIMENSION + y), (uint)(VOXEL_DIMENSION + z));
 							voxels[x1, y1, z1] = block.toVoxel();
 							int[] tris = MarchingCubes.lookupTriangles(x, y, z, x1, y1, z1);
 							if (tris == null) continue;
@@ -214,8 +209,6 @@ namespace Vox {
 			//					collider.enabled = true;
 			//			}
 			addPolyCount();
-			((VoxelBlock)control.getHead().get(this.index)).clearSubRenderers(false, control);
-			control.head.clearSuperRenderers(detailLevel, x, y, z, control);
 		}
 
 		protected GameObject createRendererGameObject() {
@@ -499,8 +492,8 @@ namespace Vox {
 				xExtend = 1;
 				for (byte yi = (byte)(1 - yExtend); yi < yDim; ++yi) {
 					for (byte zi = (byte)(1 - zExtend); zi < zDim; ++zi) {
-						voxels[0, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - xExtend, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION - 1 + zi).toVoxel();
-						voxels[1, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION - 1 + zi).toVoxel();
+						voxels[0, yi, zi] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - xExtend), (uint)(VOXEL_DIMENSION - 1 + yi), (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
+						voxels[1, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION, (uint)(VOXEL_DIMENSION - 1 + yi), (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
 					}
 				}
 			} else if (x == 2/* && xDim < VERTEX_DIMENSION*/) {
@@ -508,8 +501,8 @@ namespace Vox {
 				xDim = VERTEX_DIMENSION;
 				for (byte yi = (byte)(1 - yExtend); yi < yDim; ++yi) {
 					for (byte zi = (byte)(1 - zExtend); zi < zDim; ++zi) {
-						voxels[VOXEL_DIMENSION + 1, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION * 2, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION - 1 + zi).toVoxel();
-						voxels[VOXEL_DIMENSION, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION * 2 - 1, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION - 1 + zi).toVoxel();
+						voxels[VOXEL_DIMENSION + 1, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION * 2, (uint)(VOXEL_DIMENSION - 1 + yi), (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
+						voxels[VOXEL_DIMENSION, yi, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION * 2 - 1, (uint)(VOXEL_DIMENSION - 1 + yi), (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
 					}
 				}
 			} else if (y == 0/* && yExtend == 0*/) {
@@ -517,8 +510,8 @@ namespace Vox {
 				yExtend = 1;
 				for (byte xi = (byte)(1 - xExtend); xi < xDim; ++xi) {
 					for (byte zi = (byte)(1 - zExtend); zi < zDim; ++zi) {
-						voxels[xi, 0, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION - yExtend, VOXEL_DIMENSION - 1 + zi).toVoxel();
-						voxels[xi, 1, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION, VOXEL_DIMENSION - 1 + zi).toVoxel();
+						voxels[xi, 0, zi] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), (uint)(VOXEL_DIMENSION - yExtend), (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
+						voxels[xi, 1, zi] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), VOXEL_DIMENSION, (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
 					}
 				}
 			} else if (y == 2/* && yDim < VERTEX_DIMENSION*/) {
@@ -526,8 +519,8 @@ namespace Vox {
 				yDim = VERTEX_DIMENSION;
 				for (byte xi = (byte)(1 - xExtend); xi < xDim; ++xi) {
 					for (byte zi = (byte)(1 - zExtend); zi < zDim; ++zi) {
-						voxels[xi, VOXEL_DIMENSION + 1, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION * 2, VOXEL_DIMENSION - 1 + zi).toVoxel();
-						voxels[xi, VOXEL_DIMENSION, zi] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION * 2 - 1, VOXEL_DIMENSION - 1 + zi).toVoxel();
+						voxels[xi, VOXEL_DIMENSION + 1, zi] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), VOXEL_DIMENSION * 2, (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
+						voxels[xi, VOXEL_DIMENSION, zi] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), VOXEL_DIMENSION * 2 - 1, (uint)(VOXEL_DIMENSION - 1 + zi)).toVoxel();
 					}
 				}
 			} else if (z == 0/* && zExtend == 0*/) {
@@ -535,8 +528,8 @@ namespace Vox {
 				zExtend = 1;
 				for (byte xi = (byte)(1 - xExtend); xi < xDim; ++xi) {
 					for (byte yi = (byte)(1 - yExtend); yi < yDim; ++yi) {
-						voxels[xi, yi, 0] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION - zExtend).toVoxel();
-						voxels[xi, yi, 1] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION).toVoxel();
+						voxels[xi, yi, 0] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), (uint)(VOXEL_DIMENSION - 1 + yi), (uint)(VOXEL_DIMENSION - zExtend)).toVoxel();
+						voxels[xi, yi, 1] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), (uint)(VOXEL_DIMENSION - 1 + yi), VOXEL_DIMENSION).toVoxel();
 					}
 				}
 			} else if (z == 2/* && zDim < VERTEX_DIMENSION*/) {
@@ -544,8 +537,8 @@ namespace Vox {
 				zDim = VERTEX_DIMENSION;
 				for (byte xi = (byte)(1 - xExtend); xi < xDim; ++xi) {
 					for (byte yi = (byte)(1 - yExtend); yi < yDim; ++yi) {
-						voxels[xi, yi, VOXEL_DIMENSION + 1] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION * 2).toVoxel();
-						voxels[xi, yi, VOXEL_DIMENSION] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + xi, VOXEL_DIMENSION - 1 + yi, VOXEL_DIMENSION * 2 - 1).toVoxel();
+						voxels[xi, yi, VOXEL_DIMENSION + 1] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), (uint)(VOXEL_DIMENSION - 1 + yi), VOXEL_DIMENSION * 2).toVoxel();
+						voxels[xi, yi, VOXEL_DIMENSION] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + xi), (uint)(VOXEL_DIMENSION - 1 + yi), VOXEL_DIMENSION * 2 - 1).toVoxel();
 					}
 				}
 			}
@@ -824,17 +817,17 @@ namespace Vox {
 
 			for (byte y = (byte)(1 - yExtend); y < yDim; ++y) {
 				for (byte z = (byte)(1 - zExtend); z < zDim; ++z) {
-					voxels[1 - xExtend, y, z] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - xExtend, VOXEL_DIMENSION - 1 + y, VOXEL_DIMENSION - 1 + z).toVoxel();
+					voxels[1 - xExtend, y, z] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - xExtend), (uint)(VOXEL_DIMENSION - 1 + y), (uint)(VOXEL_DIMENSION - 1 + z)).toVoxel();
 				}
 			}
 			for (byte x = (byte)(2 - xExtend); x < xDim; ++x) {
 				for (byte z = (byte)(1 - zExtend); z < zDim; ++z) {
-					voxels[x, 1 - yExtend, z] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + x, VOXEL_DIMENSION - yExtend, VOXEL_DIMENSION - 1 + z).toVoxel();
+					voxels[x, 1 - yExtend, z] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + x), (uint)(VOXEL_DIMENSION - yExtend), (uint)(VOXEL_DIMENSION - 1 + z)).toVoxel();
 				}
 			}
 			for (byte x = (byte)(2 - xExtend); x < xDim; ++x) {
 				for (byte y = (byte)(2 - yExtend); y < yDim; ++y) {
-					voxels[x, y, 1 - zExtend] = info.getSub(VOXEL_COUNT_POWER, VOXEL_DIMENSION - 1 + x, VOXEL_DIMENSION - 1 + y, VOXEL_DIMENSION - zExtend).toVoxel();
+					voxels[x, y, 1 - zExtend] = info.getSub(VOXEL_COUNT_POWER, (uint)(VOXEL_DIMENSION - 1 + x), (uint)(VOXEL_DIMENSION - 1 + y), (uint)(VOXEL_DIMENSION - zExtend)).toVoxel();
 				}
 			}
 
@@ -886,7 +879,7 @@ namespace Vox {
 			NORMS = norms;
 		}
 
-		public VoxelTree getControl() {
+		public Tree getControl() {
 			return control;
 		}
 

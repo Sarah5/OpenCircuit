@@ -28,7 +28,7 @@ public class VoxelEditorGUI : Editor {
 	private bool showStatistics;
     private VoxelEditorParameters generationParameters;
 
-    [MenuItem("GameObject/3D Object/Voxel Object")]
+	[MenuItem("GameObject/3D Object/Voxel Object")]
 	public static void createVoxelObject() {
 		Vox.VoxelEditor.createEmpty();
 	}
@@ -95,6 +95,12 @@ public class VoxelEditorGUI : Editor {
 		Vox.VoxelEditor editor = (Vox.VoxelEditor)target;
 		if (editor.selectedMode != 1)
 			return;
+
+		if (editor.pathPoints != null && editor.pathPoints.Length > 0 && editor.isSelectedBrushPathable() && editor.showPositionHandles) {
+			for (int i = 0; i < editor.pathPoints.Length; ++i)
+				editor.pathPoints[i] = UnityEditor.Handles.PositionHandle(editor.pathPoints[i], Quaternion.identity);
+		}
+
 		int controlId = GUIUtility.GetControlID(FocusType.Passive);
 		switch(UnityEngine.Event.current.GetTypeForControl(controlId)) {
 		case EventType.MouseDown:
@@ -113,6 +119,10 @@ public class VoxelEditorGUI : Editor {
 			break;
 		case EventType.MouseMove:
 			SceneView.RepaintAll();
+			break;
+		case EventType.KeyDown:
+			if (UnityEngine.Event.current.keyCode == KeyCode.Escape)
+				editor.pathPoints = null;
 			break;
 		}
 	}
@@ -159,7 +169,7 @@ public class VoxelEditorGUI : Editor {
 		switch(editor.selectedBrush) {
 		case 0:
             GUILayout.Label("Hold 'Shift' to subtract.");
-			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, 100);
+			editor.sphereBrushSize = doSliderFloatField("Sphere Radius (m)", editor.sphereBrushSize, 0, maxBrushSize(editor));
 			editor.sphereSubstanceOnly = GUILayout.Toggle(editor.sphereSubstanceOnly, "Change Substance Only");
 			GUILayout.Label("Substance", labelBigFont);
 			editor.sphereBrushSubstance = (byte)GUILayout.SelectionGrid(editor.sphereBrushSubstance, substances, 1);
@@ -172,8 +182,6 @@ public class VoxelEditorGUI : Editor {
 			editor.cubeBrushDimensions.x = EditorGUILayout.FloatField(editor.cubeBrushDimensions.x);
 			editor.cubeBrushDimensions.y = EditorGUILayout.FloatField(editor.cubeBrushDimensions.y);
 			editor.cubeBrushDimensions.z = EditorGUILayout.FloatField(editor.cubeBrushDimensions.z);
-//			SerializedProperty cubeBrushDimensions = ob.FindProperty("cubeBrushDimensions");
-//			EditorGUILayout.PropertyField(cubeBrushDimensions, new GUIContent("Rectangle Brush Dimensions"), true);
 			GUILayout.EndHorizontal();
 			
 			editor.cubeSubstanceOnly = GUILayout.Toggle(editor.cubeSubstanceOnly, "Change Substance Only");
@@ -182,11 +190,40 @@ public class VoxelEditorGUI : Editor {
 			break;
 
 		case 2:
-			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, 100);
+			editor.smoothBrushSize = doSliderFloatField("Radius (m)", editor.smoothBrushSize, 0, maxBrushSize(editor));
 			editor.smoothBrushStrength = doSliderFloatField("Strength", editor.smoothBrushStrength, 0, 5);
 			editor.smoothBrushBlurRadius = EditorGUILayout.IntField("Blur Radius", editor.smoothBrushBlurRadius);
 			break;
 		}
+
+		// PATH GUI
+		if(editor.selectedBrush != 0 && editor.selectedBrush != 1)
+			return;
+		GUILayout.Label("Path Tool", labelBigFont);
+
+
+		if(editor.pathPoints != null && editor.pathPoints.Length > 0) {
+			GUILayout.Label("Hold 'Control' to place another point.");
+			editor.showPositionHandles = GUILayout.Toggle(editor.showPositionHandles, "Show drag handles (disable click to complete).");
+			SerializedProperty prop = serializedObject.FindProperty("pathPoints");
+			InspectorList.doArrayGUISimple(ref prop);
+			serializedObject.ApplyModifiedProperties();
+			if (GUILayout.Button("Clear Path")) {
+				editor.pathPoints = null;
+			} else if (GUILayout.Button("Apply Path")) {
+				Vox.LocalMutator mut = (Vox.LocalMutator)buildMutator(editor, editor.pathPoints[0]);
+				if (editor.pathPoints.Length > 1) {
+					new Vox.LineMutator(editor.pathPoints, mut).apply(editor);
+				} else {
+					mut.apply(editor);
+				}
+			}
+		} else {
+			GUILayout.Label("Hold 'Control' to start a path.");
+			if (GUILayout.Button("Start Path"))
+				editor.addPathPoint(editor.transform.position);
+		}
+
 
 	}
 
@@ -210,6 +247,12 @@ public class VoxelEditorGUI : Editor {
 			}
 			if (editor.hasRenderers() && GUILayout.Button("Clear Skin") && validateSubstances(editor)) {
 				editor.clearRenderers();
+			}
+			if (GUILayout.Button("Compress Data")) {
+				Vox.Voxel v;
+				int count = editor.getHead().canSimplify(out v);
+				editor.dirty = true;
+				EditorUtility.DisplayDialog("Compression Result", "Compression removed " +count +" nodes from the voxel tree.", "OK");
 			}
 			if (GUILayout.Button("Export")) {
 				editor.export(EditorUtility.SaveFilePanel("Choose File to Export To", "", "Voxels", "vox"));
@@ -448,28 +491,59 @@ public class VoxelEditorGUI : Editor {
         setupGeneration = false;
     }
 
-    protected static void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+    protected void applyBrush(Vox.VoxelEditor editor, Ray mouseLocation) {
+		// get point clicked on
+		System.Nullable<Vector3> point = editor.getBrushPoint(mouseLocation);
+		if (point == null)
+			return;
+
+		// check if control pressed.  If so, add point to pathList
+		if(editor.isPathing()) {
+			editor.addPathPoint(point.Value);
+			return;
+		}
+
+		// check for showPositionHandles
+		if (editor.showPositionHandles && editor.isSelectedBrushPathable()
+			&& editor.pathPoints != null && editor.pathPoints.Length > 0)
+			return;
+
+		// create mutator
+		Vox.Mutator mutator = buildMutator(editor, point.Value);
+
+		// apply mutator
+		if (mutator == null)
+			return;
+		Vox.LocalMutator localMutator = mutator as Vox.LocalMutator;
+		if (localMutator != null && editor.pathPoints != null && editor.pathPoints.Length > 0) {
+			editor.addPathPoint(point.Value);
+			mutator = new Vox.LineMutator(editor.pathPoints, localMutator);
+			editor.pathPoints = null;
+		}
+		mutator.apply(editor);
+	}
+
+	protected Vox.Mutator buildMutator(Vox.VoxelEditor editor, Vector3 point) {
+		// check for subtraction mode
 		byte opacity = byte.MaxValue;
-		if (UnityEngine.Event.current.shift) {
+		if (editor.isSubtracting()) {
 			opacity = byte.MinValue;
 		}
-        Vector3 point = editor.getBrushPoint(mouseLocation);
-        switch(editor.selectedBrush) {
-		case 0:
-			Vox.SphereModifier sphereMod = new Vox.SphereModifier(editor, point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity), true);
-			sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
-			sphereMod.apply();
-			break;
-		case 1:
-			Vox.CubeModifier cubeMod = new Vox.CubeModifier(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
-			cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
-			cubeMod.apply();
-			break;
-		case 2:
-			Vox.BlurModifier blur = new Vox.BlurModifier(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength, true);
-			blur.blurRadius = editor.smoothBrushBlurRadius;
-			blur.apply();
-			break;
+
+		// create mutator (and maybe apply)
+		switch (editor.selectedBrush) {
+			case 0:
+				Vox.SphereMutator sphereMod = new Vox.SphereMutator(point, editor.sphereBrushSize, new Vox.Voxel(editor.sphereBrushSubstance, opacity));
+				sphereMod.overwriteShape = !editor.sphereSubstanceOnly;
+				return sphereMod;
+			case 1:
+				Vox.CubeMutator cubeMod = new Vox.CubeMutator(editor, point, editor.cubeBrushDimensions, new Vox.Voxel(editor.cubeBrushSubstance, opacity), true);
+				cubeMod.overwriteShape = !editor.cubeSubstanceOnly;
+				return cubeMod;
+			default:
+				Vox.BlurMutator blurMod = new Vox.BlurMutator(editor, point, editor.smoothBrushSize, editor.smoothBrushStrength);
+				blurMod.blurRadius = editor.smoothBrushBlurRadius;
+				return blurMod;
 		}
 	}
 
@@ -488,6 +562,10 @@ public class VoxelEditorGUI : Editor {
 		}
 		return true;
 	}
+
+	protected static float maxBrushSize(Vox.VoxelEditor editor) {
+		return Mathf.Max(editor.voxelSize() *20, 50);
+    }
 
     protected class VoxelEditorParameters {
 		public float baseSize = 32;

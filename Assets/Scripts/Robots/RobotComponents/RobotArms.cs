@@ -133,4 +133,8 @@ public class RobotArms : AbstractRobotComponent {
     public Label getProposedTarget() {
         return proposedTarget;
     }
+
+	public Label getTarget() {
+		return target;
+	}
 }
