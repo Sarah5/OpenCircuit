@@ -27,7 +27,7 @@ public class InvestigateAction : InherentEndeavour {
 				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition(), null));
 			}
 		}
-		return completed || (canSee) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds);
+		return completed || (canSee) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds) || Vector3.Distance(controller.transform.position, parent.getPosition()) < 1.5f;
 	}
 
 	public override void onMessage(RobotMessage message) {
