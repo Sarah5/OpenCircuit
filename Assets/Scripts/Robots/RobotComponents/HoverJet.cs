@@ -29,18 +29,23 @@ public class HoverJet : AbstractRobotComponent {
 
     public void setTarget(LabelHandle target, bool matchRotation = false) {
 		this.target = target;
+		matchTargetRotation = matchRotation;
 		if(target == null) {
 			if(nav.enabled) {
 				nav.Stop();
 			}
 			isPursuit = false;
 		} else {
+			if(hasReachedTargetLocation() && hasMatchedTargetRotation()) {
+				this.target = null;
+				//print("bailing...");
+				return;
+			}
 			if(nav.enabled) {
 				nav.Resume();
 			}
 		}
-		matchTargetRotation = matchRotation;
-		nav.autoBraking = true;
+		nav.autoBraking = false;
 	}
 
 	public void pursueTarget(LabelHandle target) {
@@ -149,15 +154,23 @@ public class HoverJet : AbstractRobotComponent {
 		return true;
 	}
 
+	public bool hasReachedTarget(LabelHandle target) {
+		return hasReachedTargetLocation(target) && hasMatchedTargetRotation(target);
+	}
+
 	private void goToTarget() {
 		if(target != null) {
 
 			if(hasReachedTargetLocation()) {
+				//print("Target reached...matching rotation");
 				if(!hasMatchedTargetRotation()) {
+					//print("attempting to match target rotation");
 					roboController.transform.rotation = Quaternion.RotateTowards(Quaternion.LookRotation(roboController.transform.forward), Quaternion.LookRotation(target.label.transform.forward), nav.angularSpeed * Time.deltaTime);
 				} else {
+					//print("rotation matched");
 					roboController.enqueueMessage(new RobotMessage(RobotMessage.MessageType.ACTION, "target reached", target, target.getPosition(), null));
 					target = null;
+					nav.Stop();
 					return;
 				}
 			}
@@ -233,9 +246,13 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	private bool hasReachedTargetLocation() {
+		return hasReachedTargetLocation(target);
+	}
+
+	private bool hasReachedTargetLocation(LabelHandle targetLocation) {
 		float xzDist = Vector2.Distance(new Vector2(roboController.transform.position.x, roboController.transform.position.z),
-								new Vector2(target.getPosition().x, target.getPosition().z));
-		float yDist = Mathf.Abs((roboController.transform.position.y - .4f) - target.getPosition().y);
+								new Vector2(targetLocation.getPosition().x, targetLocation.getPosition().z));
+		float yDist = Mathf.Abs((roboController.transform.position.y - .4f) - targetLocation.getPosition().y);
 		if(xzDist < .5f && yDist < .8f) {
 			return true;
 		}
@@ -243,9 +260,14 @@ public class HoverJet : AbstractRobotComponent {
 	}
 
 	private bool hasMatchedTargetRotation() {
+		return hasMatchedTargetRotation(target);
+	}
+
+	private bool hasMatchedTargetRotation(LabelHandle targetRotation) {
 		if(!matchTargetRotation) {
+			//print("not attempting to match target rotation");
 			return true;
 		}
-		return (1 - Vector3.Dot(roboController.transform.forward, target.label.transform.forward) < .0001f);
+		return (1 - Vector3.Dot(roboController.transform.forward, targetRotation.label.transform.forward) < .0001f);
 	}
 }
