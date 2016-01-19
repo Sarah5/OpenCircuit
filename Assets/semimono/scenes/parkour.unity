@@ -19378,7 +19378,7 @@ MonoBehaviour:
   minimumFoostepOccurence: .600000024
   foostepSpeedScale: .0299999993
   fallHurtSpeed: 5
-  fallDeathSpeed: 30
+  fallDeathSpeed: 20
   minDist: .100000001
 --- !u!43 &2051570826
 Mesh:

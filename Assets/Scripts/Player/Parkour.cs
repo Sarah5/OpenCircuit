@@ -11,7 +11,7 @@ public class Parkour : MovementController {
 	private Vector3 navPoint;
 	private float forwardSpeed = 0;
 	private float rightSpeed = 0;
-	private bool grounded;
+	//private bool grounded;
 	private bool sprinting = false;
 	private bool crouching = false;
 	private bool autoMove = false;
@@ -86,11 +86,14 @@ public class Parkour : MovementController {
 		//check if grounded
 		float dHeight = crouching ? 0.25f : 0.65f;
 		float height = doGroundedCheck();
-		if (grounded) {
+		if (isGrounded()) {
 			if (height < dHeight) {
-				Vector3 position = transform.position;
-				position.y += Mathf.Min(0.1f, dHeight -height);
-				transform.position = position;
+				Vector3 vel = GetComponent<Rigidbody>().velocity;
+				vel.y += Mathf.Max(-acceleration*2, Mathf.Min(acceleration, (dHeight -height) *20 -vel.y));
+				GetComponent<Rigidbody>().velocity = vel;
+				//Vector3 position = transform.position;
+				//position.y += Mathf.Min(0.1f, dHeight -height);
+				//transform.position = position;
 			}
 		}
 
@@ -149,7 +152,7 @@ public class Parkour : MovementController {
 		if (GetComponent<Rigidbody>().velocity.y > desiredVel.y)
 			desiredVel.y = GetComponent<Rigidbody>().velocity.y;
 
-		if (grounded) {
+		if (isGrounded()) {
 			if (height > dHeight)
 				desiredVel.y = GetComponent<Rigidbody>().velocity.y;
 		}
@@ -332,6 +335,10 @@ public class Parkour : MovementController {
 		return autoMove;
 	}
 
+	protected Vector3 calculateAcceleration(Vector3 desiredVelocity) {
+		return Vector3.one;
+	}
+
 	protected float doGroundedCheck() {
 		RaycastHit[] hits = Physics.SphereCastAll(transform.position, 0.35f, -Vector3.up, 1f);
 		float distance = float.PositiveInfinity;
@@ -342,10 +349,12 @@ public class Parkour : MovementController {
 				floor = hit.collider.gameObject;
 			}
 		}
-		grounded = distance < float.PositiveInfinity;
+		bool grounded = distance < float.PositiveInfinity;
 		if (!grounded) {
 			floor = null;
 			groundNormal = Vector3.zero;
+		} else {
+			print(groundNormal);
 		}
 		return distance;
     }
