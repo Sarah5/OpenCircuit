@@ -7,8 +7,7 @@ public class ObjectReferenceManager : MonoBehaviour {
 
 	[SerializeField]
 	public ReferenceDictionary references;
-
-	//[SerializeField]
+	
 	[System.NonSerialized]
 	private static ObjectReferenceManager instance;
 
@@ -21,17 +20,21 @@ public class ObjectReferenceManager : MonoBehaviour {
 	}
 
 	public void Start() {
-		if (instance != null && instance != this) {
-			GameObject.DestroyImmediate(gameObject);
-			Debug.LogError("Cleaned up ref manager!  Go yell at semimono: this should never happen, and it's his fault!");
+		lock(typeof(ObjectReferenceManager)) {
+			if (instance != null && instance != this) {
+				GameObject.DestroyImmediate(gameObject);
+				Debug.LogError("Cleaned up ref manager!  Go yell at semimono: this should never happen, and it's his fault!");
+			} else {
+				instance = this;
+			}
 		}
-		gameObject.hideFlags = 0;
+		gameObject.hideFlags = HideFlags.HideInHierarchy;
 	}
 
 	public static ObjectReferenceManager get() {
-		if (instance == null) {
-			instance = new GameObject("ObjectReferenceManager").AddComponent<ObjectReferenceManager>();
-			instance.gameObject.hideFlags = HideFlags.HideInHierarchy;
+		lock(typeof(ObjectReferenceManager)) {
+			if (instance == null)
+				instance = new GameObject("ObjectReferenceManager").AddComponent<ObjectReferenceManager>();
 		}
 		return instance;
 	}
