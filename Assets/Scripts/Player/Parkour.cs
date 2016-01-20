@@ -42,8 +42,9 @@ public class Parkour : MovementController {
 	public float acceleration = 0.2f;
 	public float climbRate = 0.1f;
 	public float crouchSpeedMultiplier = 0.5f;
-	public float minCrouchHeight = 1;
 	public float crouchHeight = 1.25f;
+	public float standingElevation = 0.65f;
+	public float crouchingElevation = 0.25f;
 	public float jumpSpeed = 5;
 	public float oxygenStopSprint = 10;
 	public float oxygenBeginSprint = 15;
@@ -84,18 +85,8 @@ public class Parkour : MovementController {
 		}
 
 		//check if grounded
-		float dHeight = crouching ? 0.25f : 0.65f;
-		float height = doGroundedCheck();
-		if (isGrounded()) {
-			if (height < dHeight) {
-				Vector3 vel = GetComponent<Rigidbody>().velocity;
-				vel.y += Mathf.Max(-acceleration*2, Mathf.Min(acceleration, (dHeight -height) *20 -vel.y));
-				GetComponent<Rigidbody>().velocity = vel;
-				//Vector3 position = transform.position;
-				//position.y += Mathf.Min(0.1f, dHeight -height);
-				//transform.position = position;
-			}
-		}
+		float dHeight = crouching ? crouchingElevation : standingElevation;
+		float elevation = doGroundedCheck();
 
 		// update past forces
 		int newForceCount = pastForces.Count -lastForceCount;
@@ -131,7 +122,8 @@ public class Parkour : MovementController {
 		}
 		Vector3 desiredVel = getDesiredVel();
 
-		float speed = desiredVel.magnitude * (sprinting ? calculateSprintMultiplier() : 1) *(crouching ? crouchSpeedMultiplier : 1);
+		float crouchingSpeedMult = 1 -(1 -crouchSpeedMultiplier) *Mathf.Max((standingElevation -elevation) /(standingElevation -crouchingElevation), 0);
+		float speed = desiredVel.magnitude * (sprinting ? calculateSprintMultiplier() : 1) *crouchingSpeedMult;
 		desiredVel.y = 0;
 		desiredVel.Normalize();
 
@@ -143,17 +135,19 @@ public class Parkour : MovementController {
 		desiredVel *= speed;
 
 		// slow down when moving up a slope
-		if (desiredVel.y > 0)
-			desiredVel *= 1 - Mathf.Pow(desiredVel.y / speed, 2);
+		//if (desiredVel.y > 0)
+		//	desiredVel *= 1 - Mathf.Pow(desiredVel.y / speed, 2);
 		if (!isGrounded())
 			desiredVel.y = GetComponent<Rigidbody>().velocity.y;
 
-		// handle player not being able to "increase" gravity
-		if (GetComponent<Rigidbody>().velocity.y > desiredVel.y)
-			desiredVel.y = GetComponent<Rigidbody>().velocity.y;
+		// levitate
+		if (isGrounded()) {
+			Vector3 vel = GetComponent<Rigidbody>().velocity;
+			desiredVel.y += Mathf.Clamp((dHeight - elevation) * 30 *acceleration, -4 *acceleration, 4 *acceleration);
+		}
 
 		if (isGrounded()) {
-			if (height > dHeight)
+			if (elevation > dHeight)
 				desiredVel.y = GetComponent<Rigidbody>().velocity.y;
 		}
 
@@ -164,7 +158,11 @@ public class Parkour : MovementController {
 			force.Normalize();
 			force *= maxAccel;
 		}
+		if (force.magnitude != float.NaN)
 		GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
+
+		print(GetComponent<Rigidbody>().velocity);
+		//print(desiredVel);
 
 		// play footstep sounds
 		float currentSpeed = GetComponent<Rigidbody>().velocity.sqrMagnitude;
@@ -213,6 +211,9 @@ public class Parkour : MovementController {
 		} else {
 			desiredVel = new Vector3(rightSpeed, 0, forwardSpeed);
 			desiredVel = myPlayer.cam.transform.TransformDirection(desiredVel);
+
+			// prevent player from going faster by moving diagonally
+			desiredVel = Vector3.ClampMagnitude(desiredVel, Mathf.Max(Mathf.Abs(forwardSpeed), Mathf.Abs(rightSpeed)));
 		}
 		return desiredVel;
 	}
@@ -353,8 +354,8 @@ public class Parkour : MovementController {
 		if (!grounded) {
 			floor = null;
 			groundNormal = Vector3.zero;
-		} else {
-			print(groundNormal);
+		//} else {
+		//	print(groundNormal);
 		}
 		return distance;
     }

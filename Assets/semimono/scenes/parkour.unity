@@ -8,25 +8,25 @@ SceneSettings:
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
     smallestOccluder: 5
-    smallestHole: .25
+    smallestHole: 0.25
     backfaceThreshold: 100
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
   m_Fog: 0
-  m_FogColor: {r: .5, g: .5, b: .5, a: 1}
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: .00999999978
+  m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: .211999997, g: .226999998, b: .259000003, a: 1}
-  m_AmbientEquatorColor: {r: .114, g: .125, b: .133000001, a: 1}
-  m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: .5
+  m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -34,13 +34,13 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: .200000003
+  m_ReflectionIntensity: 0.2
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 5
+  serializedVersion: 6
   m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
@@ -66,7 +66,7 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightmapSnapshot: {fileID: 112000001, guid: 345e9fb253f3c654f94b317124dedd3e,
+  m_LightingDataAsset: {fileID: 112000001, guid: 345e9fb253f3c654f94b317124dedd3e,
     type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
@@ -75,15 +75,15 @@ NavMeshSettings:
   m_ObjectHideFlags: 0
   m_BuildSettings:
     serializedVersion: 2
-    agentRadius: .5
+    agentRadius: 0.5
     agentHeight: 2
     agentSlope: 45
-    agentClimb: .400000006
+    agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     accuratePlacement: 0
     minRegionArea: 2
-    cellSize: .166666672
+    cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
 --- !u!43 &5113668
@@ -101,8 +101,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 785
     localAABB:
-      m_Center: {x: 8.25098038, y: 55.5, z: 36.2490196}
-      m_Extent: {x: 7.24901962, y: 8, z: 4.74901962}
+      m_Center: {x: 8.25098, y: 55.5, z: 36.24902}
+      m_Extent: {x: 7.2490196, y: 8, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -208,8 +208,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 55.5, z: 36.2490196}
-    m_Extent: {x: 7.24901962, y: 8, z: 4.74901962}
+    m_Center: {x: 8.25098, y: 55.5, z: 36.24902}
+    m_Extent: {x: 7.2490196, y: 8, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -229,8 +229,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 5
     localAABB:
-      m_Center: {x: 15.2509804, y: 62.7509804, z: 63.2509804}
-      m_Extent: {x: .249019623, y: .749019623, z: .249019623}
+      m_Center: {x: 15.25098, y: 62.75098, z: 63.25098}
+      m_Extent: {x: 0.24901962, y: 0.7490196, z: 0.24901962}
   m_Shapes:
     vertices: []
     shapes: []
@@ -336,8 +336,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 15.2509804, y: 62.7509804, z: 63.2509804}
-    m_Extent: {x: .249019623, y: .749019623, z: .249019623}
+    m_Center: {x: 15.25098, y: 62.75098, z: 63.25098}
+    m_Extent: {x: 0.24901962, y: 0.7490196, z: 0.24901962}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -357,8 +357,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 136
     localAABB:
-      m_Center: {x: 44.2490196, y: 63.7509804, z: 23.5}
-      m_Extent: {x: 3.25098038, y: .250980377, z: 8}
+      m_Center: {x: 44.24902, y: 63.75098, z: 23.5}
+      m_Extent: {x: 3.2509804, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -464,8 +464,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 44.2490196, y: 63.7509804, z: 23.5}
-    m_Extent: {x: 3.25098038, y: .250980377, z: 8}
+    m_Center: {x: 44.24902, y: 63.75098, z: 23.5}
+    m_Extent: {x: 3.2509804, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -554,8 +554,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -575,7 +577,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 39.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 39.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -682,7 +684,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 39.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 39.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -772,8 +774,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -793,8 +797,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 900
     localAABB:
-      m_Center: {x: 8.25098038, y: 55.5, z: 23.5}
-      m_Extent: {x: 7.24901962, y: 8, z: 8}
+      m_Center: {x: 8.25098, y: 55.5, z: 23.5}
+      m_Extent: {x: 7.2490196, y: 8, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -900,8 +904,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 55.5, z: 23.5}
-    m_Extent: {x: 7.24901962, y: 8, z: 8}
+    m_Center: {x: 8.25098, y: 55.5, z: 23.5}
+    m_Extent: {x: 7.2490196, y: 8, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -990,8 +994,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -1011,8 +1017,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 273
     localAABB:
-      m_Center: {x: 8, y: 63.7509804, z: 55.5}
-      m_Extent: {x: 7.5, y: .250980377, z: 8}
+      m_Center: {x: 8, y: 63.75098, z: 55.5}
+      m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -1118,8 +1124,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 63.7509804, z: 55.5}
-    m_Extent: {x: 7.5, y: .250980377, z: 8}
+    m_Center: {x: 8, y: 63.75098, z: 55.5}
+    m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -1208,8 +1214,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -1298,8 +1306,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -1319,7 +1329,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 8, y: 64.0019608, z: 119.5}
+      m_Center: {x: 8, y: 64.00196, z: 119.5}
       m_Extent: {x: 7.5, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -1426,7 +1436,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 64.0019608, z: 119.5}
+    m_Center: {x: 8, y: 64.00196, z: 119.5}
     m_Extent: {x: 7.5, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -1489,8 +1499,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 154
     localAABB:
-      m_Center: {x: 23.5, y: 63.7509804, z: 43.2704086}
-      m_Extent: {x: 8, y: .250980377, z: 4.22959137}
+      m_Center: {x: 23.5, y: 63.75098, z: 43.27041}
+      m_Extent: {x: 8, y: 0.25098038, z: 4.2295914}
   m_Shapes:
     vertices: []
     shapes: []
@@ -1596,8 +1606,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 63.7509804, z: 43.2704086}
-    m_Extent: {x: 8, y: .250980377, z: 4.22959137}
+    m_Center: {x: 23.5, y: 63.75098, z: 43.27041}
+    m_Extent: {x: 8, y: 0.25098038, z: 4.2295914}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -1617,8 +1627,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 438
     localAABB:
-      m_Center: {x: 8.25098038, y: 45.7509804, z: 23.5}
-      m_Extent: {x: 7.24901962, y: 1.74901962, z: 8}
+      m_Center: {x: 8.25098, y: 45.75098, z: 23.5}
+      m_Extent: {x: 7.2490196, y: 1.7490196, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -1724,8 +1734,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 45.7509804, z: 23.5}
-    m_Extent: {x: 7.24901962, y: 1.74901962, z: 8}
+    m_Center: {x: 8.25098, y: 45.75098, z: 23.5}
+    m_Extent: {x: 7.2490196, y: 1.7490196, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -1745,7 +1755,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -1852,7 +1862,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -1942,8 +1952,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -1963,7 +1975,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -2070,7 +2082,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -2160,8 +2172,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -2250,8 +2264,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -2271,8 +2287,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 164
     localAABB:
-      m_Center: {x: 8, y: 63.7509804, z: 39.5}
-      m_Extent: {x: 7.5, y: .250980377, z: 8}
+      m_Center: {x: 8, y: 63.75098, z: 39.5}
+      m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -2378,8 +2394,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 63.7509804, z: 39.5}
-    m_Extent: {x: 7.5, y: .250980377, z: 8}
+    m_Center: {x: 8, y: 63.75098, z: 39.5}
+    m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -2399,8 +2415,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 34
     localAABB:
-      m_Center: {x: .750980377, y: 63.7509804, z: 23.5}
-      m_Extent: {x: .250980377, y: .250980377, z: 8}
+      m_Center: {x: 0.7509804, y: 63.75098, z: 23.5}
+      m_Extent: {x: 0.25098038, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -2506,8 +2522,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: .750980377, y: 63.7509804, z: 23.5}
-    m_Extent: {x: .250980377, y: .250980377, z: 8}
+    m_Center: {x: 0.7509804, y: 63.75098, z: 23.5}
+    m_Extent: {x: 0.25098038, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -2527,7 +2543,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 87.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 87.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -2634,7 +2650,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 87.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 87.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -2724,8 +2740,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -2745,8 +2763,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 273
     localAABB:
-      m_Center: {x: 8, y: 63.7509804, z: 71.5}
-      m_Extent: {x: 7.5, y: .250980377, z: 8}
+      m_Center: {x: 8, y: 63.75098, z: 71.5}
+      m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -2852,8 +2870,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 63.7509804, z: 71.5}
-    m_Extent: {x: 7.5, y: .250980377, z: 8}
+    m_Center: {x: 8, y: 63.75098, z: 71.5}
+    m_Extent: {x: 7.5, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -2873,7 +2891,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 87.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 87.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -2980,7 +2998,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 87.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 87.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -3001,8 +3019,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 285
     localAABB:
-      m_Center: {x: 23.5, y: 63.7509804, z: 103.5}
-      m_Extent: {x: 8, y: .250980377, z: 8}
+      m_Center: {x: 23.5, y: 63.75098, z: 103.5}
+      m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -3108,8 +3126,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 63.7509804, z: 103.5}
-    m_Extent: {x: 8, y: .250980377, z: 8}
+    m_Center: {x: 23.5, y: 63.75098, z: 103.5}
+    m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -3198,8 +3216,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3288,8 +3308,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3378,8 +3400,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3468,8 +3492,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3558,8 +3584,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3648,8 +3676,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3738,8 +3768,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3828,8 +3860,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3870,8 +3904,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -3932,8 +3968,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 481324297}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28, y: 68.1999969, z: 65}
-  m_LocalScale: {x: 2, y: .200000003, z: 2}
+  m_LocalPosition: {x: 28, y: 68.2, z: 65}
+  m_LocalScale: {x: 2, y: 0.2, z: 2}
   m_Children: []
   m_Father: {fileID: 1214050798}
   m_RootOrder: 4
@@ -3955,8 +3991,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4064,8 +4102,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4154,8 +4194,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4244,8 +4286,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4265,7 +4309,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 23.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 23.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -4372,7 +4416,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 23.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 23.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -4462,8 +4506,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4483,8 +4529,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 425
     localAABB:
-      m_Center: {x: 36.2490196, y: 55.5, z: 8.25098038}
-      m_Extent: {x: 4.74901962, y: 8, z: 7.24901962}
+      m_Center: {x: 36.24902, y: 55.5, z: 8.25098}
+      m_Extent: {x: 4.7490196, y: 8, z: 7.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -4590,8 +4636,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 55.5, z: 8.25098038}
-    m_Extent: {x: 4.74901962, y: 8, z: 7.24901962}
+    m_Center: {x: 36.24902, y: 55.5, z: 8.25098}
+    m_Extent: {x: 4.7490196, y: 8, z: 7.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -4611,7 +4657,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -4718,7 +4764,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -4808,8 +4854,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -4829,7 +4877,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 532
     localAABB:
-      m_Center: {x: 55.5, y: 70.0019608, z: 55.5}
+      m_Center: {x: 55.5, y: 70.00196, z: 55.5}
       m_Extent: {x: 8, y: 6, z: 8}
   m_Shapes:
     vertices: []
@@ -4936,7 +4984,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 70.0019608, z: 55.5}
+    m_Center: {x: 55.5, y: 70.00196, z: 55.5}
     m_Extent: {x: 8, y: 6, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -4957,8 +5005,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 112
     localAABB:
-      m_Center: {x: 35.2490196, y: 59.7509804, z: 78.2509766}
-      m_Extent: {x: 3.74901962, y: 3.74901962, z: 1.24901962}
+      m_Center: {x: 35.24902, y: 59.75098, z: 78.25098}
+      m_Extent: {x: 3.7490196, y: 3.7490196, z: 1.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -5064,8 +5112,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 35.2490196, y: 59.7509804, z: 78.2509766}
-    m_Extent: {x: 3.74901962, y: 3.74901962, z: 1.24901962}
+    m_Center: {x: 35.24902, y: 59.75098, z: 78.25098}
+    m_Extent: {x: 3.7490196, y: 3.7490196, z: 1.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -5085,8 +5133,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 61
     localAABB:
-      m_Center: {x: 8, y: 63.7509804, z: 8}
-      m_Extent: {x: 7.5, y: .250980377, z: 7.5}
+      m_Center: {x: 8, y: 63.75098, z: 8}
+      m_Extent: {x: 7.5, y: 0.25098038, z: 7.5}
   m_Shapes:
     vertices: []
     shapes: []
@@ -5192,8 +5240,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 63.7509804, z: 8}
-    m_Extent: {x: 7.5, y: .250980377, z: 7.5}
+    m_Center: {x: 8, y: 63.75098, z: 8}
+    m_Extent: {x: 7.5, y: 0.25098038, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -5213,8 +5261,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 252
     localAABB:
-      m_Center: {x: 23.5, y: 63.7509804, z: 87.5}
-      m_Extent: {x: 8, y: .250980377, z: 8}
+      m_Center: {x: 23.5, y: 63.75098, z: 87.5}
+      m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -5320,8 +5368,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 63.7509804, z: 87.5}
-    m_Extent: {x: 8, y: .250980377, z: 8}
+    m_Center: {x: 23.5, y: 63.75098, z: 87.5}
+    m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -5410,8 +5458,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -5464,8 +5514,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -5504,7 +5556,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 23.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 23.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -5611,7 +5663,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 23.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 23.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -5701,8 +5753,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -5722,7 +5776,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 39.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 39.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -5829,7 +5883,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 39.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 39.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -5919,8 +5973,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -5940,7 +5996,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 87.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 87.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -6047,7 +6103,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 87.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 87.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -6137,8 +6193,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6227,8 +6285,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6266,7 +6326,7 @@ MonoBehaviour:
   lodDetail: 1
   useLod: 0
   trees: {fileID: 0}
-  treeDensity: .0199999996
+  treeDensity: 0.02
   treeSlopeTolerance: 5
   cam: {fileID: 0}
   curLodDetail: 10
@@ -6276,14 +6336,14 @@ MonoBehaviour:
     blendMaterial: {fileID: 2100000, guid: 97d02086160a12f4a8bbca19e943ecd5, type: 2}
     physicsMaterial: {fileID: 13400000, guid: 1ebf069c89d50184eb14fbfac9f55ca0, type: 2}
     grassMaterial: {fileID: 0}
-    grassHeight: .200000003
-    grassMinFlatness: .400000006
+    grassHeight: 0.2
+    grassMinFlatness: 0.4
   masks: []
   createColliders: 1
   useStaticMeshes: 1
   saveMeshes: 1
   reduceMeshes: 0
-  reductionAmount: .100000001
+  reductionAmount: 0.1
   sizes:
   - 128
   - 64
@@ -6303,7 +6363,7 @@ MonoBehaviour:
   gridEnabled: 1
   gridUseVoxelUnits: 1
   gridSize: 1
-  maskDisplayAlpha: .300000012
+  maskDisplayAlpha: 0.3
   selectedMode: 1
   selectedBrush: 1
   sphereBrushSize: 1
@@ -6315,7 +6375,7 @@ MonoBehaviour:
   smoothBrushSize: 1
   smoothBrushStrength: 1
   smoothBrushBlurRadius: 3
-  ghostBrushAlpha: .300000012
+  ghostBrushAlpha: 0.3
   pathPoints: []
   showPositionHandles: 0
 --- !u!4 &656893011
@@ -6503,8 +6563,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6593,8 +6655,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6683,8 +6747,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6773,8 +6839,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -6794,8 +6862,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 160
     localAABB:
-      m_Center: {x: 24, y: 57.7509804, z: 96.2490234}
-      m_Extent: {x: 3.99803925, y: 5.74901962, z: .749019623}
+      m_Center: {x: 24, y: 57.75098, z: 96.24902}
+      m_Extent: {x: 3.9980392, y: 5.7490196, z: 0.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -6901,8 +6969,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 24, y: 57.7509804, z: 96.2490234}
-    m_Extent: {x: 3.99803925, y: 5.74901962, z: .749019623}
+    m_Center: {x: 24, y: 57.75098, z: 96.24902}
+    m_Extent: {x: 3.9980392, y: 5.7490196, z: 0.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -6922,8 +6990,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 160
     localAABB:
-      m_Center: {x: 35.2490196, y: 59.7509804, z: 82.2490234}
-      m_Extent: {x: 3.74901962, y: 3.74901962, z: 2.74901962}
+      m_Center: {x: 35.24902, y: 59.75098, z: 82.24902}
+      m_Extent: {x: 3.7490196, y: 3.7490196, z: 2.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -7029,8 +7097,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 35.2490196, y: 59.7509804, z: 82.2490234}
-    m_Extent: {x: 3.74901962, y: 3.74901962, z: 2.74901962}
+    m_Center: {x: 35.24902, y: 59.75098, z: 82.24902}
+    m_Extent: {x: 3.7490196, y: 3.7490196, z: 2.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -7050,7 +7118,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 39.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 39.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -7157,7 +7225,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 39.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -7178,7 +7246,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 71.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 71.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -7285,7 +7353,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 71.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 71.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -7306,7 +7374,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 23.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 23.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -7413,7 +7481,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 23.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -7434,8 +7502,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 269
     localAABB:
-      m_Center: {x: 36.2490196, y: 45.7509804, z: 23.5}
-      m_Extent: {x: 4.74901962, y: 1.74901962, z: 8}
+      m_Center: {x: 36.24902, y: 45.75098, z: 23.5}
+      m_Extent: {x: 4.7490196, y: 1.7490196, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -7541,8 +7609,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 45.7509804, z: 23.5}
-    m_Extent: {x: 4.74901962, y: 1.74901962, z: 8}
+    m_Center: {x: 36.24902, y: 45.75098, z: 23.5}
+    m_Extent: {x: 4.7490196, y: 1.7490196, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -7631,8 +7699,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -7721,8 +7791,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -7811,8 +7883,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -7832,7 +7906,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 8}
+      m_Center: {x: 103.5, y: 64.00196, z: 8}
       m_Extent: {x: 8, y: 0, z: 7.5}
   m_Shapes:
     vertices: []
@@ -7939,7 +8013,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 8}
+    m_Center: {x: 103.5, y: 64.00196, z: 8}
     m_Extent: {x: 8, y: 0, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -8029,8 +8103,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8050,7 +8126,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 8, y: 64.0019608, z: 87.5}
+      m_Center: {x: 8, y: 64.00196, z: 87.5}
       m_Extent: {x: 7.5, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -8157,7 +8233,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 64.0019608, z: 87.5}
+    m_Center: {x: 8, y: 64.00196, z: 87.5}
     m_Extent: {x: 7.5, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -8178,7 +8254,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -8285,7 +8361,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -8306,8 +8382,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 444
     localAABB:
-      m_Center: {x: 8.25098038, y: 45.7509804, z: 8.25098038}
-      m_Extent: {x: 7.24901962, y: 1.74901962, z: 7.24901962}
+      m_Center: {x: 8.25098, y: 45.75098, z: 8.25098}
+      m_Extent: {x: 7.2490196, y: 1.7490196, z: 7.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -8413,8 +8489,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 45.7509804, z: 8.25098038}
-    m_Extent: {x: 7.24901962, y: 1.74901962, z: 7.24901962}
+    m_Center: {x: 8.25098, y: 45.75098, z: 8.25098}
+    m_Extent: {x: 7.2490196, y: 1.7490196, z: 7.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -8503,8 +8579,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8593,8 +8671,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8683,8 +8763,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8773,8 +8855,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8863,8 +8947,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8953,8 +9039,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -8974,7 +9062,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 39.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 39.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -9081,7 +9169,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 39.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 39.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -9171,8 +9259,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9192,7 +9282,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -9299,7 +9389,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -9389,8 +9479,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9479,8 +9571,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9569,8 +9663,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9590,7 +9686,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -9697,7 +9793,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -9728,8 +9824,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 988118065}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.4190006, y: 67.0630035, z: 67.3700027}
-  m_LocalScale: {x: .100000001, y: 2, z: 2}
+  m_LocalPosition: {x: 27.419, y: 67.063, z: 67.37}
+  m_LocalScale: {x: 0.1, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1214050798}
   m_RootOrder: 3
@@ -9751,8 +9847,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9860,8 +9958,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -9950,8 +10050,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10040,8 +10142,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10130,8 +10234,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10151,8 +10257,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 20
     localAABB:
-      m_Center: {x: 18.2490196, y: 62.7509804, z: 63.2509804}
-      m_Extent: {x: 2.74901962, y: .749019623, z: .249019623}
+      m_Center: {x: 18.24902, y: 62.75098, z: 63.25098}
+      m_Extent: {x: 2.7490196, y: 0.7490196, z: 0.24901962}
   m_Shapes:
     vertices: []
     shapes: []
@@ -10258,8 +10364,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 18.2490196, y: 62.7509804, z: 63.2509804}
-    m_Extent: {x: 2.74901962, y: .749019623, z: .249019623}
+    m_Center: {x: 18.24902, y: 62.75098, z: 63.25098}
+    m_Extent: {x: 2.7490196, y: 0.7490196, z: 0.24901962}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -10348,8 +10454,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10438,8 +10546,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10528,8 +10638,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10618,8 +10730,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10639,7 +10753,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 55.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 55.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -10746,7 +10860,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 55.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 55.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -10836,8 +10950,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -10926,8 +11042,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11016,8 +11134,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11106,8 +11226,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11127,8 +11249,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 263
     localAABB:
-      m_Center: {x: 23.5, y: 45.7509804, z: 36.2490196}
-      m_Extent: {x: 8, y: 1.74901962, z: 4.74901962}
+      m_Center: {x: 23.5, y: 45.75098, z: 36.24902}
+      m_Extent: {x: 8, y: 1.7490196, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -11234,8 +11356,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 45.7509804, z: 36.2490196}
-    m_Extent: {x: 8, y: 1.74901962, z: 4.74901962}
+    m_Center: {x: 23.5, y: 45.75098, z: 36.24902}
+    m_Extent: {x: 8, y: 1.7490196, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -11324,8 +11446,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11345,8 +11469,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 232
     localAABB:
-      m_Center: {x: 39.5, y: 63.7509804, z: 39.5}
-      m_Extent: {x: 8, y: .250980377, z: 8}
+      m_Center: {x: 39.5, y: 63.75098, z: 39.5}
+      m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -11452,8 +11576,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 63.7509804, z: 39.5}
-    m_Extent: {x: 8, y: .250980377, z: 8}
+    m_Center: {x: 39.5, y: 63.75098, z: 39.5}
+    m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -11473,8 +11597,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 669
     localAABB:
-      m_Center: {x: 36.2490196, y: 55.5, z: 36.2490196}
-      m_Extent: {x: 4.74901962, y: 8, z: 4.74901962}
+      m_Center: {x: 36.24902, y: 55.5, z: 36.24902}
+      m_Extent: {x: 4.7490196, y: 8, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -11580,8 +11704,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 55.5, z: 36.2490196}
-    m_Extent: {x: 4.74901962, y: 8, z: 4.74901962}
+    m_Center: {x: 36.24902, y: 55.5, z: 36.24902}
+    m_Extent: {x: 4.7490196, y: 8, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -11601,7 +11725,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 23.5, y: 55.5, z: 1.00196075}
+      m_Center: {x: 23.5, y: 55.5, z: 1.0019608}
       m_Extent: {x: 8, y: 8, z: 0}
   m_Shapes:
     vertices: []
@@ -11708,7 +11832,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 55.5, z: 1.00196075}
+    m_Center: {x: 23.5, y: 55.5, z: 1.0019608}
     m_Extent: {x: 8, y: 8, z: 0}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -11798,8 +11922,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11888,8 +12014,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -11909,8 +12037,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 117
     localAABB:
-      m_Center: {x: 23.5, y: 59.7509804, z: 71.5}
-      m_Extent: {x: 8, y: 3.74901962, z: 8}
+      m_Center: {x: 23.5, y: 59.75098, z: 71.5}
+      m_Extent: {x: 8, y: 3.7490196, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -12016,8 +12144,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 59.7509804, z: 71.5}
-    m_Extent: {x: 8, y: 3.74901962, z: 8}
+    m_Center: {x: 23.5, y: 59.75098, z: 71.5}
+    m_Extent: {x: 8, y: 3.7490196, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -12106,8 +12234,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -12196,8 +12326,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -12318,8 +12450,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -12339,7 +12473,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 8, y: 64.0019608, z: 103.5}
+      m_Center: {x: 8, y: 64.00196, z: 103.5}
       m_Extent: {x: 7.5, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -12446,7 +12580,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8, y: 64.0019608, z: 103.5}
+    m_Center: {x: 8, y: 64.00196, z: 103.5}
     m_Extent: {x: 7.5, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -12536,8 +12670,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -12557,8 +12693,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 331
     localAABB:
-      m_Center: {x: 23.5, y: 45.7509804, z: 8.25098038}
-      m_Extent: {x: 8, y: 1.74901962, z: 7.24901962}
+      m_Center: {x: 23.5, y: 45.75098, z: 8.25098}
+      m_Extent: {x: 8, y: 1.7490196, z: 7.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -12664,8 +12800,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 45.7509804, z: 8.25098038}
-    m_Extent: {x: 8, y: 1.74901962, z: 7.24901962}
+    m_Center: {x: 23.5, y: 45.75098, z: 8.25098}
+    m_Extent: {x: 8, y: 1.7490196, z: 7.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -12754,8 +12890,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -12775,8 +12913,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 434
     localAABB:
-      m_Center: {x: 24.7509804, y: 57.7509804, z: 87.5}
-      m_Extent: {x: 6.74901962, y: 5.74901962, z: 8}
+      m_Center: {x: 24.75098, y: 57.75098, z: 87.5}
+      m_Extent: {x: 6.7490196, y: 5.7490196, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -12882,8 +13020,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 24.7509804, y: 57.7509804, z: 87.5}
-    m_Extent: {x: 6.74901962, y: 5.74901962, z: 8}
+    m_Center: {x: 24.75098, y: 57.75098, z: 87.5}
+    m_Extent: {x: 6.7490196, y: 5.7490196, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -12903,8 +13041,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 309
     localAABB:
-      m_Center: {x: 36.2490196, y: 55.5, z: 23.5}
-      m_Extent: {x: 4.74901962, y: 8, z: 8}
+      m_Center: {x: 36.24902, y: 55.5, z: 23.5}
+      m_Extent: {x: 4.7490196, y: 8, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -13010,8 +13148,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 55.5, z: 23.5}
-    m_Extent: {x: 4.74901962, y: 8, z: 8}
+    m_Center: {x: 36.24902, y: 55.5, z: 23.5}
+    m_Extent: {x: 4.7490196, y: 8, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -13031,7 +13169,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 23.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 23.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -13138,7 +13276,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 23.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 23.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -13159,7 +13297,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 71.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 71.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -13266,7 +13404,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 71.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 71.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -13356,8 +13494,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -13377,8 +13517,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 334
     localAABB:
-      m_Center: {x: 23.5, y: 65.2509766, z: 55.5}
-      m_Extent: {x: 8, y: 1.75098038, z: 8}
+      m_Center: {x: 23.5, y: 65.25098, z: 55.5}
+      m_Extent: {x: 8, y: 1.7509804, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -13484,8 +13624,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 65.2509766, z: 55.5}
-    m_Extent: {x: 8, y: 1.75098038, z: 8}
+    m_Center: {x: 23.5, y: 65.25098, z: 55.5}
+    m_Extent: {x: 8, y: 1.7509804, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -13574,8 +13714,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -13595,8 +13737,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 509
     localAABB:
-      m_Center: {x: 23.5, y: 52.2828941, z: 25.7096786}
-      m_Extent: {x: 8, y: 4.78289413, z: 5.7903223}
+      m_Center: {x: 23.5, y: 52.282894, z: 25.709679}
+      m_Extent: {x: 8, y: 4.782894, z: 5.7903223}
   m_Shapes:
     vertices: []
     shapes: []
@@ -13702,8 +13844,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 52.2828941, z: 25.7096786}
-    m_Extent: {x: 8, y: 4.78289413, z: 5.7903223}
+    m_Center: {x: 23.5, y: 52.282894, z: 25.709679}
+    m_Extent: {x: 8, y: 4.782894, z: 5.7903223}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -13792,8 +13934,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -13882,8 +14026,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -13903,7 +14049,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 23.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 23.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -14010,7 +14156,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 23.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 23.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -14031,7 +14177,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -14138,7 +14284,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -14159,8 +14305,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 250
     localAABB:
-      m_Center: {x: 36.2490196, y: 45.7509804, z: 8.25098038}
-      m_Extent: {x: 4.74901962, y: 1.74901962, z: 7.24901962}
+      m_Center: {x: 36.24902, y: 45.75098, z: 8.25098}
+      m_Extent: {x: 4.7490196, y: 1.7490196, z: 7.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -14266,8 +14412,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 45.7509804, z: 8.25098038}
-    m_Extent: {x: 4.74901962, y: 1.74901962, z: 7.24901962}
+    m_Center: {x: 36.24902, y: 45.75098, z: 8.25098}
+    m_Extent: {x: 4.7490196, y: 1.7490196, z: 7.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -14329,7 +14475,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 946
     localAABB:
-      m_Center: {x: 71.5, y: 70.0019608, z: 55.5}
+      m_Center: {x: 71.5, y: 70.00196, z: 55.5}
       m_Extent: {x: 8, y: 6, z: 8}
   m_Shapes:
     vertices: []
@@ -14436,7 +14582,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 70.0019608, z: 55.5}
+    m_Center: {x: 71.5, y: 70.00196, z: 55.5}
     m_Extent: {x: 8, y: 6, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -14457,8 +14603,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 20
     localAABB:
-      m_Center: {x: 15.2509804, y: 62.7509804, z: 66.2490234}
-      m_Extent: {x: .249019623, y: .749019623, z: 2.74901962}
+      m_Center: {x: 15.25098, y: 62.75098, z: 66.24902}
+      m_Extent: {x: 0.24901962, y: 0.7490196, z: 2.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -14564,8 +14710,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 15.2509804, y: 62.7509804, z: 66.2490234}
-    m_Extent: {x: .249019623, y: .749019623, z: 2.74901962}
+    m_Center: {x: 15.25098, y: 62.75098, z: 66.24902}
+    m_Extent: {x: 0.24901962, y: 0.7490196, z: 2.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -14585,7 +14731,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -14692,7 +14838,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -14713,7 +14859,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 55.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 55.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -14820,7 +14966,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 55.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 55.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -14910,8 +15056,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -14931,7 +15079,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 39.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 39.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -15038,7 +15186,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 39.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 39.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -15128,8 +15276,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -15218,8 +15368,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -15308,8 +15460,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -15398,8 +15552,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -15419,7 +15575,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 8}
+      m_Center: {x: 55.5, y: 64.00196, z: 8}
       m_Extent: {x: 8, y: 0, z: 7.5}
   m_Shapes:
     vertices: []
@@ -15526,7 +15682,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 8}
+    m_Center: {x: 55.5, y: 64.00196, z: 8}
     m_Extent: {x: 8, y: 0, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -15547,8 +15703,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 537
     localAABB:
-      m_Center: {x: 8.25098038, y: 55.5, z: 8.25098038}
-      m_Extent: {x: 7.24901962, y: 8, z: 7.24901962}
+      m_Center: {x: 8.25098, y: 55.5, z: 8.25098}
+      m_Extent: {x: 7.2490196, y: 8, z: 7.2490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -15654,8 +15810,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 55.5, z: 8.25098038}
-    m_Extent: {x: 7.24901962, y: 8, z: 7.24901962}
+    m_Center: {x: 8.25098, y: 55.5, z: 8.25098}
+    m_Extent: {x: 7.2490196, y: 8, z: 7.2490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -15744,8 +15900,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -15765,7 +15923,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 39.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 39.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -15872,7 +16030,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 39.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 39.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -15893,8 +16051,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 310
     localAABB:
-      m_Center: {x: 23.5, y: 65.2509766, z: 71.5}
-      m_Extent: {x: 8, y: 1.75098038, z: 8}
+      m_Center: {x: 23.5, y: 65.25098, z: 71.5}
+      m_Extent: {x: 8, y: 1.7509804, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -16000,8 +16158,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 65.2509766, z: 71.5}
-    m_Extent: {x: 8, y: 1.75098038, z: 8}
+    m_Center: {x: 23.5, y: 65.25098, z: 71.5}
+    m_Extent: {x: 8, y: 1.7509804, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -16078,8 +16236,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -16111,7 +16271,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 103.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 103.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -16218,7 +16378,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 103.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 103.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -16239,7 +16399,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 87.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 87.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -16346,7 +16506,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 87.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 87.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -16436,8 +16596,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -16457,7 +16619,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 8}
+      m_Center: {x: 119.5, y: 64.00196, z: 8}
       m_Extent: {x: 8, y: 0, z: 7.5}
   m_Shapes:
     vertices: []
@@ -16564,7 +16726,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 8}
+    m_Center: {x: 119.5, y: 64.00196, z: 8}
     m_Extent: {x: 8, y: 0, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -16585,8 +16747,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 276
     localAABB:
-      m_Center: {x: 39.5, y: 63.7509804, z: 71.5}
-      m_Extent: {x: 8, y: .250980377, z: 8}
+      m_Center: {x: 39.5, y: 63.75098, z: 71.5}
+      m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -16692,8 +16854,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 63.7509804, z: 71.5}
-    m_Extent: {x: 8, y: .250980377, z: 8}
+    m_Center: {x: 39.5, y: 63.75098, z: 71.5}
+    m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -16782,8 +16944,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -16872,8 +17036,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -16893,7 +17059,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 23.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 23.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -17000,7 +17166,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 23.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 23.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -17090,8 +17256,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17180,8 +17348,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17270,8 +17440,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17324,8 +17496,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17364,7 +17538,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 8}
+      m_Center: {x: 87.5, y: 64.00196, z: 8}
       m_Extent: {x: 8, y: 0, z: 7.5}
   m_Shapes:
     vertices: []
@@ -17471,7 +17645,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 8}
+    m_Center: {x: 87.5, y: 64.00196, z: 8}
     m_Extent: {x: 8, y: 0, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -17561,8 +17735,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17629,8 +17805,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 506
     localAABB:
-      m_Center: {x: 23.5, y: 45.7509804, z: 23.5}
-      m_Extent: {x: 8, y: 1.74901962, z: 8}
+      m_Center: {x: 23.5, y: 45.75098, z: 23.5}
+      m_Extent: {x: 8, y: 1.7490196, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -17736,8 +17912,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 45.7509804, z: 23.5}
-    m_Extent: {x: 8, y: 1.74901962, z: 8}
+    m_Center: {x: 23.5, y: 45.75098, z: 23.5}
+    m_Extent: {x: 8, y: 1.7490196, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -17757,7 +17933,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 321
     localAABB:
-      m_Center: {x: 39.5, y: 65.0019608, z: 55.5}
+      m_Center: {x: 39.5, y: 65.00196, z: 55.5}
       m_Extent: {x: 8, y: 1, z: 8}
   m_Shapes:
     vertices: []
@@ -17864,7 +18040,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 65.0019608, z: 55.5}
+    m_Center: {x: 39.5, y: 65.00196, z: 55.5}
     m_Extent: {x: 8, y: 1, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -17954,8 +18130,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -17975,7 +18153,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 87.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 87.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -18082,7 +18260,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 87.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 87.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -18172,8 +18350,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -18193,7 +18373,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 55.5, y: 64.0019608, z: 71.5}
+      m_Center: {x: 55.5, y: 64.00196, z: 71.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -18300,7 +18480,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 55.5, y: 64.0019608, z: 71.5}
+    m_Center: {x: 55.5, y: 64.00196, z: 71.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -18390,8 +18570,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -18411,8 +18593,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 1034
     localAABB:
-      m_Center: {x: 23.5, y: 55.5, z: 36.2490196}
-      m_Extent: {x: 8, y: 8, z: 4.74901962}
+      m_Center: {x: 23.5, y: 55.5, z: 36.24902}
+      m_Extent: {x: 8, y: 8, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -18518,8 +18700,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 55.5, z: 36.2490196}
-    m_Extent: {x: 8, y: 8, z: 4.74901962}
+    m_Center: {x: 23.5, y: 55.5, z: 36.24902}
+    m_Extent: {x: 8, y: 8, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -18539,7 +18721,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 87.5, y: 64.0019608, z: 71.5}
+      m_Center: {x: 87.5, y: 64.00196, z: 71.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -18646,7 +18828,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 87.5, y: 64.0019608, z: 71.5}
+    m_Center: {x: 87.5, y: 64.00196, z: 71.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -18667,7 +18849,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 71.5}
+      m_Center: {x: 71.5, y: 64.00196, z: 71.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -18774,7 +18956,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 71.5}
+    m_Center: {x: 71.5, y: 64.00196, z: 71.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -18864,8 +19046,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -18885,7 +19069,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 55.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 55.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -18992,7 +19176,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 55.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 55.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -19013,8 +19197,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 34
     localAABB:
-      m_Center: {x: 23.5, y: 63.7509804, z: .750980377}
-      m_Extent: {x: 8, y: .250980377, z: .250980377}
+      m_Center: {x: 23.5, y: 63.75098, z: 0.7509804}
+      m_Extent: {x: 8, y: 0.25098038, z: 0.25098038}
   m_Shapes:
     vertices: []
     shapes: []
@@ -19120,8 +19304,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 23.5, y: 63.7509804, z: .750980377}
-    m_Extent: {x: 8, y: .250980377, z: .250980377}
+    m_Center: {x: 23.5, y: 63.75098, z: 0.7509804}
+    m_Extent: {x: 8, y: 0.25098038, z: 0.25098038}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -19141,8 +19325,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 255
     localAABB:
-      m_Center: {x: 39.5, y: 63.7509804, z: 87.5}
-      m_Extent: {x: 8, y: .250980377, z: 8}
+      m_Center: {x: 39.5, y: 63.75098, z: 87.5}
+      m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_Shapes:
     vertices: []
     shapes: []
@@ -19248,8 +19432,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 63.7509804, z: 87.5}
-    m_Extent: {x: 8, y: .250980377, z: 8}
+    m_Center: {x: 39.5, y: 63.75098, z: 87.5}
+    m_Extent: {x: 8, y: 0.25098038, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -19338,8 +19522,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -19364,22 +19550,24 @@ MonoBehaviour:
   walkSpeedb: 3
   walkSpeedr: 3
   walkSpeedl: 3
-  acceleration: .400000006
-  climbRate: .200000003
-  crouchSpeedMultiplier: .5
+  acceleration: 0.6
+  climbRate: 0.2
+  crouchSpeedMultiplier: 0.5
   minCrouchHeight: 1
   crouchHeight: 1.25
+  standingElevation: 0.65
+  crouchingElevation: 0.25
   jumpSpeed: 5
   oxygenStopSprint: 10
   oxygenBeginSprint: 15
   oxygenSprintUsage: 20
   footsteps:
   - {fileID: 8300000, guid: 81829dd7877a9b54face23754adbd789, type: 3}
-  minimumFoostepOccurence: .600000024
-  foostepSpeedScale: .0299999993
-  fallHurtSpeed: 5
-  fallDeathSpeed: 20
-  minDist: .100000001
+  minimumFoostepOccurence: 0.6
+  foostepSpeedScale: 0.03
+  fallHurtSpeed: 10
+  fallDeathSpeed: 25
+  minDist: 0.1
 --- !u!43 &2051570826
 Mesh:
   m_ObjectHideFlags: 0
@@ -19395,7 +19583,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 272
     localAABB:
-      m_Center: {x: 71.5, y: 64.0019608, z: 8}
+      m_Center: {x: 71.5, y: 64.00196, z: 8}
       m_Extent: {x: 8, y: 0, z: 7.5}
   m_Shapes:
     vertices: []
@@ -19502,7 +19690,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 71.5, y: 64.0019608, z: 8}
+    m_Center: {x: 71.5, y: 64.00196, z: 8}
     m_Extent: {x: 8, y: 0, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -19523,7 +19711,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 39.5, y: 64.0019608, z: 119.5}
+      m_Center: {x: 39.5, y: 64.00196, z: 119.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -19630,7 +19818,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 64.0019608, z: 119.5}
+    m_Center: {x: 39.5, y: 64.00196, z: 119.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -19720,8 +19908,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -19741,8 +19931,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 210
     localAABB:
-      m_Center: {x: 36.2490196, y: 45.7509804, z: 36.2490196}
-      m_Extent: {x: 4.74901962, y: 1.74901962, z: 4.74901962}
+      m_Center: {x: 36.24902, y: 45.75098, z: 36.24902}
+      m_Extent: {x: 4.7490196, y: 1.7490196, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -19848,8 +20038,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 36.2490196, y: 45.7509804, z: 36.2490196}
-    m_Extent: {x: 4.74901962, y: 1.74901962, z: 4.74901962}
+    m_Center: {x: 36.24902, y: 45.75098, z: 36.24902}
+    m_Extent: {x: 4.7490196, y: 1.7490196, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -19869,7 +20059,7 @@ Mesh:
     firstVertex: 0
     vertexCount: 289
     localAABB:
-      m_Center: {x: 119.5, y: 64.0019608, z: 103.5}
+      m_Center: {x: 119.5, y: 64.00196, z: 103.5}
       m_Extent: {x: 8, y: 0, z: 8}
   m_Shapes:
     vertices: []
@@ -19976,7 +20166,7 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 119.5, y: 64.0019608, z: 103.5}
+    m_Center: {x: 119.5, y: 64.00196, z: 103.5}
     m_Extent: {x: 8, y: 0, z: 8}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
@@ -19997,8 +20187,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 147
     localAABB:
-      m_Center: {x: 39.5, y: 63.7509804, z: 8}
-      m_Extent: {x: 8, y: .250980377, z: 7.5}
+      m_Center: {x: 39.5, y: 63.75098, z: 8}
+      m_Extent: {x: 8, y: 0.25098038, z: 7.5}
   m_Shapes:
     vertices: []
     shapes: []
@@ -20104,8 +20294,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 39.5, y: 63.7509804, z: 8}
-    m_Extent: {x: 8, y: .250980377, z: 7.5}
+    m_Center: {x: 39.5, y: 63.75098, z: 8}
+    m_Extent: {x: 8, y: 0.25098038, z: 7.5}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
@@ -20125,8 +20315,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 250
     localAABB:
-      m_Center: {x: 8.25098038, y: 45.7509804, z: 36.2490196}
-      m_Extent: {x: 7.24901962, y: 1.74901962, z: 4.74901962}
+      m_Center: {x: 8.25098, y: 45.75098, z: 36.24902}
+      m_Extent: {x: 7.2490196, y: 1.7490196, z: 4.7490196}
   m_Shapes:
     vertices: []
     shapes: []
@@ -20232,8 +20422,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: 8.25098038, y: 45.7509804, z: 36.2490196}
-    m_Extent: {x: 7.24901962, y: 1.74901962, z: 4.74901962}
+    m_Center: {x: 8.25098, y: 45.75098, z: 36.24902}
+    m_Extent: {x: 7.2490196, y: 1.7490196, z: 4.7490196}
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
