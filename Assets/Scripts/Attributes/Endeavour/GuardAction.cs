@@ -41,7 +41,6 @@ public class GuardAction : Endeavour {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(this.active && !jet.hasTarget() && !jet.hasReachedTarget(guardLocation.labelHandle)) {
 			this.active = false;
-			Debug.Log("going inactive");
 		}
 		return true;
 	}

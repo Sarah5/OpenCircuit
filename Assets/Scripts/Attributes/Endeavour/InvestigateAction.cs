@@ -4,14 +4,16 @@ using System.Collections.Generic;
 
 public class InvestigateAction : InherentEndeavour {
 
-	private static int expirationTimeSeconds = 20; //Expires in 60 seconds
+	private static float expirationTimeSeconds = 10; //Expires in 20 seconds
 
-	private System.DateTime creationTime;
+	//private System.DateTime creationTime;
+	private float creationTime;
 	private bool completed = false;
 
 	public InvestigateAction(RobotController controller, List<Goal> goals, LabelHandle parent)
 		: base(controller, goals, parent) {
-		creationTime = System.DateTime.Now;
+		//creationTime = System.DateTime.Now;
+		creationTime = Time.time;
 		this.name = "investigate";
 		requiredComponents = new System.Type[] { typeof(HoverJet) };
 	}
@@ -19,8 +21,9 @@ public class InvestigateAction : InherentEndeavour {
 
 
 	public override bool isStale() {
+		NavMeshAgent nav = controller.GetComponent<NavMeshAgent>();
 
-		return completed || (isComplete()) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds) || Vector3.Distance(controller.transform.position, parent.getPosition()) < 1.5f;
+		return (active && nav.remainingDistance < 2f) || completed || (isComplete()) || !((Time.time - creationTime) < InvestigateAction.expirationTimeSeconds) || Vector3.Distance(controller.transform.position, parent.getPosition()) < 1.8f;
 	}
 
 	public bool isComplete() {
