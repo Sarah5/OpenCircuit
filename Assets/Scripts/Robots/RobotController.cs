@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 [AddComponentMenu("Scripts/Robot/Robot Controller")]
-public class RobotController : MonoBehaviour {
+public class RobotController : MonoBehaviour, ISerializationCallbackReceiver {
+
+	[SerializeField]
+	public byte[] serializedData;
 
 	private HashSet<Endeavour> availableEndeavours = new HashSet<Endeavour> (new EndeavourComparer());
 	private List<LabelHandle> trackedTargets = new List<LabelHandle> ();
@@ -19,23 +24,34 @@ public class RobotController : MonoBehaviour {
 
 	public Label[] locations;
     public Goal[] goals;
-	public InherentEndeavourFactory[] inherentEndeavours = new InherentEndeavourFactory[] { new Investigate() };
+	[System.NonSerialized]
+	public InherentEndeavourFactory[] inherentEndeavours = new InherentEndeavourFactory[0];
+		[System.NonSerialized]
 	public Dictionary<GoalEnum, Goal> goalMap = new Dictionary<GoalEnum, Goal>();
 
     public float reliability = 5f;
 	public AudioClip targetSightedSound;
 
+	[System.NonSerialized]
 	private HashSet<Endeavour> currentEndeavours = new HashSet<Endeavour>();
+	[System.NonSerialized]
 	private Dictionary<System.Type, AbstractRobotComponent> componentMap = new Dictionary<System.Type, AbstractRobotComponent> ();
 
+	[System.NonSerialized]
 	MentalModel mentalModel = new MentalModel ();
+	[System.NonSerialized]
 	MentalModel externalMentalModel = null;
-	
+
+	[System.NonSerialized]
 	Queue<RobotMessage> messageQueue = new Queue<RobotMessage>();
 
+	[System.NonSerialized]
 	private bool dirty = false;
 
+	[System.NonSerialized]
 	private float timeoutSeconds = 10;
+
+
 
 	void Start() {
 		soundEmitter = gameObject.AddComponent<AudioSource>();
@@ -477,4 +493,37 @@ public class RobotController : MonoBehaviour {
 		}
 	}
 #endif
+
+	public void OnBeforeSerialize() {
+		lock(this) {
+
+			MemoryStream stream = new MemoryStream();
+			BinaryFormatter formatter = new BinaryFormatter();
+			formatter.Serialize(stream, inherentEndeavours);
+
+			serializedData = stream.ToArray();
+			stream.Close();
+		}
+	}
+
+	public void OnAfterDeserialize() {
+		lock(this) {
+			MemoryStream stream = new MemoryStream(serializedData);
+			BinaryFormatter formatter = new BinaryFormatter();
+			inherentEndeavours = (InherentEndeavourFactory[])formatter.Deserialize(stream);
+
+			foreach(InherentEndeavourFactory factory in inherentEndeavours) {
+				if(factory != null) {
+					if(factory.goals == null) {
+						factory.goals = new List<Goal>();
+					}
+				}
+			}
+			stream.Close();
+		}
+
+
+		}	
+
+
 }

@@ -97,7 +97,7 @@ public class LabelGUI : Editor {
 
 		for (int i=0; i<label.endeavours.Length; ++i) {
 			if (label.endeavours [i] == null) {
-				label.endeavours [i] = EndeavourFactory.constructDefault (label);
+				label.endeavours [i] = EndeavourFactory.constructDefault ();
 			}
 		}
 		doArrayGUI(ref label.endeavours);

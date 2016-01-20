@@ -42,7 +42,7 @@ public abstract class EndeavourFactory : InspectorListElement {
 
 	public abstract Endeavour constructEndeavour (RobotController controller);
 
-	public static EndeavourFactory constructDefault(Label parent) {
+	public static EndeavourFactory constructDefault() {
 		EndeavourFactory factory = (EndeavourFactory) types[0].GetConstructor(new System.Type[0]).Invoke(new object[0]);
 		factory.goals = new List<Goal> ();
 		return factory;

@@ -4,12 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-[CustomEditor(typeof(RobotController))]
+[CustomEditor(typeof(RobotController), true)]
 public class RobotControllerGUI : Editor {
 
     private bool status = true;
     private int size = 0;
 	private Font debugFont;
+	private bool endeavoursExpanded = true;
 
     void onEnable() {
 		debugFont = UnityEditor.AssetDatabase.LoadAssetAtPath<Font>("Assets/GUI/Courier.ttf");
@@ -138,6 +139,7 @@ public class RobotControllerGUI : Editor {
 
 	public override void OnInspectorGUI() {
         serializedObject.Update();
+		RobotController robot = (RobotController)target;
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("debug"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("reliability"));
         SerializedProperty goals = serializedObject.FindProperty("goals");
@@ -167,6 +169,102 @@ public class RobotControllerGUI : Editor {
 		}
         EditorGUILayout.PropertyField(serializedObject.FindProperty("locations"), true);
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("targetSightedSound"));
+		doEndeavourList(robot);
+		//robot.OnBeforeSerialize();
+
         serializedObject.ApplyModifiedProperties();
+
+		//finally, apply the changes
+		robot.OnBeforeSerialize();
+		EditorUtility.SetDirty(target);
+		serializedObject.Update();
+		serializedObject.ApplyModifiedProperties();
+	}
+
+	public void doEndeavourList(RobotController robot) {
+		listFoldout(ref endeavoursExpanded, ref robot.inherentEndeavours, "Inherent Endeavours");
+		if(!endeavoursExpanded) {
+			return;
+		}
+
+		for(int i = 0; i < robot.inherentEndeavours.Length; ++i) {
+			if(robot.inherentEndeavours[i] == null) {
+				robot.inherentEndeavours[i] = InherentEndeavourFactory.constructDefault();
+			}
+		}
+		doArrayGUI(ref robot.inherentEndeavours);
+	}
+
+	private static void doArrayGUI<T>(ref T[] array) where T : InspectorListElement {
+		//GUILayout.BeginHorizontal();
+		//int newSize = Math.Max(EditorGUILayout.IntField("Count", array.Length), 0);
+		//if (newSize != array.Length) {
+		//	array = resize(array, newSize);
+		//	return;
+		//}
+		//GUILayout.EndHorizontal();
+
+		// draw list
+		for(int i = 0; i < array.Length; ++i) {
+			GUILayout.Box("", GUILayout.Height(1), GUILayout.ExpandWidth(true));
+			GUILayout.BeginHorizontal();
+
+			// draw element controls
+			GUILayout.BeginVertical();
+			if(GUILayout.Button("X", GUILayout.MaxWidth(20), GUILayout.MaxHeight(16))) {
+				array = remove(array, i);
+				--i;
+				continue;
+			}
+			if(i < array.Length - 1 && GUILayout.Button("V", GUILayout.MaxWidth(20), GUILayout.MaxHeight(16))) {
+				moveDown(ref array, i);
+				--i;
+				continue;
+			}
+			GUILayout.EndVertical();
+
+			// draw element
+			GUILayout.BeginVertical();
+			array[i] = (T)array[i].doListElementGUI();
+			GUILayout.EndVertical();
+			GUILayout.EndHorizontal();
+		}
+
+		// draw add button
+		GUILayout.BeginHorizontal();
+		if(GUILayout.Button("Add")) {
+			array = resize(array, array.Length + 1);
+		}
+		GUILayout.EndHorizontal();
+	}
+
+	private static T[] remove<T>(T[] array, int indexToRemove) {
+		T[] newArray = new T[array.Length - 1];
+		Array.Copy(array, newArray, indexToRemove);
+		Array.Copy(array, indexToRemove + 1, newArray, indexToRemove, newArray.Length - indexToRemove);
+		return newArray;
+	}
+
+	private static void moveDown<T>(ref T[] array, int index) {
+		T temp = array[index];
+		array[index] = array[index + 1];
+		array[index + 1] = temp;
+	}
+
+	private static void listFoldout<T>(ref bool expanded, ref T[] array, string label) {
+		GUILayout.BeginHorizontal();
+		expanded = EditorGUILayout.Foldout(expanded, label);
+		int newSize = Math.Max(EditorGUILayout.IntField(array.Length), 0);
+		if(newSize != array.Length)
+			array = resize(array, newSize);
+		GUILayout.EndHorizontal();
+	}
+
+	private static T[] resize<T>(T[] array, int newSize) {
+		if(newSize == array.Length)
+			return array;
+		T[] newArray = new T[newSize];
+		Array.Copy(array, newArray, Math.Min(newSize, array.Length));
+		return newArray;
 	}
 }
