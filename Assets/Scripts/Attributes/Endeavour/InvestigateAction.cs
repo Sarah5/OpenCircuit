@@ -19,6 +19,12 @@ public class InvestigateAction : InherentEndeavour {
 
 
 	public override bool isStale() {
+
+		return completed || (isComplete()) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds) || Vector3.Distance(controller.transform.position, parent.getPosition()) < 1.5f;
+	}
+
+	public bool isComplete() {
+
 		RoboEyes eyes = controller.GetComponentInChildren<RoboEyes>();
 		bool canSee = false;
 		if(eyes != null) {
@@ -27,7 +33,7 @@ public class InvestigateAction : InherentEndeavour {
 				controller.enqueueMessage(new RobotMessage(RobotMessage.MessageType.TARGET_LOST, "target lost", parent, parent.getPosition(), null));
 			}
 		}
-		return completed || (canSee) || !((System.DateTime.Now - creationTime).Seconds < InvestigateAction.expirationTimeSeconds) || Vector3.Distance(controller.transform.position, parent.getPosition()) < 1.5f;
+		return canSee && Vector3.Distance(controller.transform.position, parent.getPosition()) < 5f;
 	}
 
 	public override void onMessage(RobotMessage message) {
