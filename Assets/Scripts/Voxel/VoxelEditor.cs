@@ -296,7 +296,7 @@ namespace Vox {
 				foreach (VoxelMask mask in masks) {
 					if (!mask.active)
 						continue;
-					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize / 2, mask.yPosition / voxelSize(), baseSize / 2));
+					Gizmos.DrawMesh(generateRectangleMesh(new Vector3(baseSize, 0, baseSize)), transform.TransformPoint(baseSize / 2, mask.yPosition * voxelSize(), baseSize / 2));
 				}
 				Gizmos.color = Color.gray;
 			}
