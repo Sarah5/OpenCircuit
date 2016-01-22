@@ -7,22 +7,49 @@ public class AutoDoor : MonoBehaviour {
     private Vector3 stopPosition;
     private Vector3 upPosition;
     public float speed = 1;
+    private bool isMovingUp = true;
 
-	// Use this for initialization
-	void Start () {
-        stopPosition = transform.position - new Vector3 (0,5,0);
+    // Use this for initialization
+    void Start () {
+        stopPosition = transform.position - new Vector3 (0,doorHeight,0);
         upPosition = transform.position;
+        //    InvokeRepeating("switchDoor", 0, 8f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        Vector3 vector = transform.position - stopPosition;
-       float length = vector.magnitude;
-    if(length > .1f) {
+
+    public void switchDoor() {
+        isMovingUp = !isMovingUp;
+    }
+    void moveDown() {
+        Vector3 stopVector = transform.position - stopPosition;
+        float length = stopVector.magnitude;
+
+
+        if (length > .1f){ 
+           // print("this is a string!!!");
             transform.position = transform.position - new Vector3(0, Time.deltaTime * speed, 0);
         }
-        if (length < .1f) {
+
+    }
+
+    void moveUp() {
+        Vector3 upVector = transform.position - upPosition;
+        float upLength = upVector.magnitude;
+
+        if (upLength > .1f) {
+            print("This is another string.");
             transform.position = transform.position + new Vector3(0, Time.deltaTime * speed, 0);
         }
+
+    }
+	// Update is called once per frame
+	void Update () {
+
+    if (isMovingUp) {
+            moveUp();
+        }
+     else {
+            moveDown();
+        }
+
 	}
 }
