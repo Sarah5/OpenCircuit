@@ -15,7 +15,7 @@ public class GuardAction : Endeavour {
 		base.execute();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(jet != null ) {
-			jet.setTarget(guardLocation.labelHandle, true);
+			jet.setTarget(guardLocation.labelHandle, true, true);
 			jet.setAvailability(false);
 		}
 	}
@@ -25,7 +25,7 @@ public class GuardAction : Endeavour {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(jet != null) {
 			jet.setAvailability(true);
-			jet.setTarget(null);
+			jet.setTarget(null, false);
 		}
 	}
 

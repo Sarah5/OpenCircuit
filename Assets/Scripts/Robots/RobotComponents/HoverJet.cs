@@ -27,7 +27,7 @@ public class HoverJet : AbstractRobotComponent {
 	private GameObject dest;
 #endif
 
-    public void setTarget(LabelHandle target, bool matchRotation = false) {
+    public void setTarget(LabelHandle target, bool autoBrake, bool matchRotation = false) {
 		this.target = target;
 		matchTargetRotation = matchRotation;
 		if(target == null) {
@@ -45,13 +45,12 @@ public class HoverJet : AbstractRobotComponent {
 				nav.Resume();
 			}
 		}
-		nav.autoBraking = false;
+		nav.autoBraking = autoBrake;
 	}
 
-	public void pursueTarget(LabelHandle target) {
-		setTarget(target);
+	public void pursueTarget(LabelHandle target, bool autoBrake) {
+		setTarget(target, autoBrake);
 		isPursuit = true;
-		nav.autoBraking = false;
 	}
 
 	public bool hasTarget() {

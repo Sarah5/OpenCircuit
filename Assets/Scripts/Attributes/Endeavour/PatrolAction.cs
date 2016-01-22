@@ -30,7 +30,7 @@ public class PatrolAction : Endeavour {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			currentDestination = getNearest(controller.transform.position);
-			jet.setTarget(routePoints[currentDestination]);
+			jet.setTarget(routePoints[currentDestination], false);
 			jet.setAvailability(false);
 		}
 	}
@@ -40,7 +40,7 @@ public class PatrolAction : Endeavour {
 		HoverJet jet = controller.GetComponentInChildren<HoverJet> ();
 		if (jet != null) {
 			jet.setAvailability(true);
-			jet.setTarget(null);
+			jet.setTarget(null, false);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class PatrolAction : Endeavour {
 					Debug.LogWarning("Robot '" + controller.name + "' has detected a missing patrol route point. ");
 					Debug.LogWarning("Robot '" + controller.name + "' halted. ");
 				} else {
-					jet.setTarget(routePoints[currentDestination]);
+					jet.setTarget(routePoints[currentDestination], false);
 				}
 			}
 		}

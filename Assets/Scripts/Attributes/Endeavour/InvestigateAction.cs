@@ -57,7 +57,7 @@ public class InvestigateAction : InherentEndeavour {
 		base.execute();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(jet != null) {
-			jet.setTarget(parent);
+			jet.setTarget(parent, false);
 			jet.setAvailability(false);
 		}
 	}
@@ -66,7 +66,7 @@ public class InvestigateAction : InherentEndeavour {
 		base.stopExecution();
 		HoverJet jet = controller.GetComponentInChildren<HoverJet>();
 		if(jet != null) {
-			jet.setTarget(null);
+			jet.setTarget(null, false);
 			jet.setAvailability(true);
 		}
 	}
