@@ -6,16 +6,15 @@ using System.Collections.Generic;
 public class Parkour : MovementController {
 
 	private Player myPlayer;
-	private Vector3 groundNormal;
-	private Vector3 groundSpeed;
+	private List<FloorData> floors;
+	private int highestFlatFloor;
+	private int flatestFloor;
 	private Vector3 navPoint;
 	private float forwardSpeed = 0;
 	private float rightSpeed = 0;
-	//private bool grounded;
 	private bool sprinting = false;
 	private bool crouching = false;
 	private bool autoMove = false;
-	private GameObject floor = null;
 	private CapsuleCollider col;
 	private AudioSource footstepEmitter;
 	private float nextFootstep;
@@ -56,8 +55,7 @@ public class Parkour : MovementController {
 	public float fallDeathSpeed = 15;
 
 	void Awake() {
-		groundNormal = Vector3.zero;
-		groundSpeed = Vector3.zero;
+		floors = new List<FloorData>();
 		myPlayer = GetComponent<Player>();
 		col = GetComponent<CapsuleCollider>();
 		normHeight = col.height;
@@ -69,7 +67,6 @@ public class Parkour : MovementController {
 
 	void FixedUpdate() {
 		// change collider height
-		//float desiredHeight = crouching? crouchHeight: normHeight;
 		float desiredHeight = crouchHeight;
 		if (col.height < desiredHeight) {
 			if (freeFallDelay == 0)
@@ -86,7 +83,7 @@ public class Parkour : MovementController {
 
 		//check if grounded
 		float dHeight = crouching ? crouchingElevation : standingElevation;
-		float elevation = doGroundedCheck();
+		detectFloor();
 
 		// update past forces
 		int newForceCount = pastForces.Count -lastForceCount;
@@ -122,7 +119,9 @@ public class Parkour : MovementController {
 		}
 		Vector3 desiredVel = getDesiredVel();
 
-		float crouchingSpeedMult = 1 -(1 -crouchSpeedMultiplier) *Mathf.Max((standingElevation -elevation) /(standingElevation -crouchingElevation), 0);
+		float crouchingSpeedMult = isGrounded() ?
+			1 -(1 -crouchSpeedMultiplier) *Mathf.Max((standingElevation -floors[highestFlatFloor].elevation) /(standingElevation -crouchingElevation), 0):
+			1;
 		float speed = desiredVel.magnitude * (sprinting ? calculateSprintMultiplier() : 1) *crouchingSpeedMult;
 		desiredVel.y = 0;
 		desiredVel.Normalize();
@@ -130,39 +129,42 @@ public class Parkour : MovementController {
 		// move parallel to the ground
 		if (isGrounded()) {
 			Vector3 sideways = Vector3.Cross(Vector3.up, desiredVel);
-			desiredVel = Vector3.Cross(sideways, groundNormal).normalized;
+			desiredVel = Vector3.Cross(sideways, floors[highestFlatFloor].normal).normalized;
 		}
 		desiredVel *= speed;
 
 		// slow down when moving up a slope
-		//if (desiredVel.y > 0)
-		//	desiredVel *= 1 - Mathf.Pow(desiredVel.y / speed, 2);
+		if (desiredVel.y > 0)
+			desiredVel *= 1 - Mathf.Pow(desiredVel.y / speed, 4);
 		if (!isGrounded())
 			desiredVel.y = GetComponent<Rigidbody>().velocity.y;
 
-		// levitate
 		if (isGrounded()) {
-			Vector3 vel = GetComponent<Rigidbody>().velocity;
-			desiredVel.y += Mathf.Clamp((dHeight - elevation) * 30 *acceleration, -4 *acceleration, 4 *acceleration);
-		}
+			// levitate
+			desiredVel.y += Mathf.Clamp((dHeight - floors[highestFlatFloor].elevation) * 30 *acceleration, -4 *acceleration, 4 *acceleration);
 
-		if (isGrounded()) {
-			if (elevation > dHeight)
+			// keep player from flying
+			if (floors[highestFlatFloor].elevation > dHeight)
 				desiredVel.y = GetComponent<Rigidbody>().velocity.y;
+
+			// slide down slopes
+			Vector3 sideways = Vector3.Cross(Vector3.up, floors[flatestFloor].normal);
+			Vector3 downSlope = Vector3.Cross(sideways, floors[flatestFloor].normal);
+			float quantity = -downSlope.y;
+			quantity = quantity > 0.7f? quantity +0.7f -quantity: quantity;
+			Vector3 downForce = downSlope *quantity;
+			GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity +downForce;
 		}
 
 		// handle the maximum acceleration
-		Vector3 force = desiredVel -GetComponent<Rigidbody>().velocity +groundSpeed;
-		float maxAccel = acceleration;// Mathf.Min(Mathf.Max(acceleration *force.magnitude, acceleration /3), acceleration *2);
+		Vector3 force = desiredVel -GetComponent<Rigidbody>().velocity;
+		float maxAccel = acceleration;
 		if (force.magnitude > maxAccel) {
 			force.Normalize();
 			force *= maxAccel;
 		}
 		if (force.magnitude != float.NaN)
 		GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
-
-		print(GetComponent<Rigidbody>().velocity);
-		//print(desiredVel);
 
 		// play footstep sounds
 		float currentSpeed = GetComponent<Rigidbody>().velocity.sqrMagnitude;
@@ -288,8 +290,6 @@ public class Parkour : MovementController {
 	}
 
 	public override void setSprinting(bool sprint) {
-		//if (recovering && myPlayer.oxygen < oxygenBeginSprint)
-		//	return;
 		sprinting = sprint;
 	}
 
@@ -303,10 +303,7 @@ public class Parkour : MovementController {
 			return;
 		freeFallDelay = 0;
 		Vector3 upSpeed = new Vector3(0, jumpSpeed, 0);
-		if (floor != null && floor.GetComponent<Rigidbody>() != null) upSpeed.y += floor.GetComponent<Rigidbody>().velocity.y;
-		GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity + upSpeed;
-		floor = null;
-		setColliderHeight(normHeight - maxStepHeight);
+		GetComponent<Rigidbody>().AddForce(upSpeed, ForceMode.VelocityChange);
 	}
 
 	private void setColliderHeight(float h) {
@@ -316,7 +313,7 @@ public class Parkour : MovementController {
 	}
 
 	public bool isGrounded() {
-		return (floor != null && groundNormal.y > 0.6f) || (GetComponent<Rigidbody>().IsSleeping());
+		return (floors.Count > 0 && highestFlatFloor >= 0);
 	}
 
 	public override void lockMovement() {
@@ -340,25 +337,41 @@ public class Parkour : MovementController {
 		return Vector3.one;
 	}
 
-	protected float doGroundedCheck() {
-		RaycastHit[] hits = Physics.SphereCastAll(transform.position, 0.35f, -Vector3.up, 1f);
-		float distance = float.PositiveInfinity;
-		foreach(RaycastHit hit in hits) {
-			if (distance > hit.distance && hit.collider.gameObject != gameObject) {
-				distance = hit.distance;
-				groundNormal = hit.normal;
-				floor = hit.collider.gameObject;
+	protected void detectFloor() {
+		floors.Clear();
+		float startOffset = -0.5f;
+
+		//RaycastHit hit;
+		//while(Physics.SphereCast(transform.position -Vector3.up *startOffset, 0.35f, -Vector3.up, out hit, standingElevation -startOffset +0.25f)) {
+		//	hit.distance += startOffset;
+		//	startOffset = hit.distance +standingElevation *0.01f;
+		//	if (hit.collider.gameObject != gameObject)
+		//		floors.Add(new FloorData(hit.distance, hit.normal, hit.collider));
+		//}
+
+		RaycastHit[] hits = Physics.SphereCastAll(transform.position -Vector3.up *startOffset, 0.35f, -Vector3.up, standingElevation -startOffset);
+		foreach (RaycastHit hit in hits) {
+			if (hit.collider.gameObject != gameObject) {
+				floors.Add(new FloorData(
+					hit.distance +startOffset,
+					hit.normal,
+					hit.collider));
 			}
 		}
-		bool grounded = distance < float.PositiveInfinity;
-		if (!grounded) {
-			floor = null;
-			groundNormal = Vector3.zero;
-		//} else {
-		//	print(groundNormal);
+		floors.Sort();
+
+		// determine highest sufficiently flat floor
+		highestFlatFloor = -1;
+		flatestFloor = 0;
+		int i = 0;
+		foreach (FloorData floor in floors) {
+			if (floor.normal.y > 0.1f && highestFlatFloor == -1)
+				highestFlatFloor = i;
+			if (floor.normal.y > floors[flatestFloor].normal.y)
+				flatestFloor = i;
+			++i;
 		}
-		return distance;
-    }
+	}
 
 
 
@@ -381,28 +394,43 @@ public class Parkour : MovementController {
 
 #if UNITY_EDITOR
 
-	public void OnGUI() {
-		GUI.Label(new Rect(100, 10, 100, 20), "Grounded: " +isGrounded());
-		GUI.Label(new Rect(100, 30, 100, 20), "Speed: " +GetComponent<Rigidbody>().velocity.magnitude.ToString());
-	}
+	//public void OnGUI() {
+	//	GUI.Label(new Rect(100, 10, 100, 20), "Grounded: " +isGrounded());
+	//	GUI.Label(new Rect(100, 30, 100, 20), "Floor Count: " +floors.Count);
+	//	GUI.Label(new Rect(100, 50, 100, 20), "Speed: " +GetComponent<Rigidbody>().velocity.magnitude.ToString());
+	//}
 
-	public void OnDrawGizmosSelected() {
-		if (!Application.isPlaying)
-			return;
+	//public void OnDrawGizmosSelected() {
+	//	if (!Application.isPlaying)
+	//		return;
 
-		RaycastHit hitInfo;
-		bool ledgeExists = Physics.SphereCast(getCapsuleStart() +getDirection() *1f, 0.4f, -Vector3.up, out hitInfo, 2.5f);
+	//	RaycastHit hitInfo;
+	//	bool ledgeExists = Physics.SphereCast(getCapsuleStart() +getDirection() *1f, 0.4f, -Vector3.up, out hitInfo, 2.5f);
 
-		float dropDistance = ledgeExists ? hitInfo.distance -0.05f : 0;
-		//Gizmos.DrawWireSphere(getCapsuleStart(), 0.4f);
-		//Gizmos.DrawWireSphere(getCapsuleEnd(), 0.4f);
-		bool ledgeFree = false;
-		if (ledgeExists)
-			ledgeFree = !Physics.CapsuleCast(getCapsuleStart() -Vector3.up *dropDistance, getCapsuleEnd() -Vector3.up *dropDistance, 0.4f, getDirection(), 1);
+	//	float dropDistance = ledgeExists ? hitInfo.distance -0.05f : 0;
+	//	bool ledgeFree = false;
+	//	if (ledgeExists)
+	//		ledgeFree = !Physics.CapsuleCast(getCapsuleStart() -Vector3.up *dropDistance, getCapsuleEnd() -Vector3.up *dropDistance, 0.4f, getDirection(), 1);
 
-		Gizmos.color = ledgeFree ? Color.blue : Color.red;
-		Gizmos.DrawWireSphere(getCapsuleStart() +getDirection() *1f -Vector3.up *dropDistance, 0.4f);
-		Gizmos.DrawWireSphere(getCapsuleEnd() +getDirection() *1f -Vector3.up *dropDistance, 0.4f);
-	}
+	//	Gizmos.color = ledgeFree ? Color.blue : Color.red;
+	//	Gizmos.DrawWireSphere(getCapsuleStart() +getDirection() *1f -Vector3.up *dropDistance, 0.4f);
+	//	Gizmos.DrawWireSphere(getCapsuleEnd() +getDirection() *1f -Vector3.up *dropDistance, 0.4f);
+	//}
 #endif
+
+	protected class FloorData: System.IComparable<FloorData> {
+		public float elevation;
+		public Vector3 normal;
+		public Collider collider;
+
+		public FloorData(float elevation, Vector3 normal, Collider collider) {
+			this.elevation = elevation;
+			this.normal = normal;
+			this.collider = collider;
+		}
+
+		public int CompareTo(FloorData other) {
+			return elevation.CompareTo(other.elevation);
+		}
+	}
 }
