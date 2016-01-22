@@ -20,10 +20,6 @@ public class Parkour : MovementController {
 	private float nextFootstep;
 
 	// climbing stuff
-	//private float minStepHeight = 0.1f;
-	private float maxStepHeight = 1f;
-	//private float minLedgeWidth = 0.25f;
-	private float normHeight;
 	private int freeFallDelay = 0;
 	private bool canMove = true;
 	private Vector3 lastRelativeVelocity = Vector3.zero;
@@ -32,6 +28,7 @@ public class Parkour : MovementController {
 	private List<int> pastForcesAddedCount = new List<int>();
 	private int pastForceCount = 5;
 	private int lastForceCount = 0;
+	private Rigidbody rb;
 
 	public float sprintMult = 2f;
 	public float walkSpeedf = 6f;
@@ -58,7 +55,7 @@ public class Parkour : MovementController {
 		floors = new List<FloorData>();
 		myPlayer = GetComponent<Player>();
 		col = GetComponent<CapsuleCollider>();
-		normHeight = col.height;
+		rb = GetComponent<Rigidbody>();
 		footstepEmitter = gameObject.AddComponent<AudioSource>();
 		footstepEmitter.enabled = true;
 		footstepEmitter.loop = false;
@@ -137,7 +134,7 @@ public class Parkour : MovementController {
 		if (desiredVel.y > 0)
 			desiredVel *= 1 - Mathf.Pow(desiredVel.y / speed, 4);
 		if (!isGrounded())
-			desiredVel.y = GetComponent<Rigidbody>().velocity.y;
+			desiredVel.y = rb.velocity.y;
 
 		if (isGrounded()) {
 			// levitate
@@ -145,7 +142,7 @@ public class Parkour : MovementController {
 
 			// keep player from flying
 			if (floors[highestFlatFloor].elevation > dHeight)
-				desiredVel.y = GetComponent<Rigidbody>().velocity.y;
+				desiredVel.y = rb.velocity.y;
 
 			// slide down slopes
 			Vector3 sideways = Vector3.Cross(Vector3.up, floors[flatestFloor].normal);
@@ -153,21 +150,21 @@ public class Parkour : MovementController {
 			float quantity = -downSlope.y;
 			quantity = quantity > 0.7f? quantity +0.7f -quantity: quantity;
 			Vector3 downForce = downSlope *quantity;
-			GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity +downForce;
+			rb.velocity = rb.velocity +downForce;
 		}
 
 		// handle the maximum acceleration
-		Vector3 force = desiredVel -GetComponent<Rigidbody>().velocity;
+		Vector3 force = desiredVel -rb.velocity;
 		float maxAccel = acceleration;
 		if (force.magnitude > maxAccel) {
 			force.Normalize();
 			force *= maxAccel;
 		}
 		if (force.magnitude != float.NaN)
-		GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
+		rb.AddForce(force, ForceMode.VelocityChange);
 
 		// play footstep sounds
-		float currentSpeed = GetComponent<Rigidbody>().velocity.sqrMagnitude;
+		float currentSpeed = rb.velocity.sqrMagnitude;
 		if (nextFootstep <= Time.fixedTime && currentSpeed > 0.1f) {
 			if (nextFootstep != 0) {
 				float volume = 0.8f -(0.8f / (1 + currentSpeed /100));
@@ -303,7 +300,7 @@ public class Parkour : MovementController {
 			return;
 		freeFallDelay = 0;
 		Vector3 upSpeed = new Vector3(0, jumpSpeed, 0);
-		GetComponent<Rigidbody>().AddForce(upSpeed, ForceMode.VelocityChange);
+		rb.AddForce(upSpeed, ForceMode.VelocityChange);
 	}
 
 	private void setColliderHeight(float h) {
@@ -397,7 +394,7 @@ public class Parkour : MovementController {
 	//public void OnGUI() {
 	//	GUI.Label(new Rect(100, 10, 100, 20), "Grounded: " +isGrounded());
 	//	GUI.Label(new Rect(100, 30, 100, 20), "Floor Count: " +floors.Count);
-	//	GUI.Label(new Rect(100, 50, 100, 20), "Speed: " +GetComponent<Rigidbody>().velocity.magnitude.ToString());
+	//	GUI.Label(new Rect(100, 50, 100, 20), "Speed: " +rb.velocity.magnitude.ToString());
 	//}
 
 	//public void OnDrawGizmosSelected() {
