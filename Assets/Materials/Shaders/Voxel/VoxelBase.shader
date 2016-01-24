@@ -6,7 +6,6 @@ Shader "Voxel/Normal" {
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_Sigma ("Blend Tightness", Range(0, 0.57)) = 0.5
 		_Blend ("Blend Sharpness", Float) = 4
-		_Scale ("Texture Scale", Float) = 1
 		_TexWallDif ("Diffuse Wall Texture", 2D) = "surface" {}
 		_TexFlrDif ("Diffuse Floor Texture", 2D) = "surface" {}
 		_TexCeilDif ("Diffuse Ceiling Texture", 2D) = "surface" {}
@@ -32,9 +31,14 @@ Shader "Voxel/Normal" {
 		sampler2D _TexWallNorm;
 		sampler2D _TexFlrNorm;
 		sampler2D _TexCeilNorm;
+		float4 _TexWallDif_ST;
+		float4 _TexFlrDif_ST;
+		float4 _TexCeilDif_ST;
+		float4 _TexWallNorm_ST;
+		float4 _TexFlrNorm_ST;
+		float4 _TexCeilNorm_ST;
 		float _Sigma;
 		float _Blend;
-		float _Scale;
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
@@ -47,19 +51,19 @@ Shader "Voxel/Normal" {
 		
 		fixed4 computeDiffuse(Input i, float blendMag) {
 			return (
-				i.b.x *tex2D(_TexWallDif, i.pos.zy *_Scale) +
-				i.b.z *tex2D(_TexWallDif, i.pos.xy *_Scale) +
-				((i.b.y > 0)?i.b.y *tex2D(_TexFlrDif, i.pos.xz *_Scale):
-				-i.b.y *tex2D(_TexCeilDif, i.pos.zx *_Scale))
+				i.b.x *tex2D(_TexWallDif, i.pos.zy *_TexWallDif_ST.xy) +
+				i.b.z *tex2D(_TexWallDif, i.pos.xy *_TexWallDif_ST.xy) +
+				((i.b.y > 0)?i.b.y *tex2D(_TexFlrDif, i.pos.xz *_TexFlrDif_ST.xy):
+				-i.b.y *tex2D(_TexCeilDif, i.pos.zx *_TexCeilDif_ST.xy))
 				) /blendMag;
 		}
 		
 		fixed4 computeHeight(Input i, float blendMag) {
 			return (
-				i.b.x *tex2D(_TexWallNorm, i.pos.zy *_Scale) +
-				i.b.z *tex2D(_TexWallNorm, i.pos.xy *_Scale) +
-				((i.b.y > 0)?i.b.y *tex2D(_TexFlrNorm, i.pos.xz *_Scale):
-				-i.b.y *tex2D(_TexCeilNorm, i.pos.zx *_Scale))
+				i.b.x *tex2D(_TexWallNorm, i.pos.zy *_TexWallNorm_ST.xy) +
+				i.b.z *tex2D(_TexWallNorm, i.pos.xy *_TexWallNorm_ST.xy) +
+				((i.b.y > 0)?i.b.y *tex2D(_TexFlrNorm, i.pos.xz *_TexFlrNorm_ST.xy):
+				-i.b.y *tex2D(_TexCeilNorm, i.pos.zx *_TexCeilNorm_ST.xy))
 				) /blendMag;
 		}
 		

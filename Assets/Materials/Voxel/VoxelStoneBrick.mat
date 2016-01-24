@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: VoxelStoneBrick
   m_Shader: {fileID: 4800000, guid: 7f79771678d1c9b4d8202740c6c4f2fc, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: IS_BASE
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -83,44 +83,48 @@ Material:
           name: _TexWallDif
         second:
           m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _TexFlrDif
         second:
           m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _TexCeilDif
         second:
           m_Texture: {fileID: 2800000, guid: e7655ad0db98f574ebc988bd1dbf6f40, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _TexWallNorm
         second:
           m_Texture: {fileID: 2800000, guid: 207eaeeb86e3afd418a26564f620ebfc, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _TexFlrNorm
         second:
           m_Texture: {fileID: 2800000, guid: 207eaeeb86e3afd418a26564f620ebfc, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _TexCeilNorm
         second:
           m_Texture: {fileID: 2800000, guid: 207eaeeb86e3afd418a26564f620ebfc, type: 3}
-          m_Scale: {x: 1, y: 1}
+          m_Scale: {x: 0.5, y: 0.5}
           m_Offset: {x: 0, y: 0}
     m_Floats:
+      data:
+        first:
+          name: _Scale
+        second: 0.5
       data:
         first:
           name: _SrcBlend
@@ -131,16 +135,12 @@ Material:
         second: 0
       data:
         first:
-          name: _Scale
-        second: .5
-      data:
-        first:
           name: _Cutoff
-        second: .5
+        second: 0.5
       data:
         first:
           name: _Glossiness
-        second: .25
+        second: 0.25
       data:
         first:
           name: _Metallic
@@ -148,7 +148,7 @@ Material:
       data:
         first:
           name: _Parallax
-        second: .0199999996
+        second: 0.02
       data:
         first:
           name: _ZWrite
@@ -176,7 +176,7 @@ Material:
       data:
         first:
           name: _Sigma
-        second: .5
+        second: 0.5
       data:
         first:
           name: _Blend
