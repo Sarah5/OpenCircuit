@@ -284,7 +284,7 @@ namespace Vox {
 					materials[1] = control.voxelSubstances[substanceArray[0]].grassMaterial;
                 }
 				materials[0] = control.voxelSubstances[substanceArray[0]].renderMaterial;
-				materials[0].EnableKeyword("IS_BASE");
+				//materials[0].EnableKeyword("IS_BASE");
 				rend.sharedMaterials = materials;
 				phyMat = control.voxelSubstances[substanceArray[0]].physicsMaterial;
 			} else {
@@ -292,6 +292,8 @@ namespace Vox {
 				for(int i=0; i<materials.Length; ++i) {
 					Material material = new Material(control.voxelSubstances[substanceArray[i]].blendMaterial);
 					material.renderQueue = i;
+					foreach (string keyword in material.shaderKeywords)
+						material.DisableKeyword(keyword);
 					if (!control.saveMeshes)
 						material.hideFlags = HideFlags.HideAndDontSave;
 					switch(i) {
