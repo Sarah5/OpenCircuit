@@ -44,7 +44,7 @@ namespace Vox {
 			action.modify = true;
 			action.minRadius = Mathf.Max(0, sApp.radius - voxelSize);
 			float minRadSqr = action.minRadius * action.minRadius;
-			if (action.disSqr >= minRadSqr)
+			if (!overwriteShape || action.disSqr >= minRadSqr)
 				action.doTraverse = true;
 			return action;
 		}
@@ -54,12 +54,10 @@ namespace Vox {
 			SphereAction sAction = (SphereAction)action;
 
 			float dis = Mathf.Sqrt(sAction.disSqr);
-			byte newOpacity = (dis <= sAction.minRadius) ?
-				value.averageOpacity() :
-                (byte)((original.averageOpacity() * (dis - sAction.minRadius) + value.averageOpacity() * (sAction.maxRadius - dis)) / 2);
+			float percentInside = Mathf.Min((sAction.maxRadius -dis) /(sAction.maxRadius -sAction.minRadius), 1);
+			byte newOpacity = (byte)(original.averageOpacity() * (1 -percentInside) + value.averageOpacity() * percentInside);
 			byte newSubstance = original.averageMaterialType();
-			if (newOpacity >= 2 * original.averageOpacity() ||
-				(overwriteSubstance && dis < sApp.radius))
+			if (overwriteSubstance && (dis < sApp.radius || percentInside > 0.5f))
 				newSubstance = value.averageMaterialType();
 			if (!overwriteShape)
 				newOpacity = original.averageOpacity();

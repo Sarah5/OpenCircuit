@@ -56,7 +56,7 @@ namespace Vox {
 			if (outside) return action;
 
 			action.modify = true;
-			if (!inside)
+			if (!overwriteShape || !inside)
 				action.doTraverse = true;
 			return action;
 		}
@@ -65,8 +65,7 @@ namespace Vox {
 			CubeAction cAction = (CubeAction)action;
 			byte newOpacity = (byte)((original.averageOpacity() * (1 - cAction.percentInside) + value.averageOpacity() * (cAction.percentInside)));
 			byte newSubstance = original.averageMaterialType();
-			if (newOpacity >= 2 * original.averageOpacity() ||
-				(overwriteSubstance && cAction.percentInside > 0.5))
+			if (overwriteSubstance && cAction.percentInside > 0.5)
 				newSubstance = value.averageMaterialType();
 			if (!overwriteShape)
 				newOpacity = original.averageOpacity();
