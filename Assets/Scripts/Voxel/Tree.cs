@@ -14,7 +14,7 @@ namespace Vox {
 	[ExecuteInEditMode]
 	public class Tree : MonoBehaviour, ISerializationCallbackReceiver {
 
-		public const ulong FILE_FORMAT_VERSION = 1;
+		public const ulong FILE_FORMAT_VERSION = 2;
 
 		[System.NonSerialized]
 		public readonly static HashSet<Tree> generatingTrees = new HashSet<Tree>();
@@ -76,15 +76,10 @@ namespace Vox {
 
 		public virtual void initialize() {
 
-//			float startTime = Time.realtimeSinceStartup;
+			//			float startTime = Time.realtimeSinceStartup;
 
 			// setup lookup tables, etc.
-			sizes = new float[maxDetail + 1];
-			float s = baseSize;
-			for (int i = 0; i <= maxDetail; ++i) {
-				sizes[i] = s;
-				s /= 2;
-			}
+			setupLookupTables();
 			updateCheckJobs = 0;
 
 			// initialize voxels
@@ -100,6 +95,15 @@ namespace Vox {
 //			print("Total Tree Count:                 " + treeCount);
 //			print("Renderer Count:                   " + VoxelRenderer.rendCount);
 //			print("Duplicate Triangle Count:         " + VoxelRenderer.duplicateTriangleCount);
+		}
+
+		public void setupLookupTables() {
+			sizes = new float[maxDetail + 1];
+			float s = baseSize;
+			for (int i = 0; i <= maxDetail; ++i) {
+				sizes[i] = s;
+				s /= 2;
+			}
 		}
 
 		public void Update() {
@@ -343,11 +347,22 @@ namespace Vox {
 			Stream stream = File.OpenRead(fileName);
 			BinaryReader reader = new BinaryReader(stream);
 			ulong fileFormatVersion = reader.ReadUInt64();
-			if (fileFormatVersion != FILE_FORMAT_VERSION) {
+			if (fileFormatVersion != FILE_FORMAT_VERSION
+				&& fileFormatVersion != 1) {
 				stream.Close ();
 				print("Wrong voxel file format version: " +fileFormatVersion +", should be " +FILE_FORMAT_VERSION);
 				return false;
 			} else {
+				// read meta data
+				if (fileFormatVersion > 1) {
+					maxDetail = reader.ReadByte();
+					int substanceCount = reader.ReadInt32();
+					if (substanceCount > voxelSubstances.Length)
+						System.Array.Resize(ref voxelSubstances, substanceCount);
+					setupLookupTables();
+				}
+
+				// read voxel data
 				head = (VoxelBlock)VoxelHolder.deserialize(reader);
 				dirty = true;
 				stream.Close();
@@ -359,7 +374,13 @@ namespace Vox {
 			if (getHead() != null) {
 				Stream stream = File.Create(fileName);
 				BinaryWriter writer = new BinaryWriter(stream);
+
+				// write meta data
 				writer.Write(FILE_FORMAT_VERSION);
+				writer.Write(maxDetail);
+				writer.Write(voxelSubstances.Length);
+
+				// write voxel data
 				getHead().serialize(writer);
 				stream.Close();
 			}

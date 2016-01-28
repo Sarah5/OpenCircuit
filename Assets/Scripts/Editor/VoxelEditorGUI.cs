@@ -416,19 +416,29 @@ public class VoxelEditorGUI : Editor {
 	}
 
 	protected void doGeneralPropertiesGUI(Vox.VoxelEditor editor) {
-		editor.createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
-		editor.useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
-		editor.saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
-		editor.reduceMeshes = EditorGUILayout.Toggle(new GUIContent("Reduce Meshes"), editor.reduceMeshes);
+		bool createColliders = EditorGUILayout.Toggle(new GUIContent("Generate Colliders"), editor.createColliders);
+		bool useStaticMeshes = EditorGUILayout.Toggle(new GUIContent("Use Static Meshes"), editor.useStaticMeshes);
+		bool saveMeshes = EditorGUILayout.Toggle(new GUIContent("Save Meshes To Scene"), editor.saveMeshes);
+		bool reduceMeshes = EditorGUILayout.Toggle(new GUIContent("Reduce Meshes"), editor.reduceMeshes);
+		float reductionAmount = editor.reductionAmount;
 		if (editor.reduceMeshes) {
-			editor.reductionAmount = doSliderFloatField("Mesh Reduction Level", editor.reductionAmount, 0, 0.5f);
+			reductionAmount = doSliderFloatField("Mesh Reduction Level", editor.reductionAmount, 0, 0.5f);
 		}
-		//editor.maxDetail = (byte)EditorGUILayout.IntField(new GUIContent("Voxel Power"), editor.maxDetail);
-		// if (createColliders != editor.createColliders || useStaticMeshes != editor.useStaticMeshes) {
-		// 	editor.createColliders = createColliders;
-		// 	editor.useStaticMeshes = useStaticMeshes;
-		//     editor.generateRenderers();
-		// }
+		byte maxDetail = (byte)EditorGUILayout.IntField(new GUIContent("Voxel Power"), editor.maxDetail);
+		if (maxDetail != editor.maxDetail || createColliders != editor.createColliders ||
+			saveMeshes != editor.saveMeshes || reductionAmount != editor.reductionAmount ||
+			useStaticMeshes != editor.useStaticMeshes || reduceMeshes != editor.reduceMeshes) {
+			if (maxDetail != editor.maxDetail) {
+				editor.maxDetail = maxDetail;
+				editor.setupLookupTables();
+			}
+			editor.createColliders = createColliders;
+			editor.useStaticMeshes = useStaticMeshes;
+			editor.saveMeshes = saveMeshes;
+            editor.reduceMeshes = reduceMeshes;
+			editor.reductionAmount = reductionAmount;
+			editor.clearRenderers();
+		}
 	}
 
 	protected void doGeneralPropertiesGUI(VoxelEditorParameters editor) {
