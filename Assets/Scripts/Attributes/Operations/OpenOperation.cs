@@ -15,7 +15,7 @@ public class OpenOperation : Operation {
 
 	public override void perform(GameObject instigator, Trigger trig) {
         AutoDoor door = parent.GetComponent<AutoDoor>();
-        door.switchDoor();
+        //door.switchDoor();
     }
 
 #if UNITY_EDITOR
