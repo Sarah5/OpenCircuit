@@ -4,17 +4,28 @@ using System.Collections;
 [AddComponentMenu("Scripts/Doors/Door Trigger")]
 public class DoorTrigger : MonoBehaviour {
 
-	private DoorControl control = null;
+	private AutoDoor control = null;
+	private int robotCount = 0;
 
 	void Awake() {
-		control = GetComponentInChildren<DoorControl> ();
+		control = GetComponentInParent<AutoDoor> ();
 	}
 
 	void OnTriggerEnter(Collider collision) {
-		//print (collision.gameObject.GetType ());
-		RobotController controller = collision.attachedRigidbody.gameObject.GetComponent<RobotController> ();
+		RobotController controller = collision.GetComponent<RobotController> ();
 		if (controller != null) {
-			control.toggle ();
+			robotCount++;
+			control.open();
+		}
+	}
+
+	void OnTriggerExit(Collider other) {
+		RobotController controller = other.GetComponent<RobotController> ();
+		if(controller != null) {
+			--robotCount;
+			if(robotCount == 0) {
+				control.close();
+			}
 		}
 	}
 }

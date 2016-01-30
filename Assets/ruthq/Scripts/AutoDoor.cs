@@ -4,41 +4,57 @@ using System.Collections;
 public class AutoDoor : MonoBehaviour {
 
     public float doorHeight = 3.5f;
-    private Vector3 stopPosition;
+	public float toggleTime = .25f;
+
+	public GameObject door;
+
+    private Vector3 downPosition;
     private Vector3 upPosition;
-    public float speed = 1;
     private bool isMovingUp = true;
 
     // Use this for initialization
     void Start () {
-        stopPosition = transform.position - new Vector3 (0,doorHeight,0);
-        upPosition = transform.position;
-        //    InvokeRepeating("switchDoor", 0, 8f);
+        downPosition = door.transform.position - new Vector3 (0,doorHeight,0);
+        upPosition = door.transform.position;
 	}
 
-    public void switchDoor() {
-        isMovingUp = !isMovingUp;
-    }
+	public void open() {
+		if(isMovingUp) {
+			isMovingUp = false;
+		}
+	}
+
+	public void close() {
+		if(!isMovingUp) {
+			isMovingUp = true;
+		}
+	}
+
     void moveDown() {
-        Vector3 stopVector = transform.position - stopPosition;
+        Vector3 stopVector = door.transform.position - downPosition;
         float length = stopVector.magnitude;
 
+		float distanceToMove = Time.deltaTime * doorHeight / toggleTime;
 
-        if (length > .1f){ 
-           // print("this is a string!!!");
-            transform.position = transform.position - new Vector3(0, Time.deltaTime * speed, 0);
-        }
+        if (length > distanceToMove){ 
+			door.transform.position = door.transform.position - new Vector3(0, distanceToMove, 0);
+		} else {
+			door.transform.position = downPosition;
+		}
 
     }
 
     void moveUp() {
-        Vector3 upVector = transform.position - upPosition;
+        Vector3 upVector = door.transform.position - upPosition;
         float upLength = upVector.magnitude;
 
-        if (upLength > .1f) {
-            print("This is another string.");
-            transform.position = transform.position + new Vector3(0, Time.deltaTime * speed, 0);
-        }
+		float distanceToMove = Time.deltaTime * doorHeight / toggleTime;
+
+        if (upLength > distanceToMove) {
+			door.transform.position = door.transform.position + new Vector3(0, distanceToMove, 0);
+		} else {
+			door.transform.position = upPosition;
+		}
 
     }
 	// Update is called once per frame
